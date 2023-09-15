@@ -1,13 +1,8 @@
-import LKSellerLayout from '@/components/Layouts/LKSellerLayout'
-import { FC } from 'react'
-import { HeadTextOfPage } from './styles'
+import React, { FC } from 'react'
+import { LKSellerHomePage } from '@/widgets/lkSeller'
 
 const LKSeller: FC = () => {
-	return (
-		<LKSellerLayout>
-			<HeadTextOfPage>Здравствуйте!</HeadTextOfPage>
-		</LKSellerLayout>
-	)
+	return <LKSellerHomePage />
 }
 
 export default LKSeller

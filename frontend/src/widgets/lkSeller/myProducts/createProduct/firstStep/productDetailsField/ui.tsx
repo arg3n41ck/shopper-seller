@@ -1,7 +1,7 @@
+import React, { FC } from 'react'
 import { BUTTON_STYLES } from '@/shared/lib/consts/styles'
 import Button from '@/shared/ui/button'
 import TextField from '@/shared/ui/textField'
-import { FC } from 'react'
 import { Plus } from 'react-feather'
 import {
 	ChildFormContainer,

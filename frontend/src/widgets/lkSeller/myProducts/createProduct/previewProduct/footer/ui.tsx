@@ -1,7 +1,7 @@
+import React, { FC } from 'react'
 import { BUTTON_STYLES } from '@/shared/lib/consts/styles'
 import Button from '@/shared/ui/button'
 import { useRouter } from 'next/router'
-import { FC } from 'react'
 import { ArrowLeft } from 'react-feather'
 import {
 	FooterButtonsContainer,
