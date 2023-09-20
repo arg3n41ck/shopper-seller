@@ -6,14 +6,14 @@ if settings.DEBUG:
 else:
     CORS_ALLOW_ALL_ORIGINS = False
     CORS_ALLOWED_ORIGINS = [
-        "https://shopper.kg",
-        "https://www.shopper.kg"
+        f"https://{settings.DOMAIN}",
+        f"https://www.{settings.DOMAIN}"
     ]
 
 
 CSRF_TRUSTED_ORIGINS = [
-    "https://shopper.kg",
-    "https://www.shopper.kg",
+    f"https://{settings.DOMAIN}",
+    f"https://www.{settings.DOMAIN}",
 ]
 
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
