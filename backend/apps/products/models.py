@@ -5,12 +5,12 @@ from django.utils.translation import gettext_lazy as _
 from mptt.fields import TreeForeignKey
 from mptt.models import MPTTModel
 
+from apps.shops.models import Shop
+from apps.customers.models import Customer
 from apps.products.constants import GenderChoice, ProductStatusChoice
 from apps.products.validators import validate_size_variants, validate_specifications
 from shared.custom_slugify import generate_slug_from_field
 from shared.abstract_models import TimeStampedBaseModel
-from apps.shops.models import Shop
-from apps.accounts.models import User
 
 
 @generate_slug_from_field("title")
@@ -151,7 +151,7 @@ class Product(TimeStampedBaseModel):
     for_kids = models.BooleanField(
         verbose_name=_("For kids"),
     )
-    price = models.DecimalField(
+    price_from = models.DecimalField(
         max_digits=10,
         decimal_places=2,
         verbose_name=_("Price"),
@@ -217,6 +217,10 @@ class Product(TimeStampedBaseModel):
             return self.price - discount_amount
         return None
 
+    @property
+    def rating(self):
+        return self.reviews.aggregate(models.Avg("rating"))["rating__avg"] or 0
+
 
 @generate_slug_from_field("title")
 class ProductVariant(TimeStampedBaseModel):
@@ -280,7 +284,7 @@ class ProductFavourite(models.Model):
         verbose_name=_("Product"),
     )
     customer = models.ForeignKey(
-        User,
+        Customer,
         on_delete=models.CASCADE,
         related_name="product_favourites",
         verbose_name=_("Customer"),
@@ -290,3 +294,30 @@ class ProductFavourite(models.Model):
         verbose_name = _("Product favourite")
         verbose_name_plural = _("Product favourites")
         unique_together = ("product", "customer")
+
+
+class ProductReview(TimeStampedBaseModel):
+    product = models.ForeignKey(
+        Product,
+        on_delete=models.CASCADE,
+        related_name="reviews",
+        verbose_name=_("Product"),
+    )
+    star = models.FloatField(
+        validators=[MinValueValidator(0.0),
+                    MaxValueValidator(5.0)],
+        verbose_name=_("Star"),
+    )
+    review = models.TextField(
+        verbose_name=_("Review"),
+    )
+    customer = models.ForeignKey(
+        Customer,
+        on_delete=models.CASCADE,
+        related_name="product_reviews",
+        verbose_name=_("Customer"),
+    )
+
+    class Meta:
+        verbose_name = _("Product review")
+        verbose_name_plural = _("Product reviews")

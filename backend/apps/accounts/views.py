@@ -76,7 +76,7 @@ class UserViewSet(viewsets.ModelViewSet):
     def create_customer(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        self.service.create_customer(
+        self.service.process_creation_customer(
             customer_data=serializer.validated_data['customer'],
             email=serializer.validated_data.get('email', None),
             phone_number=serializer.validated_data.get('phone_number', None),

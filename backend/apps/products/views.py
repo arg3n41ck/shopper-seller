@@ -4,7 +4,7 @@ from rest_framework.permissions import IsAuthenticated
 from django_filters.rest_framework import DjangoFilterBackend
 
 
-from apps.products.services import ProductCustomerService, ProductSellerService
+from apps.products.services import ProductSellerService
 
 from apps.products.models import (
     Category,
@@ -14,6 +14,7 @@ from apps.products.models import (
     ProductVariantImage,
     Specification,
     ProductFavourite,
+    ProductReview,
 )
 from apps.products.serializers import (
     CategorySerializer,
@@ -25,9 +26,10 @@ from apps.products.serializers import (
     ProductVariantCreateSerializer,
     SpecificationSerializer,
     ProductFavouriteSerializer,
+    ProductReviewSerializer,
 )
 from apps.products.filters import ProductFilter
-from apps.accounts.permissions import IsSeller
+from apps.accounts.permissions import IsSeller, IsCustomer
 
 
 class CategoryViewSet(viewsets.ReadOnlyModelViewSet):
@@ -56,7 +58,8 @@ class SpecificationViewSet(viewsets.ReadOnlyModelViewSet):
 
 
 class ProductCustomerViewSet(viewsets.ReadOnlyModelViewSet):
-    queryset = Product.objects.all().prefetch_related("variants")
+    queryset = Product.objects.all()\
+        .prefetch_related("variants", "reviews")
     serializer_class = ProductSerializer
     filter_backends = [DjangoFilterBackend, SearchFilter]
     filterset_class = ProductFilter
@@ -64,7 +67,8 @@ class ProductCustomerViewSet(viewsets.ReadOnlyModelViewSet):
 
 
 class ProductSellerViewSet(viewsets.ModelViewSet):
-    queryset = Product.objects.all().prefetch_related("variants")
+    queryset = Product.objects.all()\
+        .prefetch_related("variants", "reviews")
     serializer_class = ProductSerializer
     permission_classes = [IsAuthenticated, IsSeller]
     filterset_class = ProductFilter
@@ -78,7 +82,8 @@ class ProductSellerViewSet(viewsets.ModelViewSet):
 
 
 class ProductVariantSellerViewSet(viewsets.ModelViewSet):
-    queryset = ProductVariant.objects.all().prefetch_related("images")
+    queryset = ProductVariant.objects.all()\
+        .prefetch_related("images")
     serializer_class = ProductVariantSerializer
     permission_classes = [IsAuthenticated, IsSeller]
     lookup_field = "slug"
@@ -98,3 +103,10 @@ class ProductVariantImageSellerViewSet(viewsets.ModelViewSet):
 class ProductFavouriteViewSet(viewsets.ModelViewSet):
     queryset = ProductFavourite.objects.all()
     serializer_class = ProductFavouriteSerializer
+    permission_classes = [IsAuthenticated, IsCustomer]
+
+
+class ProductReviewViewSet(viewsets.ModelViewSet):
+    queryset = ProductReview.objects.all()
+    serializer_class = ProductReviewSerializer
+    permission_classes = [IsAuthenticated, IsCustomer]

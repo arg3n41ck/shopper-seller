@@ -12,6 +12,7 @@ from apps.accounts.constants import UserTypeChoice
 from apps.accounts import utils
 from apps.customers.services import CustomerService
 from apps.shops.services import ShopService
+from apps.orders.services import CartService
 
 from django.conf import settings
 
@@ -24,6 +25,7 @@ class UserService:
         self.model = User
         self.shop_service = ShopService()
         self.customer_service = CustomerService()
+        self.cart_service = CartService()
 
     def authenticate_by_email(self, email: str, password: str) -> Optional[User]:
         email = self._normalize_email(email)
@@ -39,8 +41,10 @@ class UserService:
                 return user
         return None
 
-    def create_customer(self, customer_data: dict, email: Optional[str] = None,
-                        phone_number: Optional[str] = None, password: Optional[str] = None):
+    def process_creation_customer(
+            self, customer_data: dict, email: Optional[str] = None,
+            phone_number: Optional[str] = None, password: Optional[str] = None
+    ):
         if email:
             email_normalized = self._normalize_email(email)
             user = self.model(email=email_normalized, type=UserTypeChoice.CUSTOMER)
@@ -51,7 +55,8 @@ class UserService:
         user.set_password(password)
         user.save()
 
-        self.customer_service.create_customer(user=user, customer_data=customer_data)
+        customer = self.customer_service.create_customer(user=user, customer_data=customer_data)
+        self.cart_service.create_cart(customer=customer)
 
         return user
 

@@ -4,9 +4,58 @@ from django.utils.translation import gettext_lazy as _
 from phonenumber_field.modelfields import PhoneNumberField
 
 from shared.abstract_models import TimeStampedBaseModel
-from apps.products.models import Product, ProductVariant
+from apps.products.models import ProductVariant
 from apps.customers.models import Customer
 from apps.orders.constants import PaymentTypeChoice
+from apps.products.validators import validate_size
+
+
+class Cart(models.Model):
+    customer = models.OneToOneField(
+        Customer,
+        on_delete=models.CASCADE,
+        related_name="cart",
+        verbose_name=_("Customer")
+    )
+
+    class Meta:
+        verbose_name = _("Cart")
+        verbose_name_plural = _("Carts")
+
+    @property
+    def total(self):
+        return sum(item.total for item in self.items.all())
+
+
+class CartItem(TimeStampedBaseModel):
+    cart = models.ForeignKey(
+        Cart,
+        on_delete=models.CASCADE,
+        related_name="items",
+        verbose_name=_("Cart"),
+    )
+    product_variant = models.ForeignKey(
+        ProductVariant,
+        on_delete=models.CASCADE,
+        related_name="pre_orders",
+        verbose_name=_("Product variant"),
+    )
+    size = models.JSONField(
+        validators=[validate_size],
+        verbose_name=_("Size variant"),
+    )
+    quantity = models.PositiveIntegerField(
+        default=1,
+        verbose_name=_("Quantity"),
+    )
+
+    class Meta:
+        verbose_name = _("Cart item")
+        verbose_name_plural = _("Cart items")
+
+    @property
+    def total(self):
+        return self.quantity * self.size["price"]
 
 
 class Order(TimeStampedBaseModel):
@@ -58,19 +107,11 @@ class Order(TimeStampedBaseModel):
 
 
 class OrderItem(models.Model):
-    product = models.ForeignKey(
-        Product,
-        on_delete=models.CASCADE,
-        related_name="orders",
-        verbose_name=_("Product"),
-    )
-    variant = models.ForeignKey(
+    product_variant = models.ForeignKey(
         ProductVariant,
         on_delete=models.CASCADE,
         related_name="orders",
-        verbose_name=_("Variant"),
-        blank=True,
-        null=True,
+        verbose_name=_("Product variant"),
     )
     order = models.ForeignKey(
         Order,
@@ -78,17 +119,14 @@ class OrderItem(models.Model):
         related_name="items",
         verbose_name=_("Order"),
     )
-    price = models.DecimalField(
-        verbose_name=_("Price"),
+    size = models.JSONField(
+        validators=[validate_size],
+        verbose_name=_("Size variant"),
     )
-    quantity = models.DecimalField(
+    quantity = models.PositiveIntegerField(
         verbose_name=_("Quantity"),
     )
 
     class Meta:
         verbose_name = _("Order item")
         verbose_name_plural = _("Order items")
-
-    @property
-    def total(self):
-        return self.price * self.quantity
