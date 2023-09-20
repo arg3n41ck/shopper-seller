@@ -101,7 +101,7 @@ class ProductFavouriteSerializer(serializers.ModelSerializer):
     customer = serializers.HiddenField(default=CustomerDefault())
 
     class Meta:
-        model = ProductFavourite,
+        model = ProductFavourite
         fields = (
             "id",
             "product",
@@ -156,7 +156,7 @@ class ProductSerializer(serializers.ModelSerializer):
             "brand",
             "gender",
             "for_kids",
-            "price",
+            "price_from",
             "discount",
             "discounted_price",
             "category",

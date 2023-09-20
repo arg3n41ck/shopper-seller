@@ -33,8 +33,9 @@ class ShopSerializer(serializers.ModelSerializer):
         fields = (
             "id",
             "slug",
+            "logo",
             "title",
-            "owner",
+            "user",
             "status",
             "site_link",
             "instagram_link",

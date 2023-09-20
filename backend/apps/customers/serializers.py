@@ -28,10 +28,6 @@ class AnonymousOrCustomerDefault:
         return f'{self.__class__.__name__}()'
 
 
-class AnonymousOrCustomerDefault:
-    pass
-
-
 class CustomerSerializer(serializers.ModelSerializer):
     class Meta:
         model = Customer
