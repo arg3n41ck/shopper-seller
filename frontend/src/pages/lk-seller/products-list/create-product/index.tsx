@@ -1,16 +1,7 @@
-import React from "react";
-import { InfoAboutProduct } from "@/widgets/lkSeller";
-import CreateProductLayout from "@/components/Layouts/CreateProductLayout";
-import LKSellerLayout from "@/components/Layouts/LKSellerLayout";
+import { InfoAboutProductPage } from '@/widgets/lkSeller'
 
-const InfoAboutProductPage = () => {
-  return (
-    <LKSellerLayout>
-      {/* <CreateProductLayout> */}
-      <InfoAboutProduct />
-      {/* </CreateProductLayout> */}
-    </LKSellerLayout>
-  );
-};
+const CreateProduct = () => {
+	return <InfoAboutProductPage />
+}
 
-export default InfoAboutProductPage;
+export default CreateProduct
