@@ -1,16 +1,7 @@
-import React from "react";
-import { PreviewProduct } from "@/widgets/lkSeller";
-import CreateProductLayout from "@/components/Layouts/CreateProductLayout";
-import LKSellerLayout from "@/components/Layouts/LKSellerLayout";
+import { PreviewProductPage } from '@/widgets/lkSeller'
 
-const PreviewProductPage = () => {
-  return (
-    <LKSellerLayout>
-      <CreateProductLayout>
-        <PreviewProduct />
-      </CreateProductLayout>
-    </LKSellerLayout>
-  );
-};
+const PreviewProduct = () => {
+	return <PreviewProductPage />
+}
 
-export default PreviewProductPage;
+export default PreviewProduct

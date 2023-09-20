@@ -1,19 +1,19 @@
-import { FC } from 'react';
-import { AnimatedLoader } from './styles';
+import React, { FC } from 'react'
+import { AnimatedLoader } from './styles'
 
 interface LoaderProps {
-  loading: boolean;
-  size?: number | string;
+	loading: boolean
+	size?: number | string
 }
 
 const LoaderIcon: FC<LoaderProps> = ({ loading, size }) => {
-  if (!loading) return null;
+	if (!loading) return null
 
-  return (
-    <div>
-      <AnimatedLoader size={size} />
-    </div>
-  );
-};
+	return (
+		<div>
+			<AnimatedLoader size={size} />
+		</div>
+	)
+}
 
-export default LoaderIcon;
+export default LoaderIcon
