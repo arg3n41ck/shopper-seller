@@ -15,8 +15,9 @@ FROM node:16-alpine AS production
 WORKDIR /app
 ENV NODE_ENV production
 RUN addgroup -g 1001 -S nodejs && adduser -S nextjs -u 1001
-# COPY --chown=nextjs:nodejs --from=build /app/frontend/.next ./.next
-COPY --chown=nextjs:nodejs --from=build /app/frontend/package.json \
+COPY --chown=nextjs:nodejs --from=build /app/frontend/.next ./.next
+COPY --chown=nextjs:nodejs --from=build /app/frontend/next.config.js \
+  /app/frontend/package.json \
   /app/frontend/yarn.lock \
   ./
 COPY --from=base /app/frontend/node_modules ./node_modules
