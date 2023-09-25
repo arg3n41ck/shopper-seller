@@ -72,7 +72,7 @@ class UserService:
         user.set_password(password)
         user.save()
 
-        self.shop_service.create_shop(user=user, **shop_data)
+        self.shop_service.create_shop(user=user, shop_data=shop_data)
 
         return user
 

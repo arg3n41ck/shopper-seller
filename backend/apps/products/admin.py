@@ -8,14 +8,15 @@ from apps.products.models import (
     ProductVariant,
     ProductVariantImage,
     ProductFavourite,
+    ProductReview,
 )
 
 
-class ProductImageInline(admin.TabularInline):
+class ProductVariantImageTabularInline(admin.TabularInline):
     model = ProductVariantImage
 
 
-class ProductVariantInline(admin.TabularInline):
+class ProductVariantTabularInline(admin.TabularInline):
     model = ProductVariant
 
 
@@ -36,9 +37,14 @@ class TagAdmin(admin.ModelAdmin):
 
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
-    inlines = [ProductVariantInline]
+    inlines = [ProductVariantTabularInline]
 
 
 @admin.register(ProductFavourite)
 class ProductFavouriteAdmin(admin.ModelAdmin):
+    pass
+
+
+@admin.register(ProductReview)
+class ProductReviewAdmin(admin.ModelAdmin):
     pass

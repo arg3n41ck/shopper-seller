@@ -49,13 +49,11 @@ class ShopCreateSerializer(serializers.ModelSerializer):
 
     default_error_messages = {
         "key_not_valid": ShopErrorMessage.KEY_NOT_VALID,
-        "user_type": ShopErrorMessage.USER_TYPE,
     }
 
     class Meta:
         model = Shop
         fields = (
-            "user",
             "title",
             "key",
         )
@@ -67,11 +65,6 @@ class ShopCreateSerializer(serializers.ModelSerializer):
     def validate_key(self, value):
         if not self.shop_service.shop_key_exists(value):
             self.fail("key_not_valid")
-        return value
-
-    def validate_user(self, value):
-        if not value.is_seller:
-            self.fail("user_type")
         return value
 
 

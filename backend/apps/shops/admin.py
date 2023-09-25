@@ -1,3 +1,13 @@
 from django.contrib import admin
 
-# Register your models here.
+from apps.shops.models import Shop, ShopKey
+
+
+@admin.register(Shop)
+class ShopAdmin(admin.ModelAdmin):
+    pass
+
+
+@admin.register(ShopKey)
+class ShopKeyAdmin(admin.ModelAdmin):
+    pass
