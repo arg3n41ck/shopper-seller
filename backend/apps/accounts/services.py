@@ -4,6 +4,7 @@ from typing import Optional
 
 from django.contrib.auth import get_user_model
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
+from django.db import transaction
 from django.template.loader import render_to_string
 from django.core.mail import send_mail
 from django.contrib.auth.tokens import default_token_generator
@@ -41,6 +42,7 @@ class UserService:
                 return user
         return None
 
+    @transaction.atomic()
     def process_creation_customer(
             self, customer_data: dict, email: Optional[str] = None,
             phone_number: Optional[str] = None, password: Optional[str] = None
@@ -60,7 +62,8 @@ class UserService:
 
         return user
 
-    def create_seller(self, email: str, phone_number: str,
+    @transaction.atomic()
+    def process_create_seller(self, email: str, phone_number: str,
                       password: str, shop_data: dict) -> Optional[User]:
         email = self._normalize_email(email)
         phone_number_str = self._validate_and_format_phone_number(phone_number)
@@ -72,7 +75,7 @@ class UserService:
         user.set_password(password)
         user.save()
 
-        key = shop_data.pop("key")
+        # key = shop_data.pop("key")
 
         self.shop_service.create_shop(user=user, shop_data=shop_data)
 

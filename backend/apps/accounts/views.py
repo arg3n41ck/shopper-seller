@@ -88,7 +88,7 @@ class UserViewSet(viewsets.ModelViewSet):
     def create_seller(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        self.service.create_seller(
+        self.service.process_create_seller(
             email=serializer.validated_data['email'],
             phone_number=serializer.validated_data['phone_number'],
             password=serializer.validated_data['password'],
