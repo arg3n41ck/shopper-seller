@@ -63,8 +63,9 @@ class UserService:
         return user
 
     @transaction.atomic()
-    def process_create_seller(self, email: str, phone_number: str,
-                      password: str, shop_data: dict) -> Optional[User]:
+    def process_create_seller(
+            self, email: str, phone_number: str, password: str, shop_data: dict
+    ) -> Optional[User]:
         email = self._normalize_email(email)
         phone_number_str = self._validate_and_format_phone_number(phone_number)
 
