@@ -30,11 +30,19 @@ def validate_size(value):
 
 
 def validate_size_variants(value):
-    if not isinstance(value, list):
-        raise ValidationError("Size variants must be a list of dictionaries.")
+    if not isinstance(value, dict):
+        raise ValidationError("Size must be a dictionary.")
 
-    for variant in value:
-        validate_size(variant)
+    required_keys = {"size", "quantity"}
+
+    if not required_keys.issubset(value.keys()):
+        raise ValidationError("Each size variant must have 'size' and 'quantity' keys.")
+
+    if not isinstance(value["size"], str):
+        raise ValidationError("Size must be a string.")
+
+    if not isinstance(value["quantity"], int) or value["quantity"] <= 0:
+        raise ValidationError("Quantity must be a positive integer.")
 
 
 def validate_specifications(value):

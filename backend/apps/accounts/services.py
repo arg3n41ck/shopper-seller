@@ -71,8 +71,7 @@ class UserService:
 
         user = self.model(email=email,
                           phone_number=phone_number_str,
-                          type=UserTypeChoice.SELLER,
-                          is_active=False)
+                          type=UserTypeChoice.SELLER)
         user.set_password(password)
         user.save()
 
