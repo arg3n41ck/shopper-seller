@@ -4,7 +4,6 @@ from rest_framework_recursive.fields import RecursiveField
 from apps.products.models import (
     Category,
     Tag,
-    Brand,
     Product,
     ProductVariant,
     ProductVariantImage,
@@ -34,16 +33,6 @@ class CategorySerializer(serializers.HyperlinkedModelSerializer):
 class TagSerializer(serializers.ModelSerializer):
     class Meta:
         model = Tag
-        fields = (
-            "id",
-            "slug",
-            "title",
-        )
-
-
-class BrandSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Brand
         fields = (
             "id",
             "slug",
@@ -139,7 +128,6 @@ class ProductReviewCreateSerializer(serializers.ModelSerializer):
 
 class ProductSerializer(serializers.ModelSerializer):
     category = CategorySerializer(read_only=True)
-    brand = BrandSerializer(read_only=True)
     tags = TagSerializer(many=True, read_only=True)
     shop = ShopSerializer(read_only=True)
     variants = ProductVariantSerializer(many=True, read_only=True)
@@ -153,7 +141,6 @@ class ProductSerializer(serializers.ModelSerializer):
             "sku",
             "title",
             "description",
-            "brand",
             "gender",
             "for_kids",
             "price_from",
@@ -182,7 +169,6 @@ class ProductCreateSerializer(serializers.ModelSerializer):
             "title",
             "description",
             "recommendation",
-            "brand",
             "gender",
             "for_kids",
             "price_from",

@@ -9,7 +9,6 @@ from apps.products.services import ProductSellerService
 from apps.products.models import (
     Category,
     Tag,
-    Brand,
     Product,
     ProductVariant,
     ProductVariantImage,
@@ -20,7 +19,6 @@ from apps.products.models import (
 from apps.products.serializers import (
     CategorySerializer,
     TagSerializer,
-    BrandSerializer,
     ProductSerializer,
     ProductVariantSerializer,
     ProductVariantImageSerializer,
@@ -44,15 +42,6 @@ class CategoryViewSet(viewsets.ReadOnlyModelViewSet):
 class TagViewSet(viewsets.ModelViewSet):
     queryset = Tag.objects.all()
     serializer_class = TagSerializer
-    filter_backends = [SearchFilter]
-    search_fields = ["title"]
-    pagination_class = None
-    lookup_field = "slug"
-
-
-class BrandViewSet(viewsets.ModelViewSet):
-    queryset = Brand.objects.all()
-    serializer_class = BrandSerializer
     filter_backends = [SearchFilter]
     search_fields = ["title"]
     pagination_class = None

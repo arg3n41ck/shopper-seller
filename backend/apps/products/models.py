@@ -68,26 +68,6 @@ class Tag(models.Model):
 
 
 @generate_slug_from_field("title")
-class Brand(models.Model):
-    slug = models.SlugField(
-        max_length=255,
-        editable=False,
-        verbose_name=_("Slug"),
-    )
-    title = models.CharField(
-        max_length=255,
-        verbose_name=_("Title"),
-    )
-
-    class Meta:
-        verbose_name = _("Brand")
-        verbose_name_plural = _("Brands")
-
-    def __str__(self):
-        return self.title
-
-
-@generate_slug_from_field("title")
 class Specification(models.Model):
     slug = models.SlugField(
         max_length=255,
@@ -136,12 +116,6 @@ class Product(TimeStampedBaseModel):
     )
     recommendation = models.TextField(
         verbose_name=_("Recommendation"),
-    )
-    brand = models.ForeignKey(
-        Brand,
-        on_delete=models.CASCADE,
-        related_name="products",
-        verbose_name=_("Brand"),
     )
     gender = models.CharField(
         max_length=255,

@@ -3,7 +3,6 @@ from django.contrib import admin
 from apps.products.models import (
     Category,
     Tag,
-    Brand,
     Product,
     ProductVariant,
     ProductVariantImage,
@@ -22,11 +21,6 @@ class ProductVariantTabularInline(admin.TabularInline):
 
 @admin.register(Category)
 class CategoryAdmin(admin.ModelAdmin):
-    pass
-
-
-@admin.register(Brand)
-class BrandAdmin(admin.ModelAdmin):
     pass
 
 

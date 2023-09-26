@@ -7,15 +7,15 @@ from django.contrib.auth.tokens import PasswordResetTokenGenerator
 from django.db import transaction
 from django.template.loader import render_to_string
 from django.core.mail import send_mail
-from django.contrib.auth.tokens import default_token_generator
+from django.conf import settings
+
+from rest_framework_simplejwt.tokens import AccessToken
 
 from apps.accounts.constants import UserTypeChoice
 from apps.accounts import utils
 from apps.customers.services import CustomerService
 from apps.shops.services import ShopService
 from apps.orders.services import CartService
-
-from django.conf import settings
 
 
 User = get_user_model()
@@ -65,7 +65,7 @@ class UserService:
     @transaction.atomic()
     def process_create_seller(
             self, email: str, phone_number: str, password: str, shop_data: dict
-    ) -> Optional[User]:
+    ):
         email = self._normalize_email(email)
         phone_number_str = self._validate_and_format_phone_number(phone_number)
 
@@ -76,11 +76,11 @@ class UserService:
         user.set_password(password)
         user.save()
 
-        # key = shop_data.pop("key")
-
         self.shop_service.create_shop(user=user, shop_data=shop_data)
 
-        return user
+        access_token = AccessToken.for_user(user)
+
+        return user, str(access_token)
 
     def process_reset_password(self, username: str) -> None:
         is_email = "@" in username
