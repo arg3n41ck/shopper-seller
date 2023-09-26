@@ -9,7 +9,7 @@ from django.template.loader import render_to_string
 from django.core.mail import send_mail
 from django.conf import settings
 
-from rest_framework_simplejwt.tokens import AccessToken
+from rest_framework_simplejwt.tokens import AccessToken, RefreshToken
 
 from apps.accounts.constants import UserTypeChoice
 from apps.accounts import utils
@@ -79,8 +79,14 @@ class UserService:
         self.shop_service.create_shop(user=user, shop_data=shop_data)
 
         access_token = AccessToken.for_user(user)
+        refresh_token = RefreshToken.for_user(user)
 
-        return user, str(access_token)
+        jwt_token = {
+            "access": str(access_token),
+            "refresh": str(refresh_token)
+        }
+
+        return user, jwt_token
 
     def process_reset_password(self, username: str) -> None:
         is_email = "@" in username
