@@ -80,6 +80,7 @@ class ProductVariantCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = ProductVariant
         fields = (
+            "id",
             "title",
             "description",
             "size_variants",
