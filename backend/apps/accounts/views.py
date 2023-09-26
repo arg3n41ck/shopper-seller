@@ -88,7 +88,7 @@ class UserViewSet(viewsets.ModelViewSet):
     def create_seller(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        user, jwt_token = self.service.process_create_seller(
+        jwt_token = self.service.process_create_seller(
             email=serializer.validated_data["email"],
             phone_number=serializer.validated_data["email"],
             password=serializer.validated_data["password"],
@@ -97,7 +97,7 @@ class UserViewSet(viewsets.ModelViewSet):
         response = {
             "message": "Seller created successfully.",
             "status": status.HTTP_201_CREATED,
-            "jwt_token": jwt_token
+            "jwt_token": jwt_token,
         }
         return Response(response, status=status.HTTP_201_CREATED)
 

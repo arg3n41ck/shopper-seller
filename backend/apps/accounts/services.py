@@ -81,12 +81,7 @@ class UserService:
         access_token = AccessToken.for_user(user)
         refresh_token = RefreshToken.for_user(user)
 
-        jwt_token = {
-            "access": str(access_token),
-            "refresh": str(refresh_token)
-        }
-
-        return user, jwt_token
+        return {"access": str(access_token), "refresh": str(refresh_token)}
 
     def process_reset_password(self, username: str) -> None:
         is_email = "@" in username
