@@ -96,11 +96,6 @@ class Product(TimeStampedBaseModel):
         editable=False,
         verbose_name=_("Slug"),
     )
-    product_id = models.CharField(
-        max_length=255,
-        unique=True,
-        verbose_name=_("Product ID"),
-    )
     sku = models.CharField(
         max_length=255,
         verbose_name=_("SKU"),
