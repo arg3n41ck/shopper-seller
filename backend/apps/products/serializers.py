@@ -81,6 +81,7 @@ class ProductVariantCreateSerializer(serializers.ModelSerializer):
         model = ProductVariant
         fields = (
             "id",
+            "product",
             "title",
             "description",
             "size_variants",
