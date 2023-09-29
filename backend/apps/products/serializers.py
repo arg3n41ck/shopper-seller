@@ -77,6 +77,8 @@ class ProductVariantSerializer(serializers.ModelSerializer):
 
 
 class ProductVariantCreateSerializer(serializers.ModelSerializer):
+    images = ProductVariantImageSerializer(required=True, write_only=True)
+
     class Meta:
         model = ProductVariant
         fields = (
@@ -85,6 +87,7 @@ class ProductVariantCreateSerializer(serializers.ModelSerializer):
             "title",
             "description",
             "size_variants",
+            "images",
         )
 
 
