@@ -90,18 +90,11 @@ class ProductVariantSellerViewSet(viewsets.ModelViewSet):
     serializer_class = ProductVariantSerializer
     permission_classes = [IsAuthenticated, IsSeller]
     lookup_field = "slug"
-    service = ProductVariantSellerService()
 
     def get_serializer_class(self):
         if self.action == "create":
             return ProductVariantCreateSerializer
         return self.serializer_class
-
-    @transaction.atomic()
-    def perform_create(self, serializer):
-        images_data = serializer.validated_data.pop("images")
-        instance = serializer.save()
-        self.service.process_creation(images_data=images_data, variant=instance)
 
 
 class ProductVariantImageSellerViewSet(viewsets.ModelViewSet):
