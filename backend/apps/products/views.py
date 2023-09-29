@@ -89,6 +89,7 @@ class ProductVariantSellerViewSet(viewsets.ModelViewSet):
         .prefetch_related("images")
     serializer_class = ProductVariantSerializer
     permission_classes = [IsAuthenticated, IsSeller]
+    parser_classes = [MultiPartParser]
     lookup_field = "slug"
     service = ProductVariantSellerService()
 
