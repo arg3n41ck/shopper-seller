@@ -61,6 +61,8 @@ class ProductVariantImageSerializer(serializers.ModelSerializer):
 
 
 class ProductVariantImageCreateSerializer(serializers.ModelSerializer):
+    image = serializers.ImageField()
+
     class Meta:
         model = ProductVariantImage
         fields = (
