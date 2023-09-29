@@ -60,6 +60,14 @@ class ProductVariantImageSerializer(serializers.ModelSerializer):
         )
 
 
+class ProductVariantImageCreateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ProductVariantImage
+        fields = (
+            "image",
+        )
+
+
 class ProductVariantSerializer(serializers.ModelSerializer):
     images = ProductVariantImageSerializer(many=True, read_only=True)
 
@@ -77,7 +85,7 @@ class ProductVariantSerializer(serializers.ModelSerializer):
 
 
 class ProductVariantCreateSerializer(serializers.ModelSerializer):
-    images = ProductVariantImageSerializer(required=True, write_only=True)
+    images = ProductVariantImageCreateSerializer(many=True, write_only=True)
 
     class Meta:
         model = ProductVariant

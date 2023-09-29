@@ -10,5 +10,12 @@ class ProductSellerService:
     def __init__(self):
         self.model = Product
 
-    def create_product(self):
-        pass
+
+class ProductVariantSellerService:
+    def __init__(self):
+        self.model = ProductVariant
+        self.image_model = ProductVariantImage
+
+    def process_creation(self, images_data: dict, variant: ProductVariant):
+        images = [self.image_model(variant=variant, **data) for data in images_data]
+        self.image_model.objects.bulk_create(images)
