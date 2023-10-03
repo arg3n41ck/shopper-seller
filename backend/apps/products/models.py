@@ -188,7 +188,7 @@ class Product(TimeStampedBaseModel):
 
     @property
     def rating(self):
-        return self.reviews.aggregate(models.Avg("rating"))["rating__avg"] or 0
+        return self.reviews.aggregate(models.Avg("star"))["star__avg"] or 0
 
 
 @generate_slug_from_field("title")
