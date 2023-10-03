@@ -63,9 +63,7 @@ class ShopCreateSerializer(serializers.ModelSerializer):
         self.shop_service = ShopService()
 
     def validate(self, attrs):
-        key = attrs.pop("key")
-
-        if not self.shop_service.shop_key_exists(key=key):
+        if not self.shop_service.shop_key_exists(key=attrs["key"]):
             self.fail("key_not_valid")
         return attrs
 

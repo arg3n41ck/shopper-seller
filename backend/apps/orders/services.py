@@ -9,6 +9,7 @@ class CartService:
     def create_cart(self, customer: Customer):
         return self.model.objects.create(customer=customer)
 
+
 class OrderSellerService:
     def __init__(self):
         self.model = Order

@@ -59,19 +59,13 @@ class UserService:
 
         customer = self.customer_service.create_customer(user=user, customer_data=customer_data)
         self.cart_service.create_cart(customer=customer)
-
         return user
 
     @transaction.atomic()
-    def process_create_seller(
-            self, email: str, phone_number: str, password: str, shop_data: dict
-    ):
-        email = self._normalize_email(email)
-        phone_number_str = self._validate_and_format_phone_number(phone_number)
-
-        user = self.model(email=email,
-                          phone_number=phone_number_str,
-                          type=UserTypeChoice.SELLER)
+    def process_create_seller(self, email: str, phone_number: str, password: str, shop_data: dict):
+        # email = self._normalize_email(email)
+        # phone_number_str = self._validate_and_format_phone_number(phone_number)
+        user = self.model(email=email, phone_number=phone_number, type=UserTypeChoice.SELLER)
         user.set_password(password)
         user.save()
 
@@ -79,7 +73,6 @@ class UserService:
 
         access_token = AccessToken.for_user(user)
         refresh_token = RefreshToken.for_user(user)
-
         return {"access": str(access_token), "refresh": str(refresh_token)}
 
     def process_reset_password(self, username: str) -> None:
