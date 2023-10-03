@@ -21,7 +21,7 @@ router.register("customer/favourites", ProductFavouriteViewSet, basename="custom
 router.register("customer/reviews", ProductReviewViewSet, basename="product_reviews")
 router.register("seller/products", ProductSellerViewSet, basename="seller_products")
 router.register("seller/variants", ProductVariantSellerViewSet, basename="seller_variants")
-router.register("seller/variants/images", ProductVariantImageSellerViewSet, basename="seller_variants_images")
+router.register("seller-variants-images", ProductVariantImageSellerViewSet, basename="seller-variants-images")
 
 urlpatterns = []
 
