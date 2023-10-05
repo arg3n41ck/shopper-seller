@@ -1,22 +1,18 @@
-from django.contrib.auth import get_user_model
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 from django.core.validators import FileExtensionValidator
 
 from phonenumber_field.modelfields import PhoneNumberField
 
-from apps.shops.constants import ShopStatusChoice
+from apps.sellers.constants import ShopStatusChoice
+from apps.accounts.models import User
 from shared.abstract_models import TimeStampedBaseModel
 from shared.custom_slugify import generate_slug_from_field
 
 
-User = get_user_model()
-
-
-class ShopKey(models.Model):
+class SellerKey(TimeStampedBaseModel):
     key = models.CharField(
         max_length=10,
-        unique=True,
         verbose_name=_("Key"),
     )
     is_active = models.BooleanField(
@@ -25,11 +21,29 @@ class ShopKey(models.Model):
     )
 
     class Meta:
-        verbose_name = _("Shop key")
-        verbose_name_plural = _("Shop keys")
+        verbose_name = _("Seller key")
+        verbose_name_plural = _("Seller keys")
 
-    def __str__(self):
-        return self.key
+
+class Seller(TimeStampedBaseModel):
+    user = models.OneToOneField(
+        User,
+        on_delete=models.CASCADE,
+        related_name="seller",
+        verbose_name=_("User"),
+    )
+    key = models.OneToOneField(
+        SellerKey,
+        on_delete=models.CASCADE,
+        related_name="key",
+        verbose_name=_("Key"),
+        blank=True,
+        null=True,
+    )
+
+    class Meta:
+        verbose_name = _("Seller")
+        verbose_name_plural = _("Sellers")
 
 
 @generate_slug_from_field("title")
@@ -55,11 +69,11 @@ class Shop(TimeStampedBaseModel):
         max_length=255,
         verbose_name=_("Title"),
     )
-    user = models.OneToOneField(
-        User,
+    seller = models.OneToOneField(
+        Seller,
         on_delete=models.CASCADE,
         related_name="shop",
-        verbose_name=_("Owner"),
+        verbose_name=_("Seller"),
     )
     status = models.CharField(
         max_length=255,
@@ -91,7 +105,7 @@ class Shop(TimeStampedBaseModel):
         return self.title
 
 
-class BranchAddress(models.Model):
+class ShopBranch(models.Model):
     address = models.CharField(
         max_length=255,
         verbose_name=_("Address"),

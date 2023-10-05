@@ -5,7 +5,7 @@ from django.utils.translation import gettext_lazy as _
 from mptt.fields import TreeForeignKey
 from mptt.models import MPTTModel
 
-from apps.shops.models import Shop
+from apps.sellers.models import Shop
 from apps.customers.models import Customer
 from apps.products.constants import GenderChoice, ProductStatusChoice
 from apps.products.validators import validate_size_variants, validate_specifications

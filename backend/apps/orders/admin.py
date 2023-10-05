@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from apps.orders.models import Order, OrderItem, Cart, CartItem
+from apps.orders.models import Order, OrderItem
 
 
 class OrderItemTabularInline(admin.TabularInline):
@@ -8,16 +8,6 @@ class OrderItemTabularInline(admin.TabularInline):
     can_delete = False
 
 
-class CartItemTabularInline(admin.TabularInline):
-    model = CartItem
-    can_delete = False
-
-
 @admin.register(Order)
 class OrderAdmin(admin.ModelAdmin):
     inlines = [OrderItemTabularInline]
-
-
-@admin.register(Cart)
-class CartAdmin(admin.ModelAdmin):
-    inlines = [CartItemTabularInline]

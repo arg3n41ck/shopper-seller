@@ -1,23 +1,36 @@
 from rest_framework import serializers
 
-from apps.shops.models import Shop, BranchAddress
-from apps.shops.services import ShopService
-from apps.shops.constants import ShopErrorMessage
+from apps.sellers.models import Seller, SellerKey, Shop, ShopBranch
+from apps.sellers.services import ShopService
+from apps.sellers.constants import SellerErrorMessage
 
 
 class ShopDefault:
     requires_context = True
 
     def __call__(self, serializer_field):
-        return serializer_field.context['request'].user.shop
+        return serializer_field.context['request'].user.seller.shop
 
     def __repr__(self):
         return f'{self.__class__.__name__}()'
 
 
-class BranchAddressSerializer(serializers.ModelSerializer):
+class SellerCreateSerializer(serializers.Serializer):
+    key = serializers.CharField(required=True)
+
+    default_error_messages = {
+        "key_not_valid": SellerErrorMessage.KEY_NOT_VALID,
+    }
+
+    def validate(self, attrs):
+        if not SellerKey.objects.filter(key=attrs["key"]).exists():
+            self.fail("key_not_valid")
+        return attrs
+
+
+class ShopBranchSerializer(serializers.ModelSerializer):
     class Meta:
-        model = BranchAddress
+        model = ShopBranch
         fields = (
             "id",
             "address",
@@ -26,7 +39,7 @@ class BranchAddressSerializer(serializers.ModelSerializer):
 
 
 class ShopSerializer(serializers.ModelSerializer):
-    branches = BranchAddressSerializer(many=True, read_only=True)
+    branches = ShopBranchSerializer(many=True, read_only=True)
 
     class Meta:
         model = Shop
@@ -47,25 +60,11 @@ class ShopSerializer(serializers.ModelSerializer):
 class ShopCreateSerializer(serializers.ModelSerializer):
     key = serializers.CharField(required=True)
 
-    default_error_messages = {
-        "key_not_valid": ShopErrorMessage.KEY_NOT_VALID,
-    }
-
     class Meta:
         model = Shop
         fields = (
             "title",
-            "key",
         )
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.shop_service = ShopService()
-
-    def validate(self, attrs):
-        if not self.shop_service.shop_key_exists(key=attrs["key"]):
-            self.fail("key_not_valid")
-        return attrs
 
 
 class ShopUpdateSerializer(serializers.ModelSerializer):
@@ -80,11 +79,11 @@ class ShopUpdateSerializer(serializers.ModelSerializer):
         )
 
 
-class BranchAddressCreateSerializer(serializers.ModelSerializer):
+class ShopBranchCreateSerializer(serializers.ModelSerializer):
     shop = serializers.HiddenField(default=ShopDefault())
 
     class Meta:
-        model = BranchAddress
+        model = ShopBranch
         fields = (
             "id",
             "address",

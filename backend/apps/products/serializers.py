@@ -11,7 +11,7 @@ from apps.products.models import (
     ProductFavourite,
     ProductReview,
 )
-from apps.shops.serializers import ShopDefault, ShopSerializer
+from apps.sellers.serializers import ShopDefault, ShopSerializer
 from apps.customers.serializers import CustomerDefault
 from apps.customers.serializers import CustomerSerializer
 
