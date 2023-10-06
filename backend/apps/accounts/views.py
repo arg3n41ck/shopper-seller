@@ -1,5 +1,5 @@
-from django.db import transaction
 from django.utils.translation import gettext_lazy as _
+from django.contrib.auth.tokens import default_token_generator
 from rest_framework import viewsets, status, views, generics
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated, AllowAny
@@ -16,7 +16,9 @@ from apps.accounts.serializers import (
     ResetPasswordConfirmSerializer,
     SetNewPasswordSerializer,
     ResetEmailSerializer,
+    ResetEmailConfirmSerializer,
     ResetPhoneNumberSerializer,
+    ResetPhoneNumberConfirmSerializer,
 )
 from apps.accounts.services.user_service import UserService
 from apps.accounts.mixins import CreateUserApiViewMixin
@@ -53,7 +55,15 @@ class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
     permission_classes = [IsAuthenticated]
+    token_generator = default_token_generator
     service_class = UserService()
+    
+    def get_permissions(self):
+        if self.action in ["reset_password_request_email", 
+                           "reset_password_request_phone_number",
+                           "reset_password_confirm"]:
+            return [AllowAny()]
+        return super().get_permissions()
 
     def get_serializer_class(self):
         if self.action == "reset_password_request_email":
@@ -64,10 +74,14 @@ class UserViewSet(viewsets.ModelViewSet):
             return ResetPasswordConfirmSerializer
         elif self.action == "set_new_password":
             return SetNewPasswordSerializer
-        elif self.action == "reset_email_request":
+        elif self.action == "change_email_request":
             return ResetEmailSerializer
-        elif self.action == "reset_phone_number_request":
+        elif self.action == "change_email_confirm":
+            return ResetEmailConfirmSerializer
+        elif self.action == "change_phone_number_request":
             return ResetPhoneNumberSerializer
+        elif self.action == "change_phone_number_confirm":
+            return ResetPhoneNumberConfirmSerializer
         return self.serializer_class
 
     def get_object(self):
@@ -117,7 +131,7 @@ class UserViewSet(viewsets.ModelViewSet):
         serializer.is_valid(raise_exception=True)
         self.service_class.set_new_password(
             user=serializer.user,
-            new_password=serializer.data["password"]
+            new_password=serializer.validated_data["password"]
         )
         response_success = {
             "message": _("Password changed successfully"),
@@ -140,13 +154,24 @@ class UserViewSet(viewsets.ModelViewSet):
         return Response(response_success, status=status.HTTP_204_NO_CONTENT)
 
     @action(["post"], detail=False)
-    def reset_email_request(self, request, *args, **kwargs):
+    def change_email_request(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        self.service_class.reset_email(
+        self.service_class.change_email_request(
             user=request.user,
             email=serializer.validated_data["email"],
         )
+        response_success = {
+            "message": _("Change email sent successfully"),
+            "code": status.HTTP_204_NO_CONTENT,
+        }
+        return Response(response_success, status=status.HTTP_204_NO_CONTENT)
+
+    @action(["post"], detail=False)
+    def change_email_confirm(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        self.service_class.reset_email(user=request.user)
         response_success = {
             "message": _("Email changed successfully"),
             "code": status.HTTP_204_NO_CONTENT,
@@ -154,24 +179,10 @@ class UserViewSet(viewsets.ModelViewSet):
         return Response(response_success, status=status.HTTP_204_NO_CONTENT)
 
     @action(["post"], detail=False)
-    def reset_email_confirm(self, request, *args, **kwargs):
+    def change_phone_number_request(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        self.service_class.reset_email(
-            user=request.user,
-            email=serializer.validated_data["email"],
-        )
-        response_success = {
-            "message": _("Email changed successfully"),
-            "code": status.HTTP_204_NO_CONTENT,
-        }
-        return Response(response_success, status=status.HTTP_204_NO_CONTENT)
-
-    @action(["post"], detail=False)
-    def reset_phone_request(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        self.service_class.reset_phone_number(
+        self.service_class.change_phone_number_request(
             user=request.user,
             phone_number=serializer.validated_data["phone_number"],
         )
@@ -182,13 +193,10 @@ class UserViewSet(viewsets.ModelViewSet):
         return Response(response_success, status=status.HTTP_204_NO_CONTENT)
 
     @action(["post"], detail=False)
-    def reset_phone_number_confirm(self, request, *args, **kwargs):
+    def change_phone_number_confirm(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        self.service_class.reset_phone_number(
-            user=request.user,
-            phone_number=serializer.validated_data["phone_number"],
-        )
+        self.service_class.reset_phone_number(user=request.user)
         response_success = {
             "message": _("Email changed successfully"),
             "code": status.HTTP_204_NO_CONTENT,

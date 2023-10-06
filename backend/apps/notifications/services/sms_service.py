@@ -51,7 +51,6 @@ class SMSProService:
         self.repository = SMSProRepository()
 
     def send_sms(self, phone_numbers: list[str], text: str) -> None:
-        # Create an XML request based on your previous XML structure
         notification = self.notification_sms_model.objects.create(
             text=text,
             phone_numbers=[phone_numbers]

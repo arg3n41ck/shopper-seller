@@ -1,4 +1,3 @@
-from django.contrib.auth.tokens import PasswordResetTokenGenerator
 from rest_framework import serializers
 
 from phonenumber_field.serializerfields import PhoneNumberField
@@ -122,11 +121,13 @@ class UidTokenSerializer(serializers.Serializer):
             self.fail("invalid_uid")
 
     def validate_token(self, value):
-        token_generator = PasswordResetTokenGenerator()
 
-        if not token_generator.check_token(self.user, value):
+        is_token_valid = self.context["view"].token_generator.check_token(
+            self.user, self.initial_data.get("token", "")
+        )
+
+        if not is_token_valid:
             self.fail("invalid_token")
-
         return value
 
 
@@ -152,16 +153,29 @@ class SetNewPasswordSerializer(PasswordRetypeSerializer, CurrentPasswordSerializ
     pass
 
 
-class ActivationSerializer(UidTokenSerializer):
+class ResetEmailSerializer(CurrentPasswordSerializer):
+    email = serializers.CharField(required=True)
+    re_email = serializers.CharField(required=True)
+
     default_error_messages = {
-        "stale_token": UserErrorMessage.STALE_TOKEN_ERROR,
+        "email_mismatch": UserErrorMessage.EMAIL_MISMATCH,
+        "email_exists": UserErrorMessage.EMAIL_EXISTS,
     }
 
     def validate(self, attrs):
-        attrs = super().validate(attrs)
-        if not self.user.is_active:
-            return attrs
-        raise self.fail("stale_token")
+        if attrs["email"] != attrs["re_email"]:
+            self.fail("email_mismatch")
+        if User.objects.filter(email=attrs["email"]).exists():
+            self.fail("email_exists")
+        return attrs
+
+
+class ResetEmailConfirmSerializer(UidTokenSerializer):
+    pass
+
+
+class ResetPhoneNumberConfirmSerializer(UidTokenSerializer):
+    pass
 
 
 class ResetPhoneNumberSerializer(CurrentPasswordSerializer):
@@ -182,18 +196,13 @@ class ResetPhoneNumberSerializer(CurrentPasswordSerializer):
         return attrs
 
 
-class ResetEmailSerializer(CurrentPasswordSerializer):
-    email = serializers.CharField(required=True)
-    re_email = serializers.CharField(required=True)
-
+class ActivationSerializer(UidTokenSerializer):
     default_error_messages = {
-        "email_mismatch": UserErrorMessage.EMAIL_MISMATCH,
-        "email_exists": UserErrorMessage.EMAIL_EXISTS,
+        "stale_token": UserErrorMessage.STALE_TOKEN_ERROR,
     }
 
     def validate(self, attrs):
-        if attrs["email"] != attrs["re_email"]:
-            self.fail("email_mismatch")
-        if User.objects.filter(email=attrs["email"]).exists():
-            self.fail("email_exists")
-        return attrs
+        attrs = super().validate(attrs)
+        if not self.user.is_active:
+            return attrs
+        raise self.fail("stale_token")

@@ -1,6 +1,6 @@
-from django.contrib.auth.tokens import PasswordResetTokenGenerator
 from django.conf import settings
 from django.utils.translation import gettext_lazy as _
+from django.contrib.auth.tokens import default_token_generator
 
 from apps.accounts.models import User
 from apps.accounts.constants import UserTypeChoice
@@ -37,7 +37,8 @@ class UserService:
     def reset_password_send_email(self, email: str) -> None:
         try:
             user = self.user_model.objects.get(email=email)
-            reset_url = self._generate_reset_url(user=user)
+            token, uid = self._generate_uid_token(user=user)
+            reset_url = f"https://{settings.DOMAIN}/user/reset-password/?uid={uid}&token={token}"
             self.email_service.send_template_email(
                 subject=_("Password reset confirmation"),
                 template_name="reset_password.html",
@@ -52,7 +53,8 @@ class UserService:
     def reset_password_send_sms(self, phone_number: str) -> None:
         try:
             user = self.user_model.objects.get(phone_number=phone_number)
-            reset_url = self._generate_reset_url(user=user)
+            token, uid = self._generate_uid_token(user)
+            reset_url = f"https://{settings.DOMAIN}/user/reset-password/?uid={uid}&token={token}"
             self.sms_service.send_sms(phone_numbers=[user.phone_number], text=reset_url)
         except self.user_model.DoesNotExist:
             pass
@@ -61,18 +63,36 @@ class UserService:
         user.set_password(new_password)
         user.save(update_fields=["password"])
 
-    def _generate_reset_url(self, user: User):
-        token_generator = PasswordResetTokenGenerator()
-        token = token_generator.make_token(user=user)
-
+    def _generate_uid_token(self, user):
+        token = default_token_generator.make_token(user=user)
         uid = encode_uid(user.pk)
-        reset_url = f"https://{settings.DOMAIN}/user/reset-password/{uid}/{token}"
-        return reset_url
+        return token, uid
 
-    def reset_email(self, user: User, email: str) -> None:
-        user.email = email
+    def change_email_request(self, user: User, email: str) -> None:
+        user.new_email_request = email
+        user.save()
+        token, uid = self._generate_uid_token(user)
+        change_url = f"https://{settings.DOMAIN}/user/change-email-confirm/?uid={uid}&token={token}"
+        self.email_service.send_email(
+            subject=_("Reset email confirmation"),
+            message=change_url,
+            recipient_list=[email],
+        )
+
+    def change_phone_number_request(self, user: User, phone_number: str) -> None:
+        user.new_phone_request = phone_number
+        user.save()
+        token, uid = self._generate_uid_token(user)
+        change_url = f"https://{settings.DOMAIN}/user/change-phone-number-confirm/?uid={uid}&token={token}"
+        self.sms_service.send_sms(
+            phone_numbers=[phone_number],
+            text=change_url,
+        )
+
+    def reset_email(self, user: User) -> None:
+        user.email = user.new_email_request
         user.save(update_fields=["email"])
 
-    def reset_phone_number(self, user: User, phone_number: str) -> None:
-        user.phone_number = phone_number
+    def reset_phone_number(self, user: User) -> None:
+        user.phone_number = user.new_phone_request
         user.save(update_fields=["phone_number"])

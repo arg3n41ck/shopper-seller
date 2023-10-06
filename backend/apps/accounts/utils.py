@@ -35,13 +35,6 @@ def logout_user(request):
         logout(request)
 
 
-class ActionViewMixin:
-    def post(self, request, **kwargs):
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        return self._action(serializer)
-
-
 def validate_and_format_phone_number(phone_number: str) -> Optional[str]:
     try:
         parsed_phone_number = phonenumbers.parse(phone_number)
