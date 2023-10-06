@@ -41,7 +41,7 @@ class CategoryViewSet(viewsets.ReadOnlyModelViewSet):
     def get_queryset(self):
         return (
             Category.objects.all()
-            if self.lookup_field
+            if self.kwargs.get(self.lookup_field)
             else Category.objects.root_nodes()
         )
 
