@@ -3,7 +3,8 @@ from typing import Optional
 from apps.accounts.constants import UserTypeChoice
 from apps.accounts.services.jwt_service import JWTService
 from apps.accounts.services.user_service import UserService
-from apps.customers.models import Customer, Cart
+from apps.customers.models import Customer
+from apps.orders.models import Cart
 
 
 class UserCustomerService:

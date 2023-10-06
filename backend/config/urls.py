@@ -7,8 +7,9 @@ from django.conf.urls.static import static
 v1 = [
     path("accounts/", include("apps.accounts.urls")),
     path("products/", include("apps.products.urls")),
-    path("shops/", include("apps.shops.urls")),
     path("customers/", include("apps.customers.urls")),
+    path("sellers/", include("apps.sellers.urls")),
+    path("orders/", include("apps.orders.urls")),
 ]
 
 urlpatterns = [
@@ -18,6 +19,7 @@ urlpatterns = [
 
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
 
 if settings.DEBUG:
     from drf_yasg import openapi

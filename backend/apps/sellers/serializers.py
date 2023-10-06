@@ -1,7 +1,6 @@
 from rest_framework import serializers
 
-from apps.sellers.models import Seller, SellerKey, Shop, ShopBranch
-from apps.sellers.services import ShopService
+from apps.sellers.models import SellerKey, Shop, ShopBranch
 from apps.sellers.constants import SellerErrorMessage
 
 

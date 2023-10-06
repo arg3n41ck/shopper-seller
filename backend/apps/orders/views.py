@@ -1,11 +1,15 @@
 from django.db import transaction
 from rest_framework import viewsets, filters
-from rest_framework.permissions import IsAuthenticated, AllowAny
+from rest_framework.permissions import AllowAny
 
-from apps.orders.models import Order
+from apps.orders.models import Cart, CartItem, Order
 from apps.orders.serializers import (
     OrderSerializer,
     OrderCreateSerializer,
+    CartSerializer,
+    CartItemSerializer,
+    CartItemCreateSerializer,
+    CartItemUpdateSerializer,
 )
 from apps.orders.services.order_service import OrderCustomerService
 from apps.sellers.permissions import IsSeller
@@ -15,6 +19,26 @@ from apps.customers.permissions import IsCustomer
 class OrderViewSetMixin:
     queryset = Order.objects.all()
     serializer_class = OrderSerializer
+
+
+class CartViewSet(viewsets.ReadOnlyModelViewSet):
+    queryset = Cart.objects.all().prefetch_related("items")
+    serializer_class = CartSerializer
+    permission_classes = [IsCustomer]
+    filterset_fields = ["customer"]
+
+
+class CartItemViewSet(viewsets.ModelViewSet):
+    queryset = CartItem.objects.all()
+    serializer_class = CartItemSerializer
+    permission_classes = [IsCustomer]
+
+    def get_serializer_class(self):
+        if self.action == "create":
+            return CartItemCreateSerializer
+        elif self.action == "partial_update":
+            return CartItemUpdateSerializer
+        return self.serializer_class
 
 
 class OrderCustomerViewSet(OrderViewSetMixin, viewsets.ModelViewSet):

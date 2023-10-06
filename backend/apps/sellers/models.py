@@ -35,7 +35,7 @@ class Seller(TimeStampedBaseModel):
     key = models.OneToOneField(
         SellerKey,
         on_delete=models.CASCADE,
-        related_name="key",
+        related_name="seller",
         verbose_name=_("Key"),
         blank=True,
         null=True,

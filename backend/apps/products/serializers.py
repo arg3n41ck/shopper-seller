@@ -12,8 +12,7 @@ from apps.products.models import (
     ProductReview,
 )
 from apps.sellers.serializers import ShopDefault, ShopSerializer
-from apps.customers.serializers import CustomerDefault
-from apps.customers.serializers import CustomerSerializer
+from apps.customers.serializers import CustomerDefault, CustomerSerializer
 
 
 class CategorySerializer(serializers.HyperlinkedModelSerializer):
@@ -26,6 +25,7 @@ class CategorySerializer(serializers.HyperlinkedModelSerializer):
             "slug",
             "title",
             "image",
+            "parent",
             "children",
         )
 
@@ -153,6 +153,7 @@ class ProductSerializer(serializers.ModelSerializer):
             "sku",
             "title",
             "description",
+            "recommendation",
             "gender",
             "for_kids",
             "price_from",
