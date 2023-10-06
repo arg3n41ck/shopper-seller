@@ -1,4 +1,3 @@
-from django.utils.translation import gettext_lazy as _
 from django.contrib.auth.tokens import default_token_generator
 from rest_framework import viewsets, status, views, generics
 from rest_framework.decorators import action
@@ -22,6 +21,7 @@ from apps.accounts.serializers import (
 )
 from apps.accounts.services.user_service import UserService
 from apps.accounts.mixins import CreateUserApiViewMixin
+from apps.accounts.constants import UserMessage
 from apps.customers.services.customer_services import UserCustomerService
 from apps.sellers.services.seller_service import UserSellerService
 
@@ -107,7 +107,7 @@ class UserViewSet(viewsets.ModelViewSet):
         serializer.is_valid(raise_exception=True)
         self.service_class.reset_password_send_email(email=serializer.data["email"])
         response_success = {
-            "message": _("Password reset email sent successfully"),
+            "message": UserMessage.PASSWORD_RESET_EMAIL_SENT,
             "code": status.HTTP_202_ACCEPTED,
         }
         return Response(response_success, status=status.HTTP_202_ACCEPTED)
@@ -120,7 +120,7 @@ class UserViewSet(viewsets.ModelViewSet):
             phone_number=serializer.validated_data["phone_number"],
         )
         response_success = {
-            "message": _("Password reset sms sent successfully"),
+            "message": UserMessage.PASSWORD_RESET_SMS_SENT,
             "code": status.HTTP_202_ACCEPTED,
         }
         return Response(response_success, status=status.HTTP_202_ACCEPTED)
@@ -134,7 +134,7 @@ class UserViewSet(viewsets.ModelViewSet):
             new_password=serializer.validated_data["password"]
         )
         response_success = {
-            "message": _("Password changed successfully"),
+            "message": UserMessage.PASSWORD_CHANGED,
             "code": status.HTTP_204_NO_CONTENT,
         }
         return Response(response_success, status=status.HTTP_204_NO_CONTENT)
@@ -148,7 +148,7 @@ class UserViewSet(viewsets.ModelViewSet):
             new_password=serializer.data["password"]
         )
         response_success = {
-            "message": _("Password changed successfully"),
+            "message": UserMessage.PASSWORD_CHANGED,
             "code": status.HTTP_204_NO_CONTENT,
         }
         return Response(response_success, status=status.HTTP_204_NO_CONTENT)
@@ -162,7 +162,7 @@ class UserViewSet(viewsets.ModelViewSet):
             email=serializer.validated_data["email"],
         )
         response_success = {
-            "message": _("Change email sent successfully"),
+            "message": UserMessage.CHANGE_EMAIL_SENT,
             "code": status.HTTP_204_NO_CONTENT,
         }
         return Response(response_success, status=status.HTTP_204_NO_CONTENT)
@@ -173,7 +173,7 @@ class UserViewSet(viewsets.ModelViewSet):
         serializer.is_valid(raise_exception=True)
         self.service_class.reset_email(user=request.user)
         response_success = {
-            "message": _("Email changed successfully"),
+            "message": UserMessage.CHANGED_EMAIL,
             "code": status.HTTP_204_NO_CONTENT,
         }
         return Response(response_success, status=status.HTTP_204_NO_CONTENT)
@@ -187,7 +187,7 @@ class UserViewSet(viewsets.ModelViewSet):
             phone_number=serializer.validated_data["phone_number"],
         )
         response_success = {
-            "message": _("Phone number changed successfully"),
+            "message": UserMessage.CHANGE_PHONE_NUMBER_SENT,
             "code": status.HTTP_204_NO_CONTENT,
         }
         return Response(response_success, status=status.HTTP_204_NO_CONTENT)
@@ -198,7 +198,7 @@ class UserViewSet(viewsets.ModelViewSet):
         serializer.is_valid(raise_exception=True)
         self.service_class.reset_phone_number(user=request.user)
         response_success = {
-            "message": _("Email changed successfully"),
+            "message": UserMessage.CHANGED_PHONE_NUMBER,
             "code": status.HTTP_204_NO_CONTENT,
         }
         return Response(response_success, status=status.HTTP_204_NO_CONTENT)

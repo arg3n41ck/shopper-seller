@@ -31,3 +31,10 @@ class UserErrorMessage:
 
 class UserMessage:
     USER_CREATED = _("User created successfully")
+    PASSWORD_RESET_SMS_SENT = _("Password reset sms sent successfully")
+    PASSWORD_RESET_EMAIL_SENT = _("Password reset email sent successfully")
+    PASSWORD_CHANGED = _("Password changed successfully")
+    CHANGE_EMAIL_SENT = _("Change email sent successfully")
+    CHANGED_EMAIL = _("Email changed successfully")
+    CHANGE_PHONE_NUMBER_SENT = _("Change phone number sent successfully")
+    CHANGED_PHONE_NUMBER = _("Phone number changed successfully")
