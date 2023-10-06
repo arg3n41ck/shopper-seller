@@ -30,12 +30,12 @@ class PasswordRetypeSerializer(serializers.Serializer):
     }
 
     def validate(self, attrs):
-        if attrs["password"] != attrs["re_password"]:
+        if attrs["password"] != attrs.pop("re_password"):
             self.fail("password_mismatch")
         return attrs
 
 
-class UserBaseCreateSerializer(PasswordRetypeSerializer, serializers.ModelSerializer):
+class UserBaseCreateSerializer(serializers.ModelSerializer):
     default_error_messages = {
         "email_or_phone_number": UserErrorMessage.EMAIL_OR_PHONE_NUMBER,
     }
@@ -58,7 +58,7 @@ class UserBaseCreateSerializer(PasswordRetypeSerializer, serializers.ModelSerial
         return attrs
 
 
-class UserCustomerCreateSerializer(UserBaseCreateSerializer):
+class UserCustomerCreateSerializer(PasswordRetypeSerializer, UserBaseCreateSerializer):
     customer = CustomerCreateSerializer(required=True)
 
     class Meta(UserBaseCreateSerializer.Meta):
@@ -67,7 +67,7 @@ class UserCustomerCreateSerializer(UserBaseCreateSerializer):
         )
 
 
-class UserSellerCreateSerializer(UserBaseCreateSerializer):
+class UserSellerCreateSerializer(PasswordRetypeSerializer, UserBaseCreateSerializer):
     shop = ShopCreateSerializer(required=True)
     seller_key = SellerKeySerializer(required=True)
 

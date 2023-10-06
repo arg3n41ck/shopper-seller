@@ -14,14 +14,14 @@ class UserCustomerService:
         self.user_service = UserService()
         self.jwt_service = JWTService()
 
-    def create_user_customer(self, customer_data: dict, password: str,
-                             phone_number: Optional[str] = None, email: Optional[str] = None) -> dict:
+    def create_user(self, customer: dict, password: str, phone_number: Optional[str] = None,
+                    email: Optional[str] = None) -> dict:
         user = self.user_service.create_user_by_email_or_phone(
             email=email,
             phone_number=phone_number,
             password=password,
             user_type=UserTypeChoice.CUSTOMER,
         )
-        customer = self.customer_model.objects.create(user=user, **customer_data)
+        customer = self.customer_model.objects.create(user=user, **customer)
         self.cart_model.objects.create(customer=customer)
         return self.jwt_service.create_user_token(user=user)

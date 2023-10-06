@@ -2,6 +2,8 @@ from django.db import transaction
 from rest_framework import status
 from rest_framework.response import Response
 
+from apps.accounts.constants import UserMessage
+
 
 class CreateUserApiViewMixin:
     """
@@ -20,10 +22,9 @@ class CreateUserApiViewMixin:
         if serializer.is_valid():
             jwt_token = self.perform_create(serializer)
             response_data = {
-                "message": "Success message",
+                "message": UserMessage.USER_CREATED,
                 "code": status.HTTP_201_CREATED,
-                "data": serializer.data,
-                "jwt_token": jwt_token,
+                "response": jwt_token,
             }
             return Response(response_data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

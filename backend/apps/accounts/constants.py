@@ -27,3 +27,7 @@ class UserErrorMessage:
     INACTIVE_ACCOUNT_ERROR = _("User account is disabled.")
     USERNAME_MISMATCH_ERROR = _("The two {0} fields didn't match.")
     CANNOT_CREATE_USER_ERROR = _("Unable to create account.")
+
+
+class UserMessage:
+    USER_CREATED = _("User created successfully")

@@ -12,8 +12,7 @@ class UserSellerService:
         self.user_service = UserService()
         self.jwt_service = JWTService()
 
-    def create_user_seller(self, email: str, phone_number: str, password: str,
-                           seller_key: dict, shop_data: dict) -> dict:
+    def create_user(self, email: str, phone_number: str, password: str, seller_key: dict, shop: dict) -> dict:
         user = self.user_service.create_user_by_email_and_phone(
             email=email,
             phone_number=phone_number,
@@ -22,12 +21,11 @@ class UserSellerService:
         )
 
         key = self.seller_key_model.objects.get(key=seller_key["key"])
-        key.is_active = True
-        key.save(update_fields=["is_active"])
+        key.activate()
 
         seller = self.seller_model.objects.create(user=user)
-        seller.key = key
-        seller.save()
+        seller.set_key(key)
 
-        self.shop_model.objects.create(seller=seller, **shop_data)
+        self.shop_model.objects.create(seller=seller, **shop)
+
         return self.jwt_service.create_user_token(user=user)

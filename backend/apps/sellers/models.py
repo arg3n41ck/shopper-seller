@@ -24,6 +24,10 @@ class SellerKey(TimeStampedBaseModel):
         verbose_name = _("Seller key")
         verbose_name_plural = _("Seller keys")
 
+    def activate(self):
+        self.is_active = True
+        self.save()
+
 
 class Seller(TimeStampedBaseModel):
     user = models.OneToOneField(
@@ -44,6 +48,10 @@ class Seller(TimeStampedBaseModel):
     class Meta:
         verbose_name = _("Seller")
         verbose_name_plural = _("Sellers")
+
+    def set_key(self, key: SellerKey):
+        self.key = key
+        self.save()
 
 
 @generate_slug_from_field("title")
