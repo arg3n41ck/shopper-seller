@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'apps.products',
     'apps.shops',
     'apps.customers',
+    'apps.orders',
 ]
 
 
@@ -97,4 +98,4 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
 
-DOMAIN = os.getenv("DOMAIN", "localhost")
+DOMAIN = os.environ["DOMAIN"]

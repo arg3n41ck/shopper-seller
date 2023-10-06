@@ -7,6 +7,7 @@ from phonenumber_field.modelfields import PhoneNumberField
 
 from apps.shops.constants import ShopStatusChoice
 from shared.abstract_models import TimeStampedBaseModel
+from shared.custom_slugify import generate_slug_from_field
 
 
 User = get_user_model()
@@ -31,6 +32,7 @@ class ShopKey(models.Model):
         return self.key
 
 
+@generate_slug_from_field("title")
 class Shop(TimeStampedBaseModel):
     slug = models.SlugField(
         max_length=255,

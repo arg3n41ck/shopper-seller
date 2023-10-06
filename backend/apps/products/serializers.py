@@ -4,14 +4,16 @@ from rest_framework_recursive.fields import RecursiveField
 from apps.products.models import (
     Category,
     Tag,
-    Brand,
     Product,
     ProductVariant,
     ProductVariantImage,
     Specification,
     ProductFavourite,
+    ProductReview,
 )
 from apps.shops.serializers import ShopDefault, ShopSerializer
+from apps.customers.serializers import CustomerDefault
+from apps.customers.serializers import CustomerSerializer
 
 
 class CategorySerializer(serializers.HyperlinkedModelSerializer):
@@ -31,16 +33,6 @@ class CategorySerializer(serializers.HyperlinkedModelSerializer):
 class TagSerializer(serializers.ModelSerializer):
     class Meta:
         model = Tag
-        fields = (
-            "id",
-            "slug",
-            "title",
-        )
-
-
-class BrandSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Brand
         fields = (
             "id",
             "slug",
@@ -68,6 +60,16 @@ class ProductVariantImageSerializer(serializers.ModelSerializer):
         )
 
 
+class ProductVariantImageCreateSerializer(serializers.ModelSerializer):
+    image = serializers.ImageField()
+
+    class Meta:
+        model = ProductVariantImage
+        fields = (
+            "image",
+        )
+
+
 class ProductVariantSerializer(serializers.ModelSerializer):
     images = ProductVariantImageSerializer(many=True, read_only=True)
 
@@ -88,18 +90,60 @@ class ProductVariantCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = ProductVariant
         fields = (
+            "id",
+            "product",
             "title",
             "description",
             "size_variants",
         )
 
 
+class ProductFavouriteSerializer(serializers.ModelSerializer):
+    customer = serializers.HiddenField(default=CustomerDefault())
+
+    class Meta:
+        model = ProductFavourite
+        fields = (
+            "id",
+            "product",
+            "customer",
+        )
+
+
+class ProductReviewSerializer(serializers.ModelSerializer):
+    customer = CustomerSerializer(read_only=True)
+
+    class Meta:
+        model = ProductReview
+        fields = (
+            "id",
+            "product",
+            "star",
+            "review",
+            "customer",
+        )
+
+
+class ProductReviewCreateSerializer(serializers.ModelSerializer):
+    customer = serializers.HiddenField(default=CustomerDefault())
+
+    class Meta:
+        model = ProductReview
+        fields = (
+            "id",
+            "product",
+            "star",
+            "review",
+            "customer",
+        )
+
+
 class ProductSerializer(serializers.ModelSerializer):
     category = CategorySerializer(read_only=True)
-    brand = BrandSerializer(read_only=True)
-    variants = ProductVariantSerializer(many=True, read_only=True)
     tags = TagSerializer(many=True, read_only=True)
     shop = ShopSerializer(read_only=True)
+    variants = ProductVariantSerializer(many=True, read_only=True)
+    reviews = ProductReviewSerializer(many=True, read_only=True)
 
     class Meta:
         model = Product
@@ -109,10 +153,9 @@ class ProductSerializer(serializers.ModelSerializer):
             "sku",
             "title",
             "description",
-            "brand",
             "gender",
             "for_kids",
-            "price",
+            "price_from",
             "discount",
             "discounted_price",
             "category",
@@ -123,6 +166,8 @@ class ProductSerializer(serializers.ModelSerializer):
             "publish_date",
             "status",
             "variants",
+            "reviews",
+            "rating",
         )
 
 
@@ -132,14 +177,15 @@ class ProductCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Product
         fields = (
+            "id",
+            "slug",
             "sku",
             "title",
             "description",
             "recommendation",
-            "brand",
             "gender",
             "for_kids",
-            "price",
+            "price_from",
             "discount",
             "category",
             "country",
@@ -147,16 +193,4 @@ class ProductCreateSerializer(serializers.ModelSerializer):
             "specifications",
             "shop",
             "publish_date",
-        )
-
-
-class ProductFavouriteSerializer(serializers.ModelSerializer):
-    customer = serializers.HiddenField(default=serializers.CurrentUserDefault())
-
-    class Meta:
-        model = ProductFavourite,
-        fields = (
-            "id",
-            "product",
-            "customer",
         )

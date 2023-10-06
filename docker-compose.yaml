@@ -15,6 +15,9 @@ services:
       build:
         context: .
         dockerfile: ./docker/backend/Dockerfile
+      volumes:
+          - static_volume:/app/backend/staticfiles
+          - media_volume:/app/backend/media
       networks:
         - my-network
       depends_on:
@@ -34,6 +37,8 @@ services:
         - ./docker/nginx/prod:/etc/nginx/conf.d
         - ./docker/nginx/certbot/conf:/etc/letsencrypt
         - ./docker/nginx/certbot/www:/var/www/certbot
+        - static_volume:/app/backend/staticfiles
+        - media_volume:/app/backend/media
       networks:
         - my-network
       depends_on:
@@ -66,6 +71,8 @@ services:
 
 volumes:
   postgres_data:
+  static_volume:
+  media_volume:
 
 networks:
-  my-network:
+  my-network: 

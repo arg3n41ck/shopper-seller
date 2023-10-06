@@ -33,8 +33,9 @@ class ShopSerializer(serializers.ModelSerializer):
         fields = (
             "id",
             "slug",
+            "logo",
             "title",
-            "owner",
+            "user",
             "status",
             "site_link",
             "instagram_link",
@@ -48,13 +49,11 @@ class ShopCreateSerializer(serializers.ModelSerializer):
 
     default_error_messages = {
         "key_not_valid": ShopErrorMessage.KEY_NOT_VALID,
-        "user_type": ShopErrorMessage.USER_TYPE,
     }
 
     class Meta:
         model = Shop
         fields = (
-            "user",
             "title",
             "key",
         )
@@ -63,15 +62,10 @@ class ShopCreateSerializer(serializers.ModelSerializer):
         super().__init__(*args, **kwargs)
         self.shop_service = ShopService()
 
-    def validate_key(self, value):
-        if not self.shop_service.shop_key_exists(value):
+    def validate(self, attrs):
+        if not self.shop_service.shop_key_exists(key=attrs["key"]):
             self.fail("key_not_valid")
-        return value
-
-    def validate_user(self, value):
-        if not value.is_seller:
-            self.fail("user_type")
-        return value
+        return attrs
 
 
 class ShopUpdateSerializer(serializers.ModelSerializer):

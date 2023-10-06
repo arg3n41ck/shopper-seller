@@ -44,7 +44,7 @@ class UserViewSet(viewsets.ModelViewSet):
 
     def get_permissions(self):
         if self.action in ["create_customer", "create_seller"]:
-            return AllowAny()
+            return [AllowAny()]
         return super().get_permissions()
 
     def get_serializer_class(self):
@@ -69,18 +69,18 @@ class UserViewSet(viewsets.ModelViewSet):
     def create(self, request, *args, **kwargs):
         raise MethodNotAllowed('POST')
 
-    def get_instance(self):
+    def get_object(self):
         return self.request.user
 
     @action(['post'], detail=False)
     def create_customer(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        self.service.create_customer(
-            customer_data=serializer.validated_data['customer'],
-            email=serializer.validated_data.get('email', None),
-            phone_number=serializer.validated_data.get('phone_number', None),
-            password=serializer.validated_data['password'],
+        self.service.process_creation_customer(
+            customer_data=serializer.validated_data["customer"],
+            email=serializer.validated_data.get("email", None),
+            phone_number=serializer.validated_data.get("phone_number", None),
+            password=serializer.validated_data["password"],
         )
         return Response(status=status.HTTP_201_CREATED)
 
@@ -88,18 +88,21 @@ class UserViewSet(viewsets.ModelViewSet):
     def create_seller(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        self.service.create_seller(
-            email=serializer.validated_data['email'],
-            phone_number=serializer.validated_data['phone_number'],
-            password=serializer.validated_data['password'],
-            shop_data=serializer.validated_data['shop'],
+        jwt_token = self.service.process_create_seller(
+            email=serializer.validated_data["email"],
+            phone_number=serializer.validated_data["email"],
+            password=serializer.validated_data["password"],
+            shop_data=serializer.validated_data["shop"],
         )
-        return Response(status=status.HTTP_201_CREATED)
+        response = {
+            "message": "Seller created successfully.",
+            "status": status.HTTP_201_CREATED,
+            "jwt_token": jwt_token,
+        }
+        return Response(response, status=status.HTTP_201_CREATED)
 
     @action(["get", "put", "patch", "delete"], detail=False)
     def me(self, request, *args, **kwargs):
-        self.get_object = self.get_instance()
-
         if request.method == "GET":
             return self.retrieve(request, *args, **kwargs)
         elif request.method == "PUT":

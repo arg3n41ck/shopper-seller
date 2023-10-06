@@ -3,29 +3,24 @@ from django.contrib import admin
 from apps.products.models import (
     Category,
     Tag,
-    Brand,
     Product,
     ProductVariant,
     ProductVariantImage,
     ProductFavourite,
+    ProductReview,
 )
 
 
-class ProductImageInline(admin.TabularInline):
+class ProductVariantImageTabularInline(admin.TabularInline):
     model = ProductVariantImage
 
 
-class ProductVariantInline(admin.TabularInline):
+class ProductVariantTabularInline(admin.TabularInline):
     model = ProductVariant
 
 
 @admin.register(Category)
 class CategoryAdmin(admin.ModelAdmin):
-    pass
-
-
-@admin.register(Brand)
-class BrandAdmin(admin.ModelAdmin):
     pass
 
 
@@ -36,9 +31,14 @@ class TagAdmin(admin.ModelAdmin):
 
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
-    inlines = [ProductVariantInline]
+    inlines = [ProductVariantTabularInline]
 
 
 @admin.register(ProductFavourite)
 class ProductFavouriteAdmin(admin.ModelAdmin):
+    pass
+
+
+@admin.register(ProductReview)
+class ProductReviewAdmin(admin.ModelAdmin):
     pass

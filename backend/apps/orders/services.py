@@ -1,4 +1,13 @@
-from apps.orders.models import Order, OrderItem
+from apps.orders.models import Order, OrderItem, Cart
+from apps.customers.models import Customer
+
+
+class CartService:
+    def __init__(self):
+        self.model = Cart
+
+    def create_cart(self, customer: Customer):
+        return self.model.objects.create(customer=customer)
 
 
 class OrderSellerService:

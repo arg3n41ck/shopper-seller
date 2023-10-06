@@ -12,6 +12,7 @@ class ShopService:
         self.key_model = ShopKey
 
     def create_shop(self, user: User, shop_data: dict) -> Shop:
+        self.key_model.objects.get(key=shop_data.pop("key")).delete()
         return self.model.objects.create(user=user, **shop_data)
 
     def shop_key_exists(self, key: str) -> bool:
