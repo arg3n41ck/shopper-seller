@@ -85,6 +85,7 @@ export const ResetPasswordPage: FC<ResetPasswordProps> = () => {
 
 	return (
 		<AuthLayout>
+			<div className="" onClick={() => 'test'}></div>
 			<form onSubmit={formik.handleSubmit}>
 				<ResetPasswordContainer>
 					<HeadingText>
