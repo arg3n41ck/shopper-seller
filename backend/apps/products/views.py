@@ -72,7 +72,9 @@ class ProductSellerViewSet(viewsets.ModelViewSet):
         .prefetch_related("variants", "reviews")
     serializer_class = ProductSerializer
     permission_classes = [IsSeller]
+    filter_backends = [SearchFilter]
     filterset_class = ProductFilter
+    search_fields = ["sku", "title"]
     lookup_field = "slug"
     service = ProductSellerService()
 

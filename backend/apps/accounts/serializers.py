@@ -7,7 +7,7 @@ from apps.accounts.models import User
 from apps.accounts.constants import UserErrorMessage
 from apps.accounts.utils import decode_uid
 from apps.customers.serializers import CustomerCreateSerializer
-from apps.sellers.serializers import ShopCreateSerializer, SellerCreateSerializer
+from apps.sellers.serializers import ShopCreateSerializer, SellerKeySerializer
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -45,7 +45,6 @@ class UserBaseCreateSerializer(PasswordRetypeSerializer, serializers.ModelSerial
         fields = (
             "email",
             "phone_number",
-            "type",
             "password",
             "re_password",
         )
@@ -55,7 +54,7 @@ class UserBaseCreateSerializer(PasswordRetypeSerializer, serializers.ModelSerial
         phone_number = attrs.get("phone_number")
 
         if not email and not phone_number:
-            self.fail('email_or_phone_number')
+            self.fail("email_or_phone_number")
         return attrs
 
 
@@ -70,12 +69,12 @@ class UserCustomerCreateSerializer(UserBaseCreateSerializer):
 
 class UserSellerCreateSerializer(UserBaseCreateSerializer):
     shop = ShopCreateSerializer(required=True)
-    seller = SellerCreateSerializer(required=True)
+    seller_key = SellerKeySerializer(required=True)
 
     class Meta(UserBaseCreateSerializer.Meta):
         fields = UserBaseCreateSerializer.Meta.fields + (
             "shop",
-            "seller",
+            "seller_key",
         )
 
 

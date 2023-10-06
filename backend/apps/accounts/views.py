@@ -1,3 +1,4 @@
+from django.db import transaction
 from django.utils.translation import gettext_lazy as _
 from rest_framework import viewsets, status, views, generics
 from rest_framework.decorators import action
@@ -17,7 +18,6 @@ from apps.accounts.serializers import (
     ResetEmailSerializer,
     ResetPhoneNumberSerializer,
 )
-from apps.accounts.mixins import CreateUserApiViewMixin
 from apps.accounts.services.user_service import UserService
 from apps.customers.services.customer_services import UserCustomerService
 from apps.sellers.services.seller_service import UserSellerService
@@ -36,16 +36,63 @@ class TokenDestroyView(views.APIView):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
-class UserCustomerCreateApiView(CreateUserApiViewMixin, generics.CreateAPIView):
-    service_class = UserCustomerService
+class UserCustomerCreateApiView(generics.CreateAPIView):
+    service_class = UserCustomerService()
     serializer_class = UserCustomerCreateSerializer
     permission_classes = [AllowAny]
 
+    @transaction.atomic()
+    def perform_create(self, serializer):
+        jwt_token = self.service_class.create_user_customer(
+            customer_data=serializer.validated_data["customer"],
+            email=serializer.validated_data["email"],
+            phone_number=serializer.validated_data["phone_number"],
+            password=serializer.validated_data["password"],
+        )
+        return jwt_token
 
-class UserSellerCreateApiView(CreateUserApiViewMixin, generics.CreateAPIView):
-    service_class = UserSellerService
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        if serializer.is_valid():
+            jwt_token = self.perform_create(serializer)
+            response_data = {
+                "message": "Success message",
+                "code": status.HTTP_201_CREATED,
+                "data": serializer.data,
+                "jwt_token": jwt_token,
+            }
+            return Response(response_data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class UserSellerCreateApiView(generics.CreateAPIView):
+    service_class = UserSellerService()
     serializer_class = UserSellerCreateSerializer
     permission_classes = [AllowAny]
+
+    @transaction.atomic()
+    def perform_create(self, serializer):
+        jwt_token = self.service_class.create_user_seller(
+            shop_data=serializer.validated_data["shop"],
+            seller_key=serializer.validated_data["seller_key"],
+            email=serializer.validated_data["email"],
+            phone_number=serializer.validated_data["phone_number"],
+            password=serializer.validated_data["password"],
+        )
+        return jwt_token
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        if serializer.is_valid():
+            jwt_token = self.perform_create(serializer)
+            response_data = {
+                "message": "Success message",
+                "code": status.HTTP_201_CREATED,
+                "data": serializer.data,
+                "jwt_token": jwt_token,
+            }
+            return Response(response_data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class UserViewSet(viewsets.ModelViewSet):
@@ -69,9 +116,6 @@ class UserViewSet(viewsets.ModelViewSet):
             return ResetPhoneNumberSerializer
         return self.serializer_class
 
-    def create(self, request, *args, **kwargs):
-        raise MethodNotAllowed('POST')
-
     def get_object(self):
         return self.request.user
 
@@ -85,6 +129,9 @@ class UserViewSet(viewsets.ModelViewSet):
             return self.partial_update(request, *args, **kwargs)
         elif request.method == "DELETE":
             return self.destroy(request, *args, **kwargs)
+
+    def create(self, request, *args, **kwargs):
+        raise MethodNotAllowed('POST')
 
     @action(methods=["post"], detail=False)
     def reset_password_request_email(self, request, *args, **kwargs):

@@ -14,8 +14,8 @@ class UserCustomerService:
         self.user_service = UserService()
         self.jwt_service = JWTService()
 
-    def create_user(self, customer_data: dict, phone_number: Optional[str] = None, email: Optional[str] = None,
-                    password: Optional[str] = None) -> dict:
+    def create_user_customer(self, customer_data: dict, password: str,
+                             phone_number: Optional[str] = None, email: Optional[str] = None) -> dict:
         user = self.user_service.create_user_by_email_or_phone(
             email=email,
             phone_number=phone_number,

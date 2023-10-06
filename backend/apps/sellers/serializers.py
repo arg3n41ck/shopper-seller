@@ -14,17 +14,21 @@ class ShopDefault:
         return f'{self.__class__.__name__}()'
 
 
-class SellerCreateSerializer(serializers.Serializer):
-    key = serializers.CharField(required=True)
-
+class SellerKeySerializer(serializers.ModelSerializer):
     default_error_messages = {
         "key_not_valid": SellerErrorMessage.KEY_NOT_VALID,
     }
 
-    def validate(self, attrs):
-        if not SellerKey.objects.filter(key=attrs["key"]).exists():
+    class Meta:
+        model = SellerKey
+        fields = (
+            "key",
+        )
+
+    def validate_key(self, value):
+        if not SellerKey.objects.filter(key=value, is_active=False).exists():
             self.fail("key_not_valid")
-        return attrs
+        return value
 
 
 class ShopBranchSerializer(serializers.ModelSerializer):

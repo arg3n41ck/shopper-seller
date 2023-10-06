@@ -2,8 +2,6 @@ from django.contrib.auth.tokens import PasswordResetTokenGenerator
 from django.conf import settings
 from django.utils.translation import gettext_lazy as _
 
-from djoser.views import UserViewSet as DjoserViewSet
-
 from apps.accounts.models import User
 from apps.accounts.constants import UserTypeChoice
 from apps.accounts.utils import encode_uid
