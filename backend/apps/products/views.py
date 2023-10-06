@@ -1,7 +1,5 @@
-from django.db import transaction
 from rest_framework import viewsets
 from rest_framework.filters import SearchFilter
-from rest_framework.permissions import IsAuthenticated
 from rest_framework.parsers import MultiPartParser
 from django_filters.rest_framework import DjangoFilterBackend
 
@@ -31,8 +29,8 @@ from apps.products.serializers import (
     ProductReviewSerializer,
 )
 from apps.products.filters import ProductFilter
-from apps.accounts.permissions import IsSeller, IsCustomer
-from apps.products.services import ProductVariantSellerService
+from apps.customers.permissions import IsCustomer
+from apps.sellers.permissions import IsSeller
 
 
 class CategoryViewSet(viewsets.ReadOnlyModelViewSet):
@@ -73,7 +71,7 @@ class ProductSellerViewSet(viewsets.ModelViewSet):
     queryset = Product.objects.all()\
         .prefetch_related("variants", "reviews")
     serializer_class = ProductSerializer
-    permission_classes = [IsAuthenticated, IsSeller]
+    permission_classes = [IsSeller]
     filterset_class = ProductFilter
     lookup_field = "slug"
     service = ProductSellerService()
@@ -88,7 +86,7 @@ class ProductVariantSellerViewSet(viewsets.ModelViewSet):
     queryset = ProductVariant.objects.all()\
         .prefetch_related("images")
     serializer_class = ProductVariantSerializer
-    permission_classes = [IsAuthenticated, IsSeller]
+    permission_classes = [IsSeller]
     lookup_field = "slug"
 
     def get_serializer_class(self):
@@ -100,17 +98,17 @@ class ProductVariantSellerViewSet(viewsets.ModelViewSet):
 class ProductVariantImageSellerViewSet(viewsets.ModelViewSet):
     queryset = ProductVariantImage.objects.all()
     serializer_class = ProductVariantImageSerializer
-    permission_classes = [IsAuthenticated, IsSeller]
+    permission_classes = [IsSeller]
     parser_classes = [MultiPartParser]
 
 
-class ProductFavouriteViewSet(viewsets.ModelViewSet):
+class ProductFavouriteCustomerViewSet(viewsets.ModelViewSet):
     queryset = ProductFavourite.objects.all()
     serializer_class = ProductFavouriteSerializer
-    permission_classes = [IsAuthenticated, IsCustomer]
+    permission_classes = [IsCustomer]
 
 
-class ProductReviewViewSet(viewsets.ModelViewSet):
+class ProductReviewCustomerViewSet(viewsets.ModelViewSet):
     queryset = ProductReview.objects.all()
     serializer_class = ProductReviewSerializer
-    permission_classes = [IsAuthenticated, IsCustomer]
+    permission_classes = [IsCustomer]

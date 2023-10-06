@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from apps.orders.models import Order, OrderItem, Cart, CartItem
+from apps.orders.models import Cart, CartItem, Order, OrderItem
 from apps.products.serializers import ProductVariantSerializer
 from apps.customers.serializers import AnonymousOrCustomerDefault
 
@@ -47,7 +47,7 @@ class CartItemUpdateSerializer(serializers.ModelSerializer):
     class Meta:
         model = CartItem
         fields = (
-            "quantity"
+            "quantity",
         )
 
 
@@ -69,8 +69,7 @@ class OrderItemSerializer(serializers.ModelSerializer):
         model = OrderItem
         fields = (
             "id",
-            "product",
-            "variant",
+            "product_variant",
             "order",
             "price",
             "quantity",
@@ -81,10 +80,9 @@ class OrderItemCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = OrderItem
         fields = (
-            "product",
-            "variant",
+            "product_variant",
             "order",
-            "price",
+            "size",
             "quantity",
         )
 

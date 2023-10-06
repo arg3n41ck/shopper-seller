@@ -1,6 +1,6 @@
 from rest_framework.routers import DefaultRouter
 
-from apps.shops.views import ShopCustomerViewSet, ShopSellerViewSet, BranchAddressViewSet
+from apps.sellers.views import ShopCustomerViewSet, ShopSellerViewSet, BranchAddressViewSet
 
 router = DefaultRouter()
 router.register("customer/shops", ShopCustomerViewSet, basename="customer_shops")

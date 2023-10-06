@@ -6,3 +6,5 @@ from apps.customers.models import Customer
 @admin.register(Customer)
 class CustomerAdmin(admin.ModelAdmin):
     pass
+
+

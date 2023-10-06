@@ -41,11 +41,3 @@ class User(AbstractUser):
 
     def __str__(self):
         return self.email or self.phone_number
-
-    @property
-    def is_seller(self):
-        return self.type == UserTypeChoice.SELLER
-
-    @property
-    def is_customer(self):
-        return self.type == UserTypeChoice.CUSTOMER

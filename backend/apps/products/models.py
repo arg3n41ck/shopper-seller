@@ -5,8 +5,7 @@ from django.utils.translation import gettext_lazy as _
 from mptt.fields import TreeForeignKey
 from mptt.models import MPTTModel
 
-from apps.shops.models import Shop
-from apps.customers.models import Customer
+from apps.sellers.models import Shop
 from apps.products.constants import GenderChoice, ProductStatusChoice
 from apps.products.validators import validate_size_variants, validate_specifications
 from shared.custom_slugify import generate_slug_from_field
@@ -44,6 +43,15 @@ class Category(MPTTModel):
 
     def __str__(self):
         return self.title
+
+    def get_all_parents(self, parents=None):
+        if parents is None:
+            parents = []
+
+        if self.parent:
+            parents.append(self.parent)
+            self.parent.get_all_parents(parents)
+        return parents
 
 
 @generate_slug_from_field("title")
@@ -253,7 +261,7 @@ class ProductFavourite(models.Model):
         verbose_name=_("Product"),
     )
     customer = models.ForeignKey(
-        Customer,
+        "customers.Customer",
         on_delete=models.CASCADE,
         related_name="product_favourites",
         verbose_name=_("Customer"),
@@ -281,7 +289,7 @@ class ProductReview(TimeStampedBaseModel):
         verbose_name=_("Review"),
     )
     customer = models.ForeignKey(
-        Customer,
+        "customers.Customer",
         on_delete=models.CASCADE,
         related_name="product_reviews",
         verbose_name=_("Customer"),

@@ -3,11 +3,12 @@ from django.utils.translation import gettext_lazy as _
 
 from phonenumber_field.modelfields import PhoneNumberField
 
-from shared.abstract_models import TimeStampedBaseModel
-from apps.products.models import ProductVariant
-from apps.customers.models import Customer
 from apps.orders.constants import PaymentTypeChoice
+from apps.orders.managers import OrderItemManager
+from apps.products.models import ProductVariant
 from apps.products.validators import validate_size
+from apps.customers.models import Customer
+from shared.abstract_models import TimeStampedBaseModel
 
 
 class Cart(models.Model):
@@ -15,7 +16,7 @@ class Cart(models.Model):
         Customer,
         on_delete=models.CASCADE,
         related_name="cart",
-        verbose_name=_("Customer")
+        verbose_name=_("Customer"),
     )
 
     class Meta:
@@ -37,7 +38,7 @@ class CartItem(TimeStampedBaseModel):
     product_variant = models.ForeignKey(
         ProductVariant,
         on_delete=models.CASCADE,
-        related_name="pre_orders",
+        related_name="carts",
         verbose_name=_("Product variant"),
     )
     size = models.JSONField(
@@ -126,6 +127,8 @@ class OrderItem(models.Model):
     quantity = models.PositiveIntegerField(
         verbose_name=_("Quantity"),
     )
+
+    objects = OrderItemManager()
 
     class Meta:
         verbose_name = _("Order item")

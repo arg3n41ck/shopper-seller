@@ -1,13 +1,13 @@
 from rest_framework import viewsets
 from rest_framework.permissions import IsAuthenticated
 
-from apps.accounts.permissions import IsSeller
-from apps.shops.models import Shop, BranchAddress
-from apps.shops.serializers import (
+from apps.sellers.permissions import IsSeller
+from apps.sellers.models import Shop, ShopBranch
+from apps.sellers.serializers import (
     ShopSerializer,
     ShopUpdateSerializer,
-    BranchAddressSerializer,
-    BranchAddressCreateSerializer,
+    ShopBranchSerializer,
+    ShopBranchCreateSerializer,
 )
 
 
@@ -20,9 +20,9 @@ class ShopCustomerViewSet(viewsets.ReadOnlyModelViewSet):
 class ShopSellerViewSet(viewsets.ModelViewSet):
     queryset = Shop.objects.all().prefetch_related("branches")
     serializer_class = ShopSerializer
-    permission_classes = [IsAuthenticated, IsSeller]
+    permission_classes = [IsSeller]
     http_method_names = ["get", "put", "patch"]
-    filterset_fields = ["user"]
+    filterset_fields = ["seller"]
     lookup_field = "slug"
 
     def get_serializer_class(self):
@@ -32,12 +32,12 @@ class ShopSellerViewSet(viewsets.ModelViewSet):
 
 
 class BranchAddressViewSet(viewsets.ModelViewSet):
-    queryset = BranchAddress.objects.all()
-    serializer_class = BranchAddressSerializer
+    queryset = ShopBranch.objects.all()
+    serializer_class = ShopBranchSerializer
     permission_classes = [IsAuthenticated, IsSeller]
     http_method_names = ["post", "put", "patch", "delete"]
 
     def get_serializer_class(self):
         if self.action == "create":
-            return BranchAddressCreateSerializer
+            return ShopBranchCreateSerializer
         return self.serializer_class

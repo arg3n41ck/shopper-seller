@@ -21,8 +21,7 @@ class AnonymousOrCustomerDefault:
 
         if request and request.user.is_authenticated:
             return request.user.customer
-        else:
-            return None
+        return None
 
     def __repr__(self):
         return f'{self.__class__.__name__}()'
