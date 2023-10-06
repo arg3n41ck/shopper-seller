@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "api-gen": "rm -rf src/shared/api/gen && openapi-generator generate -g typescript-axios -c openapi-config.yml -o src/shared/api/gen && cd src/shared/api/gen && yarn && yarn build"
   },
   "dependencies": {
     "@next/font": "^13.4.19",
@@ -41,6 +42,7 @@
     "yup": "^1.2.0"
   },
   "devDependencies": {
+    "@openapitools/openapi-generator-cli": "^2.5.2",
     "@types/lodash": "^4.14.196",
     "@types/styled-components": "^5.1.26",
     "@types/swiper": "^6.0.0",
