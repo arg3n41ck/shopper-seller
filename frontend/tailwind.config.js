@@ -1,25 +1,46 @@
+/** @type {import('tailwindcss').Config} */
 module.exports = {
-  purge: ['./src/**/*.{js,jsx,ts,tsx}'],
   content: ['./src/**/*.{js,ts,jsx,tsx}'],
   safelist: ['outline-none'],
   theme: {
     extend: {
-      colors: {},
-      fontFamily: {
-        sans: ['Inter', 'Arial', 'sans-serif'],
+      maxWidth: {
+        '8xl': '1920px',
       },
-      spacing: {
-        '1/2': '50%',
-        '2/3': '66.666667%',
-        '3/4': '75%',
+      colors: {
+        black: 'var(--black)',
+        white: 'var(--white)',
+        secondWhite: 'var(--secondWhite)',
+        red: 'var(--red)',
+        gray: 'var(--gray)',
+        green: 'var(--green)',
+        purple: 'var(--purple)',
+        orange: 'var(--orange)',
       },
-      zIndex: {
-        '-1': '-1',
+      textColor: {
+        black: 'var(--black)',
+        white: 'var(--white)',
+        red: 'var(--red)',
+        gray: 'var(--gray)',
+        green: 'var(--green)',
+        orange: 'var(--orange)',
+      },
+      // boxShadow: {
+      //   'outline-normal': '0.4px 0.4px 16px var(--gray)',
+      //   magical: 'rgba(0, 0, 0, 0.02) 0px 30px 30px, rgba(0, 0, 0, 0.03) 0px 0px 8px, rgba(0, 0, 0, 0.05) 0px 1px 0px',
+      // },
+    },
+    screens: {
+      // '2xl': { max: '1400px' },
+      // xl: { max: '1200px' },
+      // lg: { max: '992px' },
+      // md: { max: '768px' },
+      // sm: { max: '576px' },
+    },
+    container: {
+      xl: {
+        // max: '1170px',
       },
     },
   },
-  variants: {
-    extend: {},
-  },
-  plugins: [],
 }
