@@ -15,7 +15,7 @@ from apps.sellers.serializers import ShopDefault, ShopSerializer
 from apps.customers.serializers import CustomerDefault, CustomerSerializer
 
 
-class CategorySerializer(serializers.HyperlinkedModelSerializer):
+class CategorySerializer(serializers.ModelSerializer):
     children = RecursiveField(many=True)
 
     class Meta:

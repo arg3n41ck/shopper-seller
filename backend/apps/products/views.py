@@ -34,10 +34,16 @@ from apps.sellers.permissions import IsSeller
 
 
 class CategoryViewSet(viewsets.ReadOnlyModelViewSet):
-    queryset = Category.objects.root_nodes()
     serializer_class = CategorySerializer
     pagination_class = None
     lookup_field = "slug"
+
+    def get_queryset(self):
+        return (
+            Category.objects.all()
+            if self.lookup_field
+            else Category.objects.root_nodes()
+        )
 
 
 class TagViewSet(viewsets.ModelViewSet):

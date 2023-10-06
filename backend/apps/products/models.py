@@ -47,15 +47,6 @@ class Category(MPTTModel):
     def __str__(self):
         return self.title
 
-    def get_all_parents(self, parents=None):
-        if parents is None:
-            parents = []
-
-        if self.parent:
-            parents.append(self.parent)
-            self.parent.get_all_parents(parents)
-        return parents
-
 
 @generate_slug_from_field("title")
 class Tag(models.Model):
