@@ -1,5 +1,7 @@
 from django.contrib import admin
 
+from mptt.admin import DraggableMPTTAdmin
+
 from apps.products.models import (
     Category,
     Tag,
@@ -20,8 +22,12 @@ class ProductVariantTabularInline(admin.TabularInline):
 
 
 @admin.register(Category)
-class CategoryAdmin(admin.ModelAdmin):
-    pass
+class CategoryAdmin(DraggableMPTTAdmin):
+    list_display = ["tree_actions", "indented_title"]
+    list_display_links = ["indented_title"]
+    list_filter = ["parent"]
+    search_fields = ["title", "description"]
+    readonly_fields = ["slug"]
 
 
 @admin.register(Tag)

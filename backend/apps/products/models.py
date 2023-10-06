@@ -6,6 +6,7 @@ from mptt.fields import TreeForeignKey
 from mptt.models import MPTTModel
 
 from apps.sellers.models import Shop
+from apps.customers.models import Customer
 from apps.products.constants import GenderChoice, ProductStatusChoice
 from apps.products.validators import validate_size_variants, validate_specifications
 from shared.custom_slugify import generate_slug_from_field
@@ -27,6 +28,8 @@ class Category(MPTTModel):
     image = models.ImageField(
         upload_to="images/categories",
         verbose_name=_("Image"),
+        blank=True,
+        null=True,
     )
     parent = TreeForeignKey(
         "self",
@@ -261,7 +264,7 @@ class ProductFavourite(models.Model):
         verbose_name=_("Product"),
     )
     customer = models.ForeignKey(
-        "customers.Customer",
+        Customer,
         on_delete=models.CASCADE,
         related_name="product_favourites",
         verbose_name=_("Customer"),
@@ -289,7 +292,7 @@ class ProductReview(TimeStampedBaseModel):
         verbose_name=_("Review"),
     )
     customer = models.ForeignKey(
-        "customers.Customer",
+        Customer,
         on_delete=models.CASCADE,
         related_name="product_reviews",
         verbose_name=_("Customer"),
