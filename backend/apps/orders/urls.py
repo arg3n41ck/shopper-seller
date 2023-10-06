@@ -10,8 +10,8 @@ from apps.orders.views import (
 router = DefaultRouter()
 router.register("customer/orders", OrderCustomerViewSet, basename="customer_orders")
 router.register("seller/orders", OrderSellerViewSet, basename="seller_orders")
-router.register("carts", CartViewSet, basename="carts")
-router.register("cart_items", CartItemViewSet, basename="cart_items")
+router.register("customer/carts", CartViewSet, basename="carts")
+router.register("customer/cart_items", CartItemViewSet, basename="cart_items")
 
 urlpatterns = []
 

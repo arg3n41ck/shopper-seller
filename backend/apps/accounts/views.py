@@ -55,17 +55,17 @@ class UserViewSet(viewsets.ModelViewSet):
     service_class = UserService()
 
     def get_serializer_class(self):
-        if self.action == "reset_password_send_email":
+        if self.action == "reset_password_request_email":
             return ResetPasswordSendEmailSerializer
-        elif self.action == "reset_password_send_sms":
+        elif self.action == "reset_password_request_phone_number":
             return ResetPasswordSendSMSSerializer
         elif self.action == "reset_password_confirm":
             return ResetPasswordConfirmSerializer
         elif self.action == "set_new_password":
             return SetNewPasswordSerializer
-        elif self.action == "reset_email":
+        elif self.action == "reset_email_request":
             return ResetEmailSerializer
-        elif self.action == "reset_phone_number":
+        elif self.action == "reset_phone_number_request":
             return ResetPhoneNumberSerializer
         return self.serializer_class
 
@@ -87,7 +87,7 @@ class UserViewSet(viewsets.ModelViewSet):
             return self.destroy(request, *args, **kwargs)
 
     @action(methods=["post"], detail=False)
-    def reset_password_send_email(self, request, *args, **kwargs):
+    def reset_password_request_email(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         self.service_class.reset_password_send_email(email=serializer.data["email"])
@@ -98,7 +98,7 @@ class UserViewSet(viewsets.ModelViewSet):
         return Response(response_success, status=status.HTTP_202_ACCEPTED)
 
     @action(methods=["post"], detail=False)
-    def reset_password_send_sms(self, request, *args, **kwargs):
+    def reset_password_request_phone_number(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         self.service_class.reset_password_send_sms(
@@ -139,7 +139,7 @@ class UserViewSet(viewsets.ModelViewSet):
         return Response(response_success, status=status.HTTP_204_NO_CONTENT)
 
     @action(["post"], detail=False)
-    def reset_email(self, request, *args, **kwargs):
+    def reset_email_request(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         self.service_class.reset_email(
@@ -153,7 +153,21 @@ class UserViewSet(viewsets.ModelViewSet):
         return Response(response_success, status=status.HTTP_204_NO_CONTENT)
 
     @action(["post"], detail=False)
-    def reset_phone_number(self, request, *args, **kwargs):
+    def reset_email_confirm(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        self.service_class.reset_email(
+            user=request.user,
+            email=serializer.validated_data["email"],
+        )
+        response_success = {
+            "message": _("Email changed successfully"),
+            "code": status.HTTP_204_NO_CONTENT,
+        }
+        return Response(response_success, status=status.HTTP_204_NO_CONTENT)
+
+    @action(["post"], detail=False)
+    def reset_phone_request(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         self.service_class.reset_phone_number(
@@ -162,6 +176,20 @@ class UserViewSet(viewsets.ModelViewSet):
         )
         response_success = {
             "message": _("Phone number changed successfully"),
+            "code": status.HTTP_204_NO_CONTENT,
+        }
+        return Response(response_success, status=status.HTTP_204_NO_CONTENT)
+
+    @action(["post"], detail=False)
+    def reset_phone_number_confirm(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        self.service_class.reset_phone_number(
+            user=request.user,
+            phone_number=serializer.validated_data["phone_number"],
+        )
+        response_success = {
+            "message": _("Email changed successfully"),
             "code": status.HTTP_204_NO_CONTENT,
         }
         return Response(response_success, status=status.HTTP_204_NO_CONTENT)

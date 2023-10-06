@@ -7,7 +7,7 @@ from apps.accounts.models import User
 from apps.accounts.constants import UserErrorMessage
 from apps.accounts.utils import decode_uid
 from apps.customers.serializers import CustomerCreateSerializer
-from apps.sellers.serializers import ShopCreateSerializer
+from apps.sellers.serializers import ShopCreateSerializer, SellerCreateSerializer
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -70,10 +70,12 @@ class UserCustomerCreateSerializer(UserBaseCreateSerializer):
 
 class UserSellerCreateSerializer(UserBaseCreateSerializer):
     shop = ShopCreateSerializer(required=True)
+    seller = SellerCreateSerializer(required=True)
 
     class Meta(UserBaseCreateSerializer.Meta):
         fields = UserBaseCreateSerializer.Meta.fields + (
             "shop",
+            "seller",
         )
 
 

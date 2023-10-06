@@ -41,7 +41,9 @@ class CartItemViewSet(viewsets.ModelViewSet):
         return self.serializer_class
 
 
-class OrderCustomerViewSet(OrderViewSetMixin, viewsets.ModelViewSet):
+class OrderCustomerViewSet(viewsets.ModelViewSet):
+    queryset = Order.objects.all()
+    serializer_class = OrderSerializer
     permission_classes = [IsCustomer]
     filter_backends = [filters.OrderingFilter]
     ordering_fields = ["created_at", "updated_at"]
@@ -68,7 +70,9 @@ class OrderCustomerViewSet(OrderViewSetMixin, viewsets.ModelViewSet):
         )
 
 
-class OrderSellerViewSet(OrderViewSetMixin, viewsets.ReadOnlyModelViewSet):
+class OrderSellerViewSet(viewsets.ReadOnlyModelViewSet):
+    queryset = Order.objects.all()
+    serializer_class = OrderSerializer
     permission_classes = [IsSeller]
     filter_backends = [filters.OrderingFilter]
     ordering_fields = ["created_at"]

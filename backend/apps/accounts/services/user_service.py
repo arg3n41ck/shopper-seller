@@ -2,6 +2,8 @@ from django.contrib.auth.tokens import PasswordResetTokenGenerator
 from django.conf import settings
 from django.utils.translation import gettext_lazy as _
 
+from djoser.views import UserViewSet as DjoserViewSet
+
 from apps.accounts.models import User
 from apps.accounts.constants import UserTypeChoice
 from apps.accounts.utils import encode_uid
@@ -69,10 +71,10 @@ class UserService:
         reset_url = f"https://{settings.DOMAIN}/user/reset-password/{uid}/{token}"
         return reset_url
 
-    def reset_email(self, user: User, email: str):
+    def reset_email(self, user: User, email: str) -> None:
         user.email = email
         user.save(update_fields=["email"])
 
-    def reset_phone_number(self, user: User, phone_number: str):
+    def reset_phone_number(self, user: User, phone_number: str) -> None:
         user.phone_number = phone_number
-        user.save()
+        user.save(update_fields=["phone_number"])

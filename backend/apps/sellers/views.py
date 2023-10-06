@@ -22,7 +22,7 @@ class ShopSellerViewSet(viewsets.ModelViewSet):
     serializer_class = ShopSerializer
     permission_classes = [IsSeller]
     http_method_names = ["get", "put", "patch"]
-    filterset_fields = ["user"]
+    filterset_fields = ["seller"]
     lookup_field = "slug"
 
     def get_serializer_class(self):

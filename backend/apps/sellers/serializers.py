@@ -47,7 +47,7 @@ class ShopSerializer(serializers.ModelSerializer):
             "slug",
             "logo",
             "title",
-            "user",
+            "seller",
             "status",
             "site_link",
             "instagram_link",
@@ -57,8 +57,6 @@ class ShopSerializer(serializers.ModelSerializer):
 
 
 class ShopCreateSerializer(serializers.ModelSerializer):
-    key = serializers.CharField(required=True)
-
     class Meta:
         model = Shop
         fields = (
