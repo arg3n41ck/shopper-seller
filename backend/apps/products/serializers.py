@@ -166,6 +166,8 @@ class ProductSerializer(serializers.ModelSerializer):
             "shop",
             "publish_date",
             "status",
+            "created_at",
+            "updated_at",
             "variants",
             "reviews",
             "rating",
