@@ -6,3 +6,5 @@ from config.settings.jwt import *
 # from config.settings.aws_s3 import *
 from config.settings.smtp import *
 from config.settings.security import *
+from config.settings.elasticsearch import *
+from config.settings.redis import *

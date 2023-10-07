@@ -34,7 +34,6 @@ class TokenDestroyView(views.APIView):
 
     def post(self, request):
         from apps.accounts import utils
-
         utils.logout_user(request)
         return Response(status=status.HTTP_204_NO_CONTENT)
 

@@ -1,10 +1,8 @@
 from rest_framework import viewsets
 from rest_framework.filters import SearchFilter
 from rest_framework.parsers import MultiPartParser
+from rest_framework.permissions import AllowAny
 from django_filters.rest_framework import DjangoFilterBackend
-
-
-from apps.products.services import ProductSellerService
 
 from apps.products.models import (
     Category,
@@ -68,7 +66,9 @@ class ProductCustomerViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Product.objects.all()\
         .prefetch_related("variants", "reviews")
     serializer_class = ProductSerializer
-    filter_backends = [DjangoFilterBackend, SearchFilter]
+    permission_classes = [AllowAny]
+    filter_backends = [DjangoFilterBackend,
+                       SearchFilter]
     filterset_class = ProductFilter
     lookup_field = "slug"
 
@@ -78,11 +78,11 @@ class ProductSellerViewSet(viewsets.ModelViewSet):
         .prefetch_related("variants", "reviews")
     serializer_class = ProductSerializer
     permission_classes = [IsSeller]
-    filter_backends = [SearchFilter]
+    filter_backends = [DjangoFilterBackend,
+                       SearchFilter]
     filterset_class = ProductFilter
     search_fields = ["sku", "title"]
     lookup_field = "slug"
-    service = ProductSellerService()
 
     def get_serializer_class(self):
         if self.action == "create":

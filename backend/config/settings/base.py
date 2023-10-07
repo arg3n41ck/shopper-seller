@@ -23,14 +23,16 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     # Third party apps
-    "djoser",
     "rest_framework",
-    "mptt",
-    "phonenumber_field",
     "django_filters",
     "corsheaders",
     "drf_yasg",
+    "djoser",
+    "mptt",
+    "phonenumber_field",
     "storages",
+    "django_elasticsearch_dsl",
+    "django_elasticsearch_dsl_drf",
 
     # Local apps
     "apps.accounts",
@@ -39,6 +41,7 @@ INSTALLED_APPS = [
     "apps.customers",
     "apps.orders",
     "apps.notifications",
+    "apps.search_indexes",
 ]
 
 
@@ -102,6 +105,7 @@ MEDIA_ROOT = BASE_DIR / 'media'
 
 
 DOMAIN = os.environ["DOMAIN"]
+
 
 SMS_PRO_LOGIN = os.environ["SMS_PRO_LOGIN"]
 SMS_PRO_PASSWORD = os.environ["SMS_PRO_PASSWORD"]

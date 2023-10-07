@@ -9,6 +9,7 @@ from apps.sellers.models import Shop
 from apps.customers.models import Customer
 from apps.products.constants import GenderChoice, ProductStatusChoice
 from apps.products.validators import validate_size_variants, validate_specifications
+from apps.products.managers import ProductVariantImageManager
 from shared.custom_slugify import generate_slug_from_field
 from shared.abstract_models import TimeStampedBaseModel
 
@@ -125,7 +126,7 @@ class Product(TimeStampedBaseModel):
     price_from = models.DecimalField(
         max_digits=10,
         decimal_places=2,
-        verbose_name=_("Price"),
+        verbose_name=_("Price from"),
     )
     discount = models.PositiveIntegerField(
         validators=[MinValueValidator(0),
@@ -238,6 +239,8 @@ class ProductVariantImage(models.Model):
         upload_to="images/products",
         verbose_name=_("Image"),
     )
+
+    objects = ProductVariantImageManager()
 
     class Meta:
         verbose_name = _("Product image")
