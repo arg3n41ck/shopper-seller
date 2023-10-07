@@ -1,4 +1,6 @@
 /** @type {import('tailwindcss').Config} */
+// const { NEUTRAL } = require('./src/shared/lib/consts/styles')
+
 module.exports = {
   content: ['./src/**/*.{js,ts,jsx,tsx}'],
   safelist: ['outline-none'],
@@ -16,6 +18,43 @@ module.exports = {
         green: 'var(--green)',
         purple: 'var(--purple)',
         orange: 'var(--orange)',
+
+        //=======NEUTRAL=======
+        neutral50: 'var(--neutral50)',
+        neutral100: 'var(--neutral100)',
+        neutral200: 'var(--neutral200)',
+        neutral300: 'var(--neutral300)',
+        neutral400: 'var(--neutral400)',
+        neutral500: 'var(--neutral500)',
+        neutral600: 'var(--neutral600)',
+        neutral700: 'var(--neutral700)',
+        neutral800: 'var(--neutral800)',
+        neutral900: 'var(--neutral900)',
+        //======================
+
+        //========ERROR=========
+        error50: 'var(--error50)',
+        error300: 'var(--error300)',
+        error500: 'var(--error500)',
+        error700: 'var(--error700)',
+        error900: 'var(--error900)',
+        //======================
+
+        //========PRIMARY=========
+        //main
+        primaryMain300: 'var(--primaryMain300)',
+        primaryMain500: 'var(--primaryMain500)',
+        primaryMain700: 'var(--primaryMain700)',
+        primaryMain800: 'var(--primaryMain800)',
+        primaryMain900: 'var(--primaryMain900)',
+
+        //dashboard
+        primaryDash50: 'var(--primaryDash50)',
+        primaryDash400: 'var(--primaryDash400)',
+        primaryDash600: 'var(--primaryDash600)',
+        primaryDash800: 'var(--primaryDash800)',
+        primaryDash900: 'var(--primaryDash900)',
+        //======================
       },
       textColor: {
         black: 'var(--black)',
@@ -31,11 +70,11 @@ module.exports = {
       // },
     },
     screens: {
-      // '2xl': { max: '1400px' },
-      // xl: { max: '1200px' },
-      // lg: { max: '992px' },
-      // md: { max: '768px' },
-      // sm: { max: '576px' },
+      '2xl': { max: '1400px' },
+      xl: { max: '1200px' },
+      lg: { max: '992px' },
+      md: { max: '768px' },
+      sm: { max: '576px' },
     },
     container: {
       xl: {

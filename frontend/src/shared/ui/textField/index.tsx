@@ -1,25 +1,18 @@
-import { ChangeEvent, FC, ReactNode, useRef, useState } from "react";
-import {
-  EndAdornmentCont,
-  TFErrorText,
-  TFHelperText,
-  TFInput,
-  TFLabel,
-  TextFieldCont,
-  TextFieldWrapper,
-} from "./styles";
+import { ChangeEvent, FC, ReactNode, useRef, useState } from 'react'
+import { TFInput } from './styles'
+import cn from 'classnames'
 
 interface TextFieldProps {
-  startAdornment?: ReactNode;
-  endAdornment?: ReactNode;
-  value: string;
-  label?: string | ReactNode;
-  onChange?: (event: ChangeEvent<HTMLInputElement>) => void;
-  error?: boolean;
-  errorMessage?: any;
-  helperText?: string;
-  className?: string;
-  [x: string]: any;
+  startAdornment?: ReactNode
+  endAdornment?: ReactNode
+  value: string
+  label?: string | ReactNode
+  onChange?: (event: ChangeEvent<HTMLInputElement>) => void
+  error?: boolean
+  errorMessage?: any
+  helperText?: string
+  className?: string
+  [x: string]: any
 }
 
 const TextField: FC<TextFieldProps> = ({
@@ -34,22 +27,27 @@ const TextField: FC<TextFieldProps> = ({
   className,
   ...others
 }) => {
-  const inputRef = useRef<HTMLInputElement>(null);
-  const [focused, setFocus] = useState(false);
-  const isActive = focused || value ? "active" : "";
-  const isError = error ? "error" : "";
+  const inputRef = useRef<HTMLInputElement>(null)
+  const [focused, setFocus] = useState(false)
+  const isActive = focused || value
 
   return (
-    <TextFieldWrapper className={className}>
-      {label && <TFLabel className={`${isActive}`}>{label}</TFLabel>}
-      <TextFieldCont
+    <div className={cn('relative w-full', className)}>
+      {label && <label className={cn('text-neutral900 text-[13.33px] font-[400]', isActive)}>{label}</label>}
+
+      <div
         onClick={() => inputRef.current && inputRef.current.focus()}
-        className={`${isError} ${isActive}  ${label ? "mt-2" : ""}`}
+        className={cn('border-neutral300 relative flex items-center gap-4 border px-[16px] py-[13px] text-black', {
+          ['!border-error500']: error,
+          ['!border-neutral900']: isActive,
+          ['mt-2']: !!label,
+        })}
       >
         {startAdornment && startAdornment}
 
         <input hidden autoComplete="" />
 
+        {/*todo tailwind*/}
         <TFInput
           ref={inputRef}
           onFocus={() => setFocus(true)}
@@ -57,23 +55,20 @@ const TextField: FC<TextFieldProps> = ({
           value={value}
           onChange={onChange}
           autoComplete="new-password"
-          className={`${isError}`}
+          className={error ? 'error' : ''}
           {...others}
         />
-
         {endAdornment && (
-          <EndAdornmentCont className={`${isActive}`}>
-            {endAdornment}
-          </EndAdornmentCont>
+          <div className={cn('text-neutral400', { ['!text-neutral900']: isActive })}>{endAdornment}</div>
         )}
-      </TextFieldCont>
+      </div>
       {errorMessage ? (
-        <TFErrorText>{errorMessage}</TFErrorText>
+        <label className="text-error500 text-[11.11px] font-[400]">{errorMessage}</label>
       ) : (
-        <TFHelperText>{helperText}</TFHelperText>
+        <label className="text-neutral400 text-[11.11px] font-[400]">{helperText}</label>
       )}
-    </TextFieldWrapper>
-  );
-};
+    </div>
+  )
+}
 
-export default TextField;
+export default TextField

@@ -1,0 +1,28 @@
+.Button {
+  @apply disabled:!bg-neutral200 disabled:!text-neutral400 flex w-min cursor-pointer
+  items-center justify-center whitespace-nowrap border-none text-[16px] font-[600]
+  transition-all duration-100 ease-in-out;
+}
+
+.PrimaryCTAButton {
+  @apply bg-primaryMain900 hover:bg-neutral500 text-white;
+}
+
+.PrimaryCTAIndigoButton {
+  @apply bg-primaryDash600 hover:bg-primaryDash800 text-white;
+}
+
+.SecondaryCTAButton {
+  @apply hover:bg-neutral200 disabled:bg-neutral200 disabled:border-neutral400 disabled:text-neutral400
+  rounded-[6px] bg-white text-black transition-all disabled:cursor-default;
+  border: 1px solid black;
+}
+
+.WithoutBackgroundButton {
+  @apply hover:bg-neutral100 bg-transparent font-[500] shadow;
+  border: 1px solid #171717;
+}
+
+.OnlyTextButton {
+  @apply hover:bg-neutral100 border-none bg-transparent font-[500];
+}

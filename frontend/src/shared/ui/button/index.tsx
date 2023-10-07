@@ -1,92 +1,33 @@
-import { BUTTON_STYLES } from '@/shared/lib/consts/styles'
-import { ButtonHTMLAttributes, FC, ReactNode } from 'react'
-import {
-	OnlyTextButton,
-	PrimaryCTAButton,
-	PrimaryCTAIndigoButton,
-	SecondaryCTAButton,
-	WithoutBackgroundButton,
-} from './styles'
+import { ComponentPropsWithRef } from 'react'
+import styles from './styles.module.css'
+import cn from 'classnames'
+import { ButtonVariant } from '@/shared/lib/consts/styles'
 
-type ButtonVariant = (typeof BUTTON_STYLES)[keyof typeof BUTTON_STYLES]
-type ButtonType = 'button' | 'submit' | 'reset'
-type ButtonSize = 'small' | 'large'
+type ButtonSize = 'small' | 'large' | 'notSpecified'
 
-interface CustomButtonProps {
-	disabled?: boolean
-	variant?: ButtonVariant
-	onClick?: () => void
-	children: ReactNode
-	type?: ButtonType | undefined
-	size?: ButtonSize
-	className?: string
+const sizeOfButton = {
+  small: 'py-[4px] px-[8px] text-[16px]',
+  large: 'py-[10px] px-[16px] text-[18px]',
+  notSpecified: 'py-[12px] text-[18px]',
 }
 
-const variantOfButton = (
-	variant: ButtonVariant | undefined
-): FC<ButtonHTMLAttributes<HTMLButtonElement>> => {
-	switch (variant) {
-		case BUTTON_STYLES.primaryCta:
-			return PrimaryCTAButton
-		case BUTTON_STYLES.primaryCtaIndigo:
-			return PrimaryCTAIndigoButton
-		case BUTTON_STYLES.secondaryCtaIndigo:
-			return SecondaryCTAButton
-		case BUTTON_STYLES.withoutBackground:
-			return WithoutBackgroundButton
-		case BUTTON_STYLES.onlyText:
-			return OnlyTextButton
-		default:
-			return PrimaryCTAButton
-	}
+interface CustomButtonProps extends ComponentPropsWithRef<'button'> {
+  variant?: ButtonVariant
+  size?: ButtonSize
 }
 
-const sizeOfButton = (size?: ButtonSize) => {
-	switch (size) {
-		case 'small':
-			return {
-				width: '100%',
-				padding: '4px 8px',
-				fontSize: 16,
-			}
-		case 'large':
-			return {
-				width: '100%',
-				padding: '10px 16px',
-				fontSize: 18,
-			}
-		default:
-			return {
-				width: '100%',
-				padding: '12px 0',
-				fontSize: 18,
-			}
-	}
-}
-
-const Button: FC<CustomButtonProps> = ({
-	disabled,
-	variant,
-	onClick,
-	children,
-	type,
-	size,
-	className,
-}) => {
-	const ButtonComponent = variantOfButton(variant)
-	const style = sizeOfButton(size)
-
-	return (
-		<ButtonComponent
-			type={type}
-			disabled={disabled}
-			onClick={onClick}
-			style={style}
-			className={className}
-		>
-			{children}
-		</ButtonComponent>
-	)
+const Button = ({
+  variant = 'PrimaryCTAButton',
+  size = 'notSpecified',
+  children,
+  className,
+  ...other
+}: CustomButtonProps) => {
+  return (
+    <button {...other} className={cn('!w-full', styles.Button, styles[variant], sizeOfButton[size], className)}>
+      {children}
+    </button>
+  )
 }
 
 export default Button
