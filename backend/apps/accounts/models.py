@@ -52,4 +52,4 @@ class User(AbstractUser):
         verbose_name_plural = _("Users")
 
     def __str__(self):
-        return self.email or self.phone_number
+        return self.email

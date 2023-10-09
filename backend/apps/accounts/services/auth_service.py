@@ -17,4 +17,3 @@ class AuthenticationService:
                 return user
         except User.DoesNotExist:
             pass
-        return None

@@ -5,6 +5,6 @@ from apps.customers.models import Customer
 
 @admin.register(Customer)
 class CustomerAdmin(admin.ModelAdmin):
-    pass
+    list_display = ["user", "date_of_birth", "preferences"]
 
 

@@ -1,5 +1,5 @@
 from django.db import transaction
-from rest_framework import status
+from rest_framework import status, mixins
 from rest_framework.response import Response
 
 from apps.accounts.constants import UserMessage
@@ -14,8 +14,7 @@ class CreateUserApiViewMixin:
 
     @transaction.atomic()
     def perform_create(self, serializer):
-        jwt_token = self.service_class.create_user(**serializer.validated_data)
-        return jwt_token
+        return self.service_class.create_user(**serializer.validated_data)
 
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
