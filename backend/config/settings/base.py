@@ -13,16 +13,16 @@ DEBUG = os.getenv("DEBUG", False)
 SECRET_KEY = os.environ["SECRET_KEY"]
 ALLOWED_HOSTS = os.environ["ALLOWED_HOSTS"].split(",")
 
-
-INSTALLED_APPS = [
+BASE_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+]
 
-    # Third party apps
+THIRD_PARTY_APPS = [
     "rest_framework",
     "django_filters",
     "corsheaders",
@@ -33,8 +33,9 @@ INSTALLED_APPS = [
     "storages",
     "django_elasticsearch_dsl",
     "django_elasticsearch_dsl_drf",
+]
 
-    # Local apps
+LOCAL_APPS = [
     "apps.accounts",
     "apps.products",
     "apps.sellers",
@@ -43,6 +44,8 @@ INSTALLED_APPS = [
     "apps.notifications",
     "apps.search_indexes",
 ]
+
+INSTALLED_APPS = BASE_APPS + THIRD_PARTY_APPS + LOCAL_APPS
 
 
 MIDDLEWARE = [

@@ -21,11 +21,12 @@ services:
         - my-network
 
     redis:
+      restart: always
       build:
         context: .
         dockerfile: ./docker/redis/Dockerfile
       volumes:
-        - redis_data:/data
+        - redis_data:/var/lib/redis/data/
       networks:
         - my-network
 
@@ -102,6 +103,7 @@ services:
 volumes:
   postgres_data:
   elasticsearch_data:
+  redis_data:
   static_volume:
   media_volume:
 

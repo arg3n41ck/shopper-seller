@@ -67,8 +67,10 @@ class ProductCustomerViewSet(viewsets.ReadOnlyModelViewSet):
         .prefetch_related("variants", "reviews")
     serializer_class = ProductSerializer
     permission_classes = [AllowAny]
-    filter_backends = [DjangoFilterBackend,
-                       SearchFilter]
+    filter_backends = [
+        DjangoFilterBackend,
+        SearchFilter,
+    ]
     filterset_class = ProductFilter
     lookup_field = "slug"
 
@@ -78,8 +80,10 @@ class ProductSellerViewSet(viewsets.ModelViewSet):
         .prefetch_related("variants", "reviews")
     serializer_class = ProductSerializer
     permission_classes = [IsSeller]
-    filter_backends = [DjangoFilterBackend,
-                       SearchFilter]
+    filter_backends = [
+        DjangoFilterBackend,
+        SearchFilter,
+    ]
     filterset_class = ProductFilter
     search_fields = ["sku", "title"]
     lookup_field = "slug"

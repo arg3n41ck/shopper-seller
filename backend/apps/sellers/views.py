@@ -1,5 +1,4 @@
 from rest_framework import viewsets
-from rest_framework.permissions import IsAuthenticated
 
 from apps.sellers.permissions import IsSeller
 from apps.sellers.models import Shop, ShopBranch
@@ -31,11 +30,10 @@ class ShopSellerViewSet(viewsets.ModelViewSet):
         return self.serializer_class
 
 
-class BranchAddressViewSet(viewsets.ModelViewSet):
+class ShopBranchViewSet(viewsets.ModelViewSet):
     queryset = ShopBranch.objects.all()
     serializer_class = ShopBranchSerializer
-    permission_classes = [IsAuthenticated, IsSeller]
-    http_method_names = ["post", "put", "patch", "delete"]
+    permission_classes = [IsSeller]
 
     def get_serializer_class(self):
         if self.action == "create":

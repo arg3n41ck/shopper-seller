@@ -6,3 +6,17 @@ from apps.search_indexes.documents.products import ProductDocument
 class ProductDocumentSerializer(DocumentSerializer):
     class Meta:
         document = ProductDocument
+        fields = (
+            "slug",
+            "sku",
+            "title",
+            "gender",
+            "for_kids",
+            "price_from",
+            "discount",
+            "category",
+            "tags",
+            "specifications",
+            "shop",
+            "status",
+        )
