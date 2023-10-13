@@ -2,55 +2,45 @@ import { useAppSelector } from '@/shared/lib/hooks/redux'
 import TextField from '@/shared/ui/textField'
 import Image from 'next/image'
 import { ChangeEvent, FC, useState } from 'react'
-import {
-	Avatar,
-	EmailOfSeller,
-	LKSellerHeaderCont,
-	LKSellerHeaderUserInfo,
-	SearchIcon,
-	ShopNameOfSeller,
-	UseInfoCont,
-} from './styles'
+import { Search } from 'react-feather'
 
 const LKSellerHeader: FC = () => {
-	const [search, setSearch] = useState('')
-	const { user } = useAppSelector(state => state.user)
-	const handleChange = (value: string) => setSearch(value)
+  const [search, setSearch] = useState('')
+  const { user } = useAppSelector((state) => state.user)
+  const handleChange = (value: string) => setSearch(value)
 
-	return (
-		<LKSellerHeaderCont>
-			<TextField
-				value={search}
-				onChange={(e: ChangeEvent<HTMLInputElement>) =>
-					handleChange(e.target.value)
-				}
-				placeholder={'Поиск'}
-				endAdornment={<SearchIcon />}
-			/>
-			<LKSellerHeaderUserInfo>
-				<UseInfoCont className={'flex flex-col gap-1'}>
-					<ShopNameOfSeller>Nike Kyrgyzstan</ShopNameOfSeller>
-					{/* {!user?.seller ? (
+  return (
+    <div className="flex w-full items-center justify-between gap-[20px]">
+      <TextField
+        value={search}
+        onChange={(e: ChangeEvent<HTMLInputElement>) => handleChange(e.target.value)}
+        placeholder={'Поиск'}
+        endAdornment={<Search className="cursor-pointer text-neutral-400" />}
+      />
+      <div className="flex w-full items-center justify-end gap-[20px]">
+        <div className="flex flex-col gap-1">
+          <p className="text-18px font-[500] text-neutral-900">Nike Kyrgyzstan</p>
+          {/* {!user?.seller ? (
 						<Skeleton />
 					) : (
 						<ShopNameOfSeller>{user?.seller.shop_name}</ShopNameOfSeller>
 					)} */}
 
-					<EmailOfSeller>nikekg@info.kg</EmailOfSeller>
+          <p className="text-[13.33px] font-[400] text-neutral-500">nikekg@info.kg</p>
 
-					{/* {!user?.seller ? (
+          {/* {!user?.seller ? (
 						<Skeleton />
 					) : (
 						<EmailOfSeller>{user?.email}</EmailOfSeller>
 					)} */}
-				</UseInfoCont>
-				<Avatar>
-					{/* <Skeleton height={'100%'} width={'100%'} border={'50%'} /> */}
-					<Image src={'/dog.jpg'} alt='dog' width={43} height={43} />
-				</Avatar>
-			</LKSellerHeaderUserInfo>
-		</LKSellerHeaderCont>
-	)
+        </div>
+        <div className="h-[43px] w-[43px] cursor-pointer">
+          {/* <Skeleton height={'100%'} width={'100%'} border={'50%'} /> */}
+          <Image src={'/dog.jpg'} alt="dog" width={43} height={43} className="h-full rounded-[50%]" />
+        </div>
+      </div>
+    </div>
+  )
 }
 
 export default LKSellerHeader

@@ -1,55 +1,57 @@
 import React, { FC, memo, useCallback, useState } from 'react'
-import { NameOfColorText, SizeBlock, SizesContainer } from './styles'
+import cn from 'classnames'
 
 interface ChooseSizesProps {
-	preview: any
+  preview: any
 }
 
 type Size = { id: number; size: string }
 
 const ChooseSizes: FC<ChooseSizesProps> = memo(({ preview }) => {
-	const [selectedSizes, setSelectedSizes] = useState<Size[]>([])
+  const [selectedSizes, setSelectedSizes] = useState<Size[]>([])
 
-	const handleSizeClick = useCallback(
-		(size: Size) => {
-			setSelectedSizes(prevSelectedSizes => {
-				if (
-					prevSelectedSizes.find(selectedSize => selectedSize.id === size.id)
-				) {
-					return prevSelectedSizes.filter(
-						selectedSize => selectedSize.id !== size.id
-					)
-				}
+  const handleSizeClick = useCallback(
+    (size: Size) => {
+      setSelectedSizes((prevSelectedSizes) => {
+        if (prevSelectedSizes.find((selectedSize) => selectedSize.id === size.id)) {
+          return prevSelectedSizes.filter((selectedSize) => selectedSize.id !== size.id)
+        }
 
-				return [...prevSelectedSizes, size]
-			})
-		},
-		[setSelectedSizes]
-	)
+        return [...prevSelectedSizes, size]
+      })
+    },
+    [setSelectedSizes],
+  )
 
-	return (
-		<div>
-			<NameOfColorText>
-				Цвет: <span>{preview?.color}</span>
-			</NameOfColorText>
+  return (
+    <div>
+      <p className="text-[16px] text-gray">
+        Цвет: <span className="text-black">{preview?.color}</span>
+      </p>
 
-			<SizesContainer className={'mt-3'}>
-				{preview?.size.map((item: Size) => (
-					<SizeBlock
-						key={item.id}
-						className={`${
-							selectedSizes.find(selectedSize => selectedSize.id === item.id)
-								? 'active'
-								: ''
-						}`}
-						onClick={() => handleSizeClick(item)}
-					>
-						<p>{item.size}</p>
-					</SizeBlock>
-				))}
-			</SizesContainer>
-		</div>
-	)
+      <div className="mt-3 flex gap-[16px]">
+        {preview?.size.map((item: Size) => (
+          <div
+            key={item.id}
+            className={cn(
+              `
+			flex cursor-pointer items-center justify-center border-[1px] 
+			border-neutral-400 px-[12.5px] py-[8px] text-neutral-500
+			transition-all hover:bg-neutral-200 hover:text-neutral-900`,
+              {
+                ['rounded-[6px] !border-neutral-900 bg-none !text-neutral-900']: selectedSizes.find(
+                  (selectedSize) => selectedSize.id === item.id,
+                ),
+              },
+            )}
+            onClick={() => handleSizeClick(item)}
+          >
+            <p className="text-[16px] leading-[19px]">{item.size}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  )
 })
 
 export default ChooseSizes

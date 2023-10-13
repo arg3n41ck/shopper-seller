@@ -4,16 +4,9 @@ import { BUTTON_STYLES } from '@/shared/lib/consts/styles'
 import { useAppDispatch, useAppSelector } from '@/shared/lib/hooks/redux'
 import { fetchSeller } from '@/shared/store/slices/seller'
 import { fetchMe } from '@/shared/store/slices/user'
-import { ButtonInfoCont } from '@/shared/styles/styles'
 import Button from '@/shared/ui/button'
 import LoaderIcon from '@/shared/ui/loader'
 import Modal from '@/shared/ui/modal'
-import {
-	HeaderTextModal,
-	HeaderTextsModalCont,
-	ModalInnerContainer,
-	TextModal,
-} from '@/shared/ui/modal/styles'
 import TextField from '@/shared/ui/textField'
 import { removeEmptyFields } from '@/shared/utils/removeEmptyFields'
 import { useFormik } from 'formik'
@@ -23,192 +16,169 @@ import { useTranslation } from 'react-i18next'
 import * as yup from 'yup'
 
 interface IFormValues {
-	shop_name: string
-	site: string
-	instagram: string
-	links: string[]
+  shop_name: string
+  site: string
+  instagram: string
+  links: string[]
 }
 
 interface Props {
-	open: boolean
-	onClose: () => void
+  open: boolean
+  onClose: () => void
 }
 
 const validationSchema = (t: (key: string) => string) =>
-	yup.object({
-		shop_name: yup.string().required('Название магазина'),
-		site: yup
-			.string()
-			.required('Сайт магазина')
-			.url('Неправильный формат URL брат'),
-		instagram: yup
-			.string()
-			.required('Instagram')
-			.url('Неправильный формат URL брат'),
-	})
+  yup.object({
+    shop_name: yup.string().required('Название магазина'),
+    site: yup.string().required('Сайт магазина').url('Неправильный формат URL брат'),
+    instagram: yup.string().required('Instagram').url('Неправильный формат URL брат'),
+  })
 
 interface Props {
-	open: boolean
-	onClose: () => void
+  open: boolean
+  onClose: () => void
 }
 
 const sellerClient = new SellerClient()
 
 export const EditShopInfoModal: FC<Props> = ({ open, onClose }) => {
-	const { t } = useTranslation()
-	const dispatch = useAppDispatch()
-	const [isLoading, setIsLoading] = useState(false)
-	const { seller } = useAppSelector(state => state.seller)
+  const { t } = useTranslation()
+  const dispatch = useAppDispatch()
+  const [isLoading, setIsLoading] = useState(false)
+  const { seller } = useAppSelector((state) => state.seller)
 
-	const formik = useFormik<IFormValues>({
-		initialValues: {
-			shop_name: '',
-			site: '',
-			instagram: '',
-			links: [],
-		},
-		validationSchema: validationSchema(t),
-		onSubmit: async ({ links, ...others }: IFormValues) => {
-			setIsLoading(true)
+  const formik = useFormik<IFormValues>({
+    initialValues: {
+      shop_name: '',
+      site: '',
+      instagram: '',
+      links: [],
+    },
+    validationSchema: validationSchema(t),
+    onSubmit: async ({ links, ...others }: IFormValues) => {
+      setIsLoading(true)
 
-			if (isEqual(others, seller)) {
-				onClose()
-				return
-			}
+      if (isEqual(others, seller)) {
+        onClose()
+        return
+      }
 
-			try {
-				await sellerClient.changeInfoSeller(removeEmptyFields(others))
-				await dispatch(fetchMe())
-				await dispatch(fetchSeller())
-				setIsLoading(false)
-				onClose()
-			} catch (error: any) {
-				setIsLoading(false)
-				if (error) {
-					console.log(error)
-				}
-			}
-		},
-	})
+      try {
+        await sellerClient.changeInfoSeller(removeEmptyFields(others))
+        await dispatch(fetchMe())
+        await dispatch(fetchSeller())
+        setIsLoading(false)
+        onClose()
+      } catch (error: any) {
+        setIsLoading(false)
+        if (error) {
+          console.log(error)
+        }
+      }
+    },
+  })
 
-	const handleClose = () => {
-		onClose()
-	}
+  const handleClose = () => {
+    onClose()
+  }
 
-	const handleAddSite = () => {
-		const newLinks = [...formik.values.links, '']
-		formik.setFieldValue('links', newLinks)
-	}
+  const handleAddSite = () => {
+    const newLinks = [...formik.values.links, '']
+    formik.setFieldValue('links', newLinks)
+  }
 
-	const setSellerFieldsInfo = async () => {
-		const values: IFormValues = {
-			shop_name: seller?.shop_name || '',
-			site: seller?.site || '',
-			instagram: seller?.instagram || '',
-			links: [],
-		}
+  const setSellerFieldsInfo = async () => {
+    const values: IFormValues = {
+      shop_name: seller?.shop_name || '',
+      site: seller?.site || '',
+      instagram: seller?.instagram || '',
+      links: [],
+    }
 
-		formik.setValues(values)
-	}
+    formik.setValues(values)
+  }
 
-	useEffect(() => {
-		setSellerFieldsInfo()
-	}, [seller])
+  useEffect(() => {
+    setSellerFieldsInfo()
+  }, [seller])
 
-	return (
-		<Modal open={open} onClose={handleClose}>
-			<ModalInnerContainer>
-				<HeaderTextsModalCont>
-					<HeaderTextModal>Измените ваши данные</HeaderTextModal>
-					<TextModal>
-						Вы можете обновить ваши данные в любое время чтобы хранить ваш
-						Shopper аккаунт защищенным.
-					</TextModal>
-				</HeaderTextsModalCont>
+  return (
+    <Modal open={open} onClose={handleClose}>
+      <div className="px-[46px] py-[42px]">
+        <div className="flex max-w-[385px] flex-col gap-[8px]">
+          <p className="text-[27.65px] font-[600] leading-[33px] text-neutral-900">Измените ваши данные</p>
+          <p className="text-[13.33px] leading-[16px] text-neutral-900">
+            Вы можете обновить ваши данные в любое время чтобы хранить ваш Shopper аккаунт защищенным.
+          </p>
+        </div>
 
-				<form onSubmit={formik.handleSubmit}>
-					<div className='flex flex-col gap-8 mt-9 max-h-80 overflow-y-scroll'>
-						<div className='flex flex-col gap-8'>
-							<TextField
-								label={'Название магазина'}
-								error={
-									formik.touched.shop_name && Boolean(formik.errors.shop_name)
-								}
-								errorMessage={
-									formik.touched.shop_name && formik.errors.shop_name
-										? formik.errors.shop_name
-										: ''
-								}
-								value={formik.values.shop_name}
-								onChange={formik.handleChange}
-								name='shop_name'
-							/>
+        <form onSubmit={formik.handleSubmit}>
+          <div className="mt-9 flex max-h-80 flex-col gap-8 overflow-y-scroll">
+            <div className="flex flex-col gap-8">
+              <TextField
+                label={'Название магазина'}
+                error={formik.touched.shop_name && Boolean(formik.errors.shop_name)}
+                errorMessage={formik.touched.shop_name && formik.errors.shop_name ? formik.errors.shop_name : ''}
+                value={formik.values.shop_name}
+                onChange={formik.handleChange}
+                name="shop_name"
+              />
 
-							<TextField
-								label={'Сайт магазина'}
-								error={formik.touched.site && Boolean(formik.errors.site)}
-								errorMessage={
-									formik.touched.site && formik.errors.site
-										? formik.errors.site
-										: ''
-								}
-								value={formik.values.site}
-								onChange={formik.handleChange}
-								name='site'
-							/>
+              <TextField
+                label={'Сайт магазина'}
+                error={formik.touched.site && Boolean(formik.errors.site)}
+                errorMessage={formik.touched.site && formik.errors.site ? formik.errors.site : ''}
+                value={formik.values.site}
+                onChange={formik.handleChange}
+                name="site"
+              />
 
-							<TextField
-								label={'Instagram'}
-								error={
-									formik.touched.instagram && Boolean(formik.errors.instagram)
-								}
-								errorMessage={
-									formik.touched.instagram && formik.errors.instagram
-										? formik.errors.instagram
-										: ''
-								}
-								value={formik.values.instagram}
-								onChange={formik.handleChange}
-								name='instagram'
-							/>
+              <TextField
+                label={'Instagram'}
+                error={formik.touched.instagram && Boolean(formik.errors.instagram)}
+                errorMessage={formik.touched.instagram && formik.errors.instagram ? formik.errors.instagram : ''}
+                value={formik.values.instagram}
+                onChange={formik.handleChange}
+                name="instagram"
+              />
 
-							{formik.values.links.map((link, index) => (
-								<TextField
-									key={index}
-									label={`Ссылка #${index + 1}`}
-									value={link}
-									onChange={formik.handleChange}
-									name={`links.${index}`}
-								/>
-							))}
-						</div>
-					</div>
+              {formik.values.links.map((link, index) => (
+                <TextField
+                  key={index}
+                  label={`Ссылка #${index + 1}`}
+                  value={link}
+                  onChange={formik.handleChange}
+                  name={`links.${index}`}
+                />
+              ))}
+            </div>
+          </div>
 
-					<div className='flex justify-center mt-6'>
-						<Button
-							onClick={handleAddSite}
-							variant={BUTTON_STYLES.secondaryCtaIndigo}
-							size='small'
-							type='button'
-							disabled={true}
-						>
-							<ButtonInfoCont>
-								Добавить ссылку
-								<PlusCircle />
-							</ButtonInfoCont>
-						</Button>
-					</div>
+          <div className="mt-6 flex justify-center">
+            <Button
+              onClick={handleAddSite}
+              variant={BUTTON_STYLES.secondaryCtaIndigo}
+              size="small"
+              type="button"
+              disabled={true}
+            >
+              <div className="flex items-center gap-[10px]">
+                Добавить ссылку
+                <PlusCircle />
+              </div>
+            </Button>
+          </div>
 
-					<div className='flex justify-center mt-8'>
-						<Button variant={BUTTON_STYLES.primaryCtaIndigo} size='small'>
-							<ButtonInfoCont>
-								Сохранить
-								<LoaderIcon loading={isLoading} size={24} />
-							</ButtonInfoCont>
-						</Button>
-					</div>
-				</form>
-			</ModalInnerContainer>
-		</Modal>
-	)
+          <div className="mt-8 flex justify-center">
+            <Button variant={BUTTON_STYLES.primaryCtaIndigo} size="small">
+              <div className="flex items-center gap-[10px]">
+                Сохранить
+                <LoaderIcon loading={isLoading} size={24} />
+              </div>
+            </Button>
+          </div>
+        </form>
+      </div>
+    </Modal>
+  )
 }

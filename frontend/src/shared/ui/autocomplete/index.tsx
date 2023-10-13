@@ -1,151 +1,135 @@
-import {
-	ChangeEvent,
-	FC,
-	useCallback,
-	useEffect,
-	useMemo,
-	useRef,
-	useState,
-} from 'react'
+import { ChangeEvent, FC, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { ChevronDown } from 'react-feather'
-import {
-	AutocompleteInput,
-	AutocompleteItem,
-	AutocompleteList,
-	AutocompleteWrapper,
-	ChevronDownIconCont,
-	ErrorText,
-	HelperText,
-	InputLabel,
-} from './styles'
+import cn from 'classnames'
 
 type AutocompleteProps = {
-	options: any[]
-	inputLabel?: string
-	width?: string
-	onChange: (value: string) => void
-	error?: boolean | undefined
-	placeholder?: string
-	errorMessage?: string
-	helperText?: string
-	value?: string
-	fieldTitle: string
-	fieldValue: string
-	className?: string
+  options: any[]
+  inputLabel?: string
+  width?: string
+  onChange: (value: string) => void
+  error?: boolean | undefined
+  placeholder?: string
+  errorMessage?: string
+  helperText?: string
+  value?: string
+  fieldTitle: string
+  fieldValue: string
+  className?: string
 }
 
 const Autocomplete: FC<AutocompleteProps> = ({
-	options,
-	placeholder,
-	inputLabel,
-	width,
-	onChange,
-	error,
-	errorMessage,
-	value,
-	fieldTitle,
-	fieldValue,
-	helperText,
-	className,
+  options,
+  placeholder,
+  inputLabel,
+  width,
+  onChange,
+  error,
+  errorMessage,
+  value,
+  fieldTitle,
+  fieldValue,
+  helperText,
+  className,
 }) => {
-	const [inputValue, setInputValue] = useState<string>('')
-	const [showOptions, setShowOptions] = useState<boolean>(false)
-	const inputRef = useRef<HTMLInputElement>(null)
-	const timerIdRef = useRef<number | null>(null)
-	const [focused, setFocus] = useState(false)
-	const isActive = focused || value || inputValue
+  const [inputValue, setInputValue] = useState<string>('')
+  const [showOptions, setShowOptions] = useState<boolean>(false)
+  const inputRef = useRef<HTMLInputElement>(null)
+  const timerIdRef = useRef<number | null>(null)
+  const [focused, setFocus] = useState(false)
+  const isActive = focused || value || inputValue
 
-	const filteredOptions = useMemo<any[]>(() => {
-		return options.filter(
-			option =>
-				option[fieldTitle]?.toLowerCase().includes(inputValue?.toLowerCase())
-		)
-	}, [options, inputValue])
+  const filteredOptions = useMemo<any[]>(() => {
+    return options.filter((option) => option[fieldTitle]?.toLowerCase().includes(inputValue?.toLowerCase()))
+  }, [options, inputValue])
 
-	const handleInputChange = useCallback(
-		(event: ChangeEvent<HTMLInputElement>) => {
-			console.log(event.target)
-			const { value } = event.target
-			setInputValue(value)
-			setShowOptions(true)
-		},
-		[]
-	)
+  const handleInputChange = useCallback((event: ChangeEvent<HTMLInputElement>) => {
+    console.log(event.target)
+    const { value } = event.target
+    setInputValue(value)
+    setShowOptions(true)
+  }, [])
 
-	const handleItemClick = (option: any) => {
-		setInputValue(option[fieldTitle])
-		setShowOptions(false)
-		onChange(option[fieldValue])
-	}
+  const handleItemClick = (option: any) => {
+    setInputValue(option[fieldTitle])
+    setShowOptions(false)
+    onChange(option[fieldValue])
+  }
 
-	const handleBlur = useCallback(() => {
-		if (timerIdRef.current) {
-			clearTimeout(timerIdRef.current)
-			timerIdRef.current = null
-		}
+  const handleBlur = useCallback(() => {
+    if (timerIdRef.current) {
+      clearTimeout(timerIdRef.current)
+      timerIdRef.current = null
+    }
 
-		timerIdRef.current = window.setTimeout(() => {
-			setShowOptions(false)
-		}, 200)
-	}, [])
+    timerIdRef.current = window.setTimeout(() => {
+      setShowOptions(false)
+    }, 200)
+  }, [])
 
-	useEffect(() => {
-		if (showOptions && inputRef.current) {
-			inputRef.current.focus()
-		}
-	}, [showOptions])
+  useEffect(() => {
+    if (showOptions && inputRef.current) {
+      inputRef.current.focus()
+    }
+  }, [showOptions])
 
-	return (
-		<div className={'w-[100%]'}>
-			{inputLabel && <InputLabel>{inputLabel}</InputLabel>}
-			<AutocompleteWrapper
-				$width={width}
-				onFocus={() => setFocus(true)}
-				onBlur={() => setFocus(false)}
-				className={`${inputLabel ? 'mt-2' : ''} ${className}`}
-			>
-				<AutocompleteInput
-					type='text'
-					placeholder={placeholder}
-					value={
-						options.find(option => option[fieldValue] === value)?.[
-							fieldTitle
-						] || inputValue
-					}
-					ref={inputRef}
-					onChange={handleInputChange}
-					onFocus={() => setShowOptions(true)}
-					onBlur={handleBlur}
-					className={`${isActive ? 'active' : ''} ${error ? 'error' : ''}`}
-				/>
-				<ChevronDownIconCont
-					onClick={() => setShowOptions(prev => !prev)}
-					open={showOptions}
-					className={`${isActive ? 'active' : ''} ${error ? 'error' : ''}`}
-				>
-					<ChevronDown />
-				</ChevronDownIconCont>
-				{showOptions && !!filteredOptions?.length && (
-					<AutocompleteList>
-						{filteredOptions.map(option => (
-							<AutocompleteItem
-								key={option.id}
-								onClick={() => handleItemClick(option)}
-							>
-								{option[fieldTitle]}
-							</AutocompleteItem>
-						))}
-					</AutocompleteList>
-				)}
-			</AutocompleteWrapper>
+  return (
+    <div className={'w-[100%]'}>
+      {inputLabel && <label className="text-[13.33px] leading-[16px] text-neutral-900">{inputLabel}</label>}
+      <div
+        onFocus={() => setFocus(true)}
+        onBlur={() => setFocus(false)}
+        className={cn(`relative max-w-[${width}] flex w-full flex-col items-end justify-center`, className, {
+          ['mt-2']: inputLabel,
+        })}
+      >
+        <input
+          type="text"
+          placeholder={placeholder}
+          value={options.find((option) => option[fieldValue] === value)?.[fieldTitle] || inputValue}
+          ref={inputRef}
+          onChange={handleInputChange}
+          onFocus={() => setShowOptions(true)}
+          onBlur={handleBlur}
+          className={cn(
+            'w-full border-[1px] border-neutral-300 bg-none py-[11px] pl-[11px] pr-[40px] text-[16px] text-neutral-400 outline-none',
+            {
+              ['text-neutral-900']: isActive,
+              ['text-error500']: error,
+            },
+          )}
+        />
+        <div
+          onClick={() => setShowOptions((prev) => !prev)}
+          className={cn('absolute right-[15px] cursor-pointer text-neutral-400 transition-all ease-in-out', {
+            ['rotate-180']: showOptions,
+            ['text-neutral-900']: isActive,
+            ['text-error500']: error,
+          })}
+        >
+          <ChevronDown />
+        </div>
+        {showOptions && !!filteredOptions?.length && (
+          <ul className="absolute top-[100%] z-[1] max-h-[200px] w-full overflow-y-auto border-[1px] border-neutral-300 bg-white">
+            {filteredOptions.map((option) => (
+              <li
+                className="cursor-pointer p-[8px] text-[16px] transition-all hover:bg-neutral-100"
+                key={option.id}
+                onClick={() => handleItemClick(option)}
+              >
+                {option[fieldTitle]}
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
 
-			{errorMessage ? (
-				<ErrorText>{errorMessage}</ErrorText>
-			) : (
-				<HelperText>{helperText}</HelperText>
-			)}
-		</div>
-	)
+      {errorMessage ? (
+        <label className="text-[11.11px] text-error500">{errorMessage}</label>
+      ) : (
+        <label className="text-[11.11px] text-neutral-400">{helperText}</label>
+      )}
+    </div>
+  )
 }
 
 export default Autocomplete

@@ -155,7 +155,7 @@ export const LoginPage: FC = () => {
           </form>
 
           <p className="text-center text-[24px] font-[500] text-black">Новый партнер?</p>
-          <Button type="button" variant={BUTTON_STYLES.secondaryCtaIndigo} onClick={navigateToSignUp}>
+          <Button type="button" variant={BUTTON_STYLES.withoutBackground} onClick={navigateToSignUp}>
             <div className="flex items-center gap-[10px]">
               <Trans i18nKey={'Зарегестрироваться'} />
             </div>

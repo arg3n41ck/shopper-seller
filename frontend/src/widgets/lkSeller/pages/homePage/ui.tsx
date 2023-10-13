@@ -1,11 +1,10 @@
 import React, { FC } from 'react'
 import LKSellerLayout from '@/components/layouts/lkSellerLayout'
-import { HeadTextOfPage } from '../styles'
 
 export const LKSellerHomePage: FC = () => {
-	return (
-		<LKSellerLayout>
-			<HeadTextOfPage>Здравствуйте!</HeadTextOfPage>
-		</LKSellerLayout>
-	)
+  return (
+    <LKSellerLayout>
+      <p className="text-[28px] font-[600] text-neutral-900">Здравствуйте!</p>
+    </LKSellerLayout>
+  )
 }

@@ -5,7 +5,6 @@ import AuthLayout from '@/components/layouts/authLayout'
 import ShowAndHideIcon from '@/components/passwordShowAndHideIcon'
 import { AuthClient } from '@/shared/apis/authClient'
 import { useAppDispatch } from '@/shared/lib/hooks/redux'
-import { ButtonInfoCont } from '@/shared/styles/styles'
 import Checkbox from '@/shared/ui/checkbox'
 import LoaderIcon from '@/shared/ui/loader'
 import TextField from '@/shared/ui/textField'
@@ -14,8 +13,7 @@ import { useFormik } from 'formik'
 import { useRouter } from 'next/router'
 import { Trans, useTranslation } from 'react-i18next'
 import * as yup from 'yup'
-import { HeadingText, PasswordHandlerCont } from '../styles'
-import { SignUpContainer, SignUpTextFieldsContainer } from './styles'
+import cn from 'classnames'
 
 const validationSchema = () =>
   yup.object({
@@ -77,11 +75,11 @@ export const SignUpPage: FC = () => {
   return (
     <AuthLayout>
       <form onSubmit={formik.handleSubmit}>
-        <SignUpContainer>
-          <HeadingText>
+        <div className="mx-auto flex w-full max-w-[436px] flex-col gap-[20px]">
+          <p className="text-center text-[24px] font-[500] text-black">
             <Trans i18nKey={'Новый пользователь'} />
-          </HeadingText>
-          <SignUpTextFieldsContainer>
+          </p>
+          <div className="flex flex-col gap-[12px]">
             <TextField
               placeholder={t('Название магазина')}
               error={formik.touched.shop_name && Boolean(formik.errors.shop_name)}
@@ -123,11 +121,15 @@ export const SignUpPage: FC = () => {
               })}
               placeholder="Пароль"
             />
-
-            <PasswordHandlerCont
-              $error={passwordLengthCheck({
-                password: formik.values.password,
-              })}
+            <div
+              className={cn(
+                'flex items-center gap-[5px]',
+                passwordLengthCheck({
+                  password: formik.values.password,
+                })
+                  ? 'text-success700'
+                  : 'text-neutral-500',
+              )}
             >
               {passwordLengthCheck({ password: formik.values.password }) ? (
                 <Check size={16} />
@@ -135,8 +137,8 @@ export const SignUpPage: FC = () => {
                 <AlertCircle size={16} />
               )}
 
-              <p>Ваш пароль должен содержать мин. 8 букв</p>
-            </PasswordHandlerCont>
+              <p className="text-[14px] font-[500] leading-[17px]">Ваш пароль должен содержать мин. 8 букв</p>
+            </div>
 
             <TextField
               value={formik.values.repeat_password}
@@ -163,7 +165,7 @@ export const SignUpPage: FC = () => {
               onChange={formik.handleChange}
               name="code"
             />
-          </SignUpTextFieldsContainer>
+          </div>
 
           <Checkbox
             label={'Я принимаю условия соглашения Shopper'}
@@ -172,11 +174,11 @@ export const SignUpPage: FC = () => {
           />
 
           <Button type="submit" disabled={isLoading || !formik.values.agree}>
-            <ButtonInfoCont>
+            <div className="flex items-center gap-[10px]">
               <Trans i18nKey={'Зарегистрироваться'} /> <LoaderIcon loading={isLoading} size={24} />
-            </ButtonInfoCont>
+            </div>
           </Button>
-        </SignUpContainer>
+        </div>
       </form>
     </AuthLayout>
   )

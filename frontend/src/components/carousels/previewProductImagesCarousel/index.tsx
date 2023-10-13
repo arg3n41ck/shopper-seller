@@ -1,112 +1,105 @@
 import React, { FC, useEffect, useRef, useState } from 'react'
 import Image from 'next/image'
 import { ChevronDown, ChevronUp } from 'react-feather'
-import {
-	BigImageWrapper,
-	CarouselWrapper,
-	MainWrapper,
-	ScrollButton,
-	SmallImageInnerContainer,
-	SmallImageWrapper,
-} from './styles'
+import cn from 'classnames'
 
 interface Image {
-	id: number
-	main_image: boolean
-	image_url: string
+  id: number
+  main_image: boolean
+  image_url: string
 }
 
 interface CarouselWithMainImageProps {
-	images: Image[]
+  images: Image[]
 }
 
 const CarouselWithMainImage: FC<CarouselWithMainImageProps> = ({ images }) => {
-	const [activeIndex, setActiveIndex] = useState<number>(0)
-	const sortedImages = [...images].sort(
-		(a, b) => (b.main_image ? 1 : 0) - (a.main_image ? 1 : 0)
-	)
-	const carouselRef = useRef<HTMLDivElement | null>(null)
+  const [activeIndex, setActiveIndex] = useState<number>(0)
+  const sortedImages = [...images].sort((a, b) => (b.main_image ? 1 : 0) - (a.main_image ? 1 : 0))
+  const carouselRef = useRef<HTMLDivElement | null>(null)
 
-	const handleImageClick = (index: number) => {
-		setActiveIndex(index)
-		scrollToImage(index)
-	}
+  const handleImageClick = (index: number) => {
+    setActiveIndex(index)
+    scrollToImage(index)
+  }
 
-	const scrollToImage = (index: number) => {
-		if (carouselRef.current) {
-			const targetImage = carouselRef.current.children[index]
+  const scrollToImage = (index: number) => {
+    if (carouselRef.current) {
+      const targetImage = carouselRef.current.children[index]
 
-			setTimeout(() => {
-				targetImage.scrollIntoView({ behavior: 'smooth', block: 'nearest' })
-			})
-		}
-	}
+      setTimeout(() => {
+        targetImage.scrollIntoView({ behavior: 'smooth', block: 'nearest' })
+      })
+    }
+  }
 
-	const handleScroll = (direction: 'up' | 'down') => {
-		if (direction === 'up' && activeIndex > 0) {
-			setActiveIndex(activeIndex - 1)
-			scrollToImage(activeIndex - 1)
-		} else if (direction === 'down' && activeIndex < sortedImages.length - 1) {
-			setActiveIndex(activeIndex + 1)
-			scrollToImage(activeIndex + 1)
-		}
-	}
+  const handleScroll = (direction: 'up' | 'down') => {
+    if (direction === 'up' && activeIndex > 0) {
+      setActiveIndex(activeIndex - 1)
+      scrollToImage(activeIndex - 1)
+    } else if (direction === 'down' && activeIndex < sortedImages.length - 1) {
+      setActiveIndex(activeIndex + 1)
+      scrollToImage(activeIndex + 1)
+    }
+  }
 
-	useEffect(() => {
-		const mainImageIndex = sortedImages.findIndex(
-			(image: Image) => image.main_image
-		)
-		setActiveIndex(mainImageIndex !== -1 ? mainImageIndex : 0)
-		scrollToImage(mainImageIndex !== -1 ? mainImageIndex : 0)
-	}, [images])
+  useEffect(() => {
+    const mainImageIndex = sortedImages.findIndex((image: Image) => image.main_image)
+    setActiveIndex(mainImageIndex !== -1 ? mainImageIndex : 0)
+    scrollToImage(mainImageIndex !== -1 ? mainImageIndex : 0)
+  }, [images])
 
-	return (
-		<MainWrapper>
-			<CarouselWrapper>
-				<ScrollButton
-					$position='top'
-					onClick={() => handleScroll('up')}
-					disabled={activeIndex === 0}
-				>
-					<ChevronUp size={40} />
-				</ScrollButton>
+  return (
+    <div className="relative flex gap-[20px]">
+      <div className="hideScrollbar max-h-[690px] overflow-y-scroll">
+        <button
+          className="absolute top-0 z-[2] flex h-[32px] w-[120px] items-center justify-center border-none bg-[rgba(23,23,23,0.32)] text-white outline-none"
+          onClick={() => handleScroll('up')}
+          disabled={activeIndex === 0}
+        >
+          <ChevronUp size={40} />
+        </button>
 
-				<ScrollButton
-					$position='bottom'
-					onClick={() => handleScroll('down')}
-					disabled={activeIndex === sortedImages.length - 1}
-				>
-					<ChevronDown size={40} />
-				</ScrollButton>
+        <button
+          className="absolute bottom-0 z-[2] flex h-[32px] w-[120px] items-center justify-center border-none bg-[rgba(23,23,23,0.32)] text-white outline-none"
+          onClick={() => handleScroll('down')}
+          disabled={activeIndex === sortedImages.length - 1}
+        >
+          <ChevronDown size={40} />
+        </button>
 
-				<SmallImageWrapper ref={carouselRef}>
-					{sortedImages.map((image, index) => (
-						<SmallImageInnerContainer
-							key={image.id}
-							onClick={() => handleImageClick(index)}
-							className={`${activeIndex === index ? 'active' : ''}`}
-						>
-							<Image
-								src={image.image_url}
-								alt={`Carousel image ${index}`}
-								width={80}
-								height={80}
-							/>
-						</SmallImageInnerContainer>
-					))}
-				</SmallImageWrapper>
-			</CarouselWrapper>
+        <div className="flex flex-col gap-[12px]" ref={carouselRef}>
+          {sortedImages.map((image, index) => (
+            <div
+              key={image.id}
+              onClick={() => handleImageClick(index)}
+              className={cn('w-[120px] opacity-[0.6] transition-all hover:opacity-100', {
+                ['opacity-100']: activeIndex === index,
+              })}
+            >
+              <Image
+                className="h-[120px] min-h-[103px] w-[120px] cursor-pointer object-cover "
+                src={image.image_url}
+                alt={`Carousel image ${index}`}
+                width={80}
+                height={80}
+              />
+            </div>
+          ))}
+        </div>
+      </div>
 
-			<BigImageWrapper>
-				<Image
-					src={sortedImages[activeIndex]?.image_url}
-					alt={`Main carousel image`}
-					width={476}
-					height={563}
-				/>
-			</BigImageWrapper>
-		</MainWrapper>
-	)
+      <div className="h-[633px] w-[475px]">
+        <Image
+          className="h-full w-full object-cover"
+          src={sortedImages[activeIndex]?.image_url}
+          alt={`Main carousel image`}
+          width={476}
+          height={563}
+        />
+      </div>
+    </div>
+  )
 }
 
 export default CarouselWithMainImage

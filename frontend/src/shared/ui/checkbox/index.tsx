@@ -1,45 +1,38 @@
-import React, { FC, ReactNode } from 'react'
-import { CheckboxWrapper, ErrorText, HelperText } from './styles'
+import React, { ComponentPropsWithRef, FC, ReactNode } from 'react'
+import styles from './styles.module.css'
+import cn from 'classnames'
 
-interface CustomCheckboxProps {
-	label?: string | ReactNode
-	checked?: boolean
-	onChange: () => void
-	className?: string
-	error?: boolean | undefined
-	errorMessage?: string
-	helperText?: string
+interface CustomCheckboxProps extends ComponentPropsWithRef<'input'> {
+  label?: string | ReactNode
+  error?: boolean | undefined
+  errorMessage?: string
+  helperText?: string
 }
 
 const Checkbox: FC<CustomCheckboxProps> = ({
-	label,
-	checked = false,
-	onChange,
-	className,
-	error,
-	helperText,
-	errorMessage,
+  label,
+  checked = false,
+  className,
+  error,
+  helperText,
+  errorMessage,
+  ...other
 }) => {
-	return (
-		<>
-			<CheckboxWrapper
-				checked={checked}
-				className={`${error ? 'error' : ''} ${className}`}
-			>
-				<input hidden type='checkbox' checked={checked} onChange={onChange} />
+  return (
+    <>
+      <label className={cn('flex cursor-pointer content-center', className)}>
+        <input {...other} hidden type="checkbox" checked={checked} />
+        <span className={cn(styles.Check, { ['bg-black after:!block']: checked, ['!border-error500']: error })}></span>
+        {label && <label className="text-[16px] font-[500] leading-[19px] text-black">{label}</label>}
+      </label>
 
-				<span></span>
-
-				{label && <label>{label}</label>}
-			</CheckboxWrapper>
-
-			{errorMessage ? (
-				<ErrorText>{errorMessage}</ErrorText>
-			) : (
-				<HelperText>{helperText}</HelperText>
-			)}
-		</>
-	)
+      {errorMessage ? (
+        <label className="text-[11.11px] font-[400] text-error500">{errorMessage}</label>
+      ) : (
+        <label className="text-[11.11px] font-[400] text-neutral-400">{helperText}</label>
+      )}
+    </>
+  )
 }
 
 export default Checkbox

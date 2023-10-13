@@ -1,14 +1,11 @@
-import React, { FC } from 'react'
-import { StyledSkeleton } from './styles'
+import React, { ComponentPropsWithRef } from 'react'
+import styles from './styles.module.css'
+import cn from 'classnames'
 
-export interface SkeletonProps {
-	width?: string
-	height?: string
-	border?: string
-}
-
-const Skeleton: FC<SkeletonProps> = ({ width, height, border }) => (
-	<StyledSkeleton width={width} height={height} border={border} />
+const Skeleton = ({ className }: ComponentPropsWithRef<'div'>) => (
+  <div
+    className={cn(`relative h-full w-full overflow-hidden rounded-md bg-[#e8e8e8]`, styles.StyledSkeleton, className)}
+  />
 )
 
 export default Skeleton

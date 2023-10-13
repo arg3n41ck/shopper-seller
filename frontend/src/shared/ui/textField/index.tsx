@@ -1,21 +1,17 @@
-import { ChangeEvent, FC, ReactNode, useRef, useState } from 'react'
-import { TFInput } from './styles'
+import { ComponentPropsWithRef, ReactNode, useRef, useState } from 'react'
 import cn from 'classnames'
 
-interface TextFieldProps {
+interface TextFieldProps extends ComponentPropsWithRef<'input'> {
   startAdornment?: ReactNode
   endAdornment?: ReactNode
   value: string
   label?: string | ReactNode
-  onChange?: (event: ChangeEvent<HTMLInputElement>) => void
   error?: boolean
   errorMessage?: any
   helperText?: string
-  className?: string
-  [x: string]: any
 }
 
-const TextField: FC<TextFieldProps> = ({
+const TextField = ({
   startAdornment,
   endAdornment,
   value,
@@ -26,46 +22,50 @@ const TextField: FC<TextFieldProps> = ({
   helperText,
   className,
   ...others
-}) => {
+}: TextFieldProps) => {
   const inputRef = useRef<HTMLInputElement>(null)
   const [focused, setFocus] = useState(false)
   const isActive = focused || value
 
   return (
     <div className={cn('relative w-full', className)}>
-      {label && <label className={cn('text-neutral900 text-[13.33px] font-[400]', isActive)}>{label}</label>}
+      {label && <label className={cn('text-[13.33px] font-[400] text-neutral-900', isActive)}>{label}</label>}
 
       <div
         onClick={() => inputRef.current && inputRef.current.focus()}
-        className={cn('border-neutral300 relative flex items-center gap-4 border px-[16px] py-[13px] text-black', {
-          ['!border-error500']: error,
-          ['!border-neutral900']: isActive,
-          ['mt-2']: !!label,
-        })}
+        className={cn(
+          'relative flex cursor-text items-center gap-4 border border-neutral-300 px-[16px] py-[13px] text-black',
+          {
+            ['!border-error500']: error,
+            ['!border-neutral-900']: isActive,
+            ['mt-2']: !!label,
+          },
+        )}
       >
         {startAdornment && startAdornment}
 
         <input hidden autoComplete="" />
-
-        {/*todo tailwind*/}
-        <TFInput
+        <input
           ref={inputRef}
           onFocus={() => setFocus(true)}
           onBlur={() => setFocus(false)}
           value={value}
           onChange={onChange}
           autoComplete="new-password"
-          className={error ? 'error' : ''}
+          className={cn(
+            'w-full border-none bg-none text-[16px] font-[600] leading-[19px] text-neutral-900 outline-none placeholder:text-[16px] placeholder:font-[400]',
+            { ['text-error500']: error },
+          )}
           {...others}
         />
         {endAdornment && (
-          <div className={cn('text-neutral400', { ['!text-neutral900']: isActive })}>{endAdornment}</div>
+          <div className={cn('text-neutral-400', { ['!text-neutral-900']: isActive })}>{endAdornment}</div>
         )}
       </div>
       {errorMessage ? (
-        <label className="text-error500 text-[11.11px] font-[400]">{errorMessage}</label>
+        <label className="text-[11.11px] font-[400] text-error500">{errorMessage}</label>
       ) : (
-        <label className="text-neutral400 text-[11.11px] font-[400]">{helperText}</label>
+        <label className="text-[11.11px] font-[400] text-neutral-400">{helperText}</label>
       )}
     </div>
   )

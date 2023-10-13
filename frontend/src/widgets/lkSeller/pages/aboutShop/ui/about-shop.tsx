@@ -8,98 +8,83 @@ import { TextArea } from '@/shared/ui/textArea'
 import Image from 'next/image'
 import { useTranslation } from 'react-i18next'
 import { toast } from 'react-toastify'
-import { HeadTextOfPage, LKSellerContainerWithBackground } from '../../styles'
-import {
-	AboutShopContainer,
-	Avatar,
-	InfoAboutShopText,
-	ShopEditText,
-	ShopEmailText,
-	ShopHeaderInfo,
-	ShopInfo,
-	ShopNameAndEmailContainer,
-	ShopNameText,
-} from './styles'
 
 const sellerClient = new SellerClient()
 
 const createAddressDefaultForm = {
-	id: 'create-address',
-	address: '',
-	phone_number: '',
+  id: 'create-address',
+  address: '',
+  phone_number: '',
 }
 
 export const AboutShopPage: FC = () => {
-	const { t } = useTranslation()
-	const dispatch = useAppDispatch()
-	const { user } = useAppSelector(state => state.user)
-	const { seller, branches } = useAppSelector(state => state.seller)
-	const [showEditModal, setShowEditModal] = useState<boolean>(false)
-	const [selectedAddress, setSelectedAddress] = useState<string[]>([])
-	const [showAddAddress, setShowAddAddress] = useState(false)
+  const { t } = useTranslation()
+  const dispatch = useAppDispatch()
+  const { user } = useAppSelector((state) => state.user)
+  const { seller, branches } = useAppSelector((state) => state.seller)
+  const [showEditModal, setShowEditModal] = useState<boolean>(false)
+  const [selectedAddress, setSelectedAddress] = useState<string[]>([])
+  const [showAddAddress, setShowAddAddress] = useState(false)
 
-	const handleCloseModal = () => setShowEditModal(prev => !prev)
-	const handleCloseAddress = () => setShowAddAddress(prev => !prev)
+  const handleCloseModal = () => setShowEditModal((prev) => !prev)
+  const handleCloseAddress = () => setShowAddAddress((prev) => !prev)
 
-	const handleOpenEditAddress = (id: string) => {
-		if (!selectedAddress.includes(id)) {
-			setSelectedAddress((prev: string[]) => [...prev, id])
-			createAddressDefaultForm.id === id && handleCloseAddress()
-		}
-	}
+  const handleOpenEditAddress = (id: string) => {
+    if (!selectedAddress.includes(id)) {
+      setSelectedAddress((prev: string[]) => [...prev, id])
+      createAddressDefaultForm.id === id && handleCloseAddress()
+    }
+  }
 
-	const handleCloseEditAddress = useCallback(
-		(id: string) => {
-			setSelectedAddress(prev =>
-				prev.filter((address: string) => address !== id)
-			)
-			createAddressDefaultForm.id === id && handleCloseAddress()
-		},
-		[selectedAddress]
-	)
+  const handleCloseEditAddress = useCallback(
+    (id: string) => {
+      setSelectedAddress((prev) => prev.filter((address: string) => address !== id))
+      createAddressDefaultForm.id === id && handleCloseAddress()
+    },
+    [selectedAddress],
+  )
 
-	const postNewAddress = async (value: TypeAddressData) => {
-		await sellerClient.createAddress(value)
-	}
+  const postNewAddress = async (value: TypeAddressData) => {
+    await sellerClient.createAddress(value)
+  }
 
-	const editAddress = async (value: TypeAddressData) => {
-		await sellerClient.editAddress(value)
-	}
+  const editAddress = async (value: TypeAddressData) => {
+    await sellerClient.editAddress(value)
+  }
 
-	const deleteAddress = async (id: string) => {
-		await sellerClient
-			.deleteAddress(id)
-			.then(() => toast.success('Вы успешно удалили филиал'))
-		await dispatch(fetchBranches())
-	}
+  const deleteAddress = async (id: string) => {
+    await sellerClient.deleteAddress(id).then(() => toast.success('Вы успешно удалили филиал'))
+    await dispatch(fetchBranches())
+  }
 
-	useEffect(() => {
-		dispatch(fetchSeller())
-		dispatch(fetchBranches())
-	}, [])
+  useEffect(() => {
+    dispatch(fetchSeller())
+    dispatch(fetchBranches())
+  }, [])
 
-	return (
-		<LKSellerLayout>
-			<LKSellerContainerWithBackground>
-				<AboutShopContainer>
-					<ShopInfo>
-						<HeadTextOfPage>Мой магазин</HeadTextOfPage>
+  return (
+    <LKSellerLayout>
+      <div className="relative h-full bg-none">
+        <div className="px-[24px] py-[28px]">
+          <div className="mb-[35px] flex flex-col gap-[30px]">
+            <p className="text-[28px] font-[600] text-neutral-900">Мой магазин</p>
 
-						<div>
-							<ShopHeaderInfo>
-								<Avatar>
-									{/* <Skeleton height={'100%'} width={'100%'} border={'50%'} /> */}
-									<Image
-										src={'/dog.jpg'}
-										alt='dog'
-										width={95}
-										height={95}
-										objectFit='cover'
-										layout=''
-									/>
-								</Avatar>
-								<ShopNameAndEmailContainer>
-									{/* {!user ? (
+            <div>
+              <div className="flex items-start gap-[25px]">
+                <div className="h-[95px] w-[95px] cursor-pointer">
+                  {/* <Skeleton height={'100%'} width={'100%'} border={'50%'} /> */}
+                  <Image
+                    src={'/dog.jpg'}
+                    alt="dog"
+                    className="h-full rounded-[50%]"
+                    width={95}
+                    height={95}
+                    objectFit="cover"
+                    layout=""
+                  />
+                </div>
+                <div className="flex flex-col gap-[12px]">
+                  {/* {!user ? (
 									<Skeleton height='38px' />
 								) : (
 									<ShopNameText>{user?.seller?.shop_name}</ShopNameText>
@@ -109,33 +94,32 @@ export const AboutShopPage: FC = () => {
 								) : (
 									<ShopEmailText>{user?.email}</ShopEmailText>
 								)} */}
-									<ShopNameText>ARGOPSHOPPER</ShopNameText>
-									<ShopEmailText>argenshopper@gmail.com</ShopEmailText>
-								</ShopNameAndEmailContainer>
-							</ShopHeaderInfo>
+                  <p className="text-[28px] font-[600] text-neutral-900">ARGOPSHOPPER</p>
+                  <p className="text-[16px] font-[400] text-neutral-400">argenshopper@gmail.com</p>
+                </div>
+              </div>
+              <p className="mt-3 cursor-pointer font-[400] text-gray">Редактировать</p>
+            </div>
 
-							<ShopEditText className={'mt-3'}>Редактировать</ShopEditText>
-						</div>
+            <div>
+              <p className="text-[18px] font-[400] text-neutral-900">Информация о магазине</p>
 
-						<div>
-							<InfoAboutShopText>Информация о магазине</InfoAboutShopText>
-
-							<TextArea
-								value={''}
-								// error={
-								// 	formik.touched.description &&
-								// 	Boolean(formik.errors.description)
-								// }
-								// errorMessage={
-								// 	formik.touched.description ? formik.errors.description : ''
-								// }
-								onChange={() => console.log('it works')}
-								placeholder={t('Описание магазина')}
-								name=''
-								className={'mt-5 max-w-[528px]'}
-							/>
-						</div>
-						{/* <IconAndInfoContainer>
+              <TextArea
+                value={''}
+                // error={
+                // 	formik.touched.description &&
+                // 	Boolean(formik.errors.description)
+                // }
+                // errorMessage={
+                // 	formik.touched.description ? formik.errors.description : ''
+                // }
+                onChange={() => console.log('it works')}
+                placeholder={t('Описание магазина')}
+                name=""
+                className={'mt-5 max-w-[528px]'}
+              />
+            </div>
+            {/* <IconAndInfoContainer>
 							<Clipboard size={54} />
 
 							<ShopEditInfo>
@@ -177,8 +161,8 @@ export const AboutShopPage: FC = () => {
 								</Button>
 							</ShopEditInfo>
 						</IconAndInfoContainer> */}
-					</ShopInfo>
-					{/* <Line />
+          </div>
+          {/* <Line />
 					<ShopAddressesInfoContainer>
 						<IconAndInfoContainer>
 							<MapPin size={54} />
@@ -217,12 +201,12 @@ export const AboutShopPage: FC = () => {
 						</IconAndInfoContainer>
 					</ShopAddressesInfoContainer>
 					<Line /> */}
-				</AboutShopContainer>
-			</LKSellerContainerWithBackground>
+        </div>
+      </div>
 
-			{/* {showEditModal && (
+      {/* {showEditModal && (
 				<EditShopInfoModal open={showEditModal} onClose={handleCloseModal} />
 			)} */}
-		</LKSellerLayout>
-	)
+    </LKSellerLayout>
+  )
 }

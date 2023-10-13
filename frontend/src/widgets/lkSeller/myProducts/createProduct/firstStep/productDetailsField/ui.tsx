@@ -3,119 +3,91 @@ import { BUTTON_STYLES } from '@/shared/lib/consts/styles'
 import Button from '@/shared/ui/button'
 import TextField from '@/shared/ui/textField'
 import { Plus } from 'react-feather'
-import {
-	ChildFormContainer,
-	FormAndHeadTextContainer,
-	HeadTextOfForm,
-	SelectedOptionsType,
-} from '../styles'
+import cn from 'classnames'
 
 interface SpecificationInput {
-	value: string
-	placeholder: string
+  value: string
+  placeholder: string
 }
 
 interface SpecificationGroup {
-	inputs: SpecificationInput[]
+  inputs: SpecificationInput[]
 }
 
 interface ProductDetailsFieldProps {
-	title?: string
-	fieldName: string
-	className?: string
-	formik: any
+  title?: string
+  fieldName: string
+  className?: string
+  formik: any
 }
 
-const ProductDetailsField: FC<ProductDetailsFieldProps> = ({
-	title,
-	fieldName,
-	className,
-	formik,
-}) => {
-	const handleAddInput = () => {
-		const updatedValues = [...formik.values[fieldName]]
-		const newGroup: SpecificationGroup = {
-			inputs: [
-				{ value: '', placeholder: 'Состав товара' },
-				{ value: '', placeholder: '40%' },
-			],
-		}
-		updatedValues.push(newGroup)
-		formik.setFieldValue(fieldName, updatedValues)
-	}
+const ProductDetailsField: FC<ProductDetailsFieldProps> = ({ title, fieldName, className, formik }) => {
+  const handleAddInput = () => {
+    const updatedValues = [...formik.values[fieldName]]
+    const newGroup: SpecificationGroup = {
+      inputs: [
+        { value: '', placeholder: 'Состав товара' },
+        { value: '', placeholder: '40%' },
+      ],
+    }
+    updatedValues.push(newGroup)
+    formik.setFieldValue(fieldName, updatedValues)
+  }
 
-	const handleInputChange = (
-		groupIndex: number,
-		inputIndex: number,
-		value: string
-	) => {
-		const updatedValues = [...formik.values[fieldName]]
-		if (groupIndex >= 0 && groupIndex < updatedValues.length) {
-			const group = updatedValues[groupIndex]
-			if (inputIndex >= 0 && inputIndex < group.inputs.length) {
-				const updatedInputs = [...group.inputs]
-				updatedInputs[inputIndex] = { ...updatedInputs[inputIndex], value }
-				updatedValues[groupIndex] = { ...group, inputs: updatedInputs }
-				formik.setFieldValue(fieldName, updatedValues)
-			}
-		}
-	}
+  const handleInputChange = (groupIndex: number, inputIndex: number, value: string) => {
+    const updatedValues = [...formik.values[fieldName]]
+    if (groupIndex >= 0 && groupIndex < updatedValues.length) {
+      const group = updatedValues[groupIndex]
+      if (inputIndex >= 0 && inputIndex < group.inputs.length) {
+        const updatedInputs = [...group.inputs]
+        updatedInputs[inputIndex] = { ...updatedInputs[inputIndex], value }
+        updatedValues[groupIndex] = { ...group, inputs: updatedInputs }
+        formik.setFieldValue(fieldName, updatedValues)
+      }
+    }
+  }
 
-	return (
-		<FormAndHeadTextContainer className={className}>
-			{title && <HeadTextOfForm>{title}</HeadTextOfForm>}
+  return (
+    <div className={cn('flex flex-col gap-[25px]', className)}>
+      {title && <p className="text-[16px] font-[600] leading-[19px] text-black">{title}</p>}
 
-			<div className={'w-[100%] grid grid-cols-[1fr, 68px]'}>
-				<ChildFormContainer>
-					{formik.values[fieldName].map(
-						(group: SpecificationGroup, groupIndex: number) => (
-							<SelectedOptionsType key={groupIndex}>
-								{group.inputs.map(
-									(input: SpecificationInput, inputIndex: number) => (
-										<div key={inputIndex}>
-											<TextField
-												value={input.value}
-												placeholder={input.placeholder}
-												onChange={e =>
-													handleInputChange(
-														groupIndex,
-														inputIndex,
-														e.target.value
-													)
-												}
-												// error={
-												// 	formik.touched.specifications &&
-												// 	formik.touched.specifications[groupIndex] &&
-												// 	Boolean(
-												// 		formik.errors.specifications &&
-												// 			formik.errors?.specifications[groupIndex]
-												// 	)
-												// }
-												// errorMessage={
-												// 	formik.touched.specifications &&
-												// 	formik.touched.specifications[groupIndex]
-												// 		? formik.errors?.specifications[groupIndex]
-												// 		: ''
-												// }
-											/>
-										</div>
-									)
-								)}
-							</SelectedOptionsType>
-						)
-					)}
-				</ChildFormContainer>
+      <div className={'grid-cols-[1fr, 68px] grid w-[100%]'}>
+        <div className="flex flex-col gap-[24px]">
+          {formik.values[fieldName].map((group: SpecificationGroup, groupIndex: number) => (
+            <div className="grid w-full grid-cols-[1fr_68px] items-center gap-[24px]" key={groupIndex}>
+              {group.inputs.map((input: SpecificationInput, inputIndex: number) => (
+                <div key={inputIndex}>
+                  <TextField
+                    value={input.value}
+                    placeholder={input.placeholder}
+                    onChange={(e) => handleInputChange(groupIndex, inputIndex, e.target.value)}
+                    // error={
+                    // 	formik.touched.specifications &&
+                    // 	formik.touched.specifications[groupIndex] &&
+                    // 	Boolean(
+                    // 		formik.errors.specifications &&
+                    // 			formik.errors?.specifications[groupIndex]
+                    // 	)
+                    // }
+                    // errorMessage={
+                    // 	formik.touched.specifications &&
+                    // 	formik.touched.specifications[groupIndex]
+                    // 		? formik.errors?.specifications[groupIndex]
+                    // 		: ''
+                    // }
+                  />
+                </div>
+              ))}
+            </div>
+          ))}
+        </div>
 
-				<Button
-					onClick={handleAddInput}
-					variant={BUTTON_STYLES.withoutBackground}
-					className={'mt-5'}
-				>
-					<Plus />
-				</Button>
-			</div>
-		</FormAndHeadTextContainer>
-	)
+        <Button onClick={handleAddInput} variant={BUTTON_STYLES.withoutBackground} className={'mt-5'}>
+          <Plus />
+        </Button>
+      </div>
+    </div>
+  )
 }
 
 export default ProductDetailsField

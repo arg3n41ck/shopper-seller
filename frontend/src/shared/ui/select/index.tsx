@@ -1,97 +1,94 @@
 import React, { FC, useRef, useState } from 'react'
-import {
-	Option,
-	OptionsList,
-	SelectWrapper,
-	SelectedOption,
-	SelectLabel,
-	IconCont,
-	ErrorText,
-} from './styles'
 import { ChevronDown } from 'react-feather'
 import useOutsideClick from '@/shared/lib/hooks/useOutsideClick'
-import { NEUTRAL } from '@/shared/lib/consts/styles'
+import cn from 'classnames'
 
 type SelectProps = {
-	options: any[]
-	value: string
-	inputLabel?: string
-	placeholder?: string
-	error?: boolean
-	errorMessage?: any
-	onChange: (value: string) => void
-	width?: string
-	fieldTitle: string
-	fieldValue: string
-	className?: string
+  options: any[]
+  value: string
+  inputLabel?: string
+  placeholder?: string
+  error?: boolean
+  errorMessage?: any
+  onChange: (value: string) => void
+  width?: string
+  fieldTitle: string
+  fieldValue: string
+  className?: string
 }
 
 const CustomSelect: FC<SelectProps> = ({
-	options,
-	value,
-	onChange,
-	inputLabel,
-	placeholder,
-	width,
-	error,
-	errorMessage,
-	fieldTitle,
-	fieldValue,
-	className,
+  options,
+  value,
+  onChange,
+  inputLabel,
+  placeholder,
+  width,
+  error,
+  errorMessage,
+  fieldTitle,
+  fieldValue,
+  className,
 }) => {
-	const [isOpen, setIsOpen] = useState(false)
-	const selectRef = useRef(null)
-	const [focused, setFocus] = useState(false)
-	const isActive = focused || value
+  const [isOpen, setIsOpen] = useState(false)
+  const selectRef = useRef(null)
+  const [focused, setFocus] = useState(false)
+  const isActive = focused || value
 
-	const handleSelect = (optionValue: any) => {
-		setIsOpen(false)
-		onChange(optionValue[fieldValue])
-	}
+  const handleSelect = (optionValue: any) => {
+    setIsOpen(false)
+    onChange(optionValue[fieldValue])
+  }
 
-	useOutsideClick(selectRef, () => {
-		setIsOpen(false)
-	})
+  useOutsideClick(selectRef, () => {
+    setIsOpen(false)
+  })
 
-	return (
-		<SelectWrapper
-			ref={selectRef}
-			style={{ width }}
-			onFocus={() => setFocus(true)}
-			onBlur={() => setFocus(false)}
-			className={className}
-		>
-			{inputLabel && <SelectLabel>{inputLabel}</SelectLabel>}
-			<SelectedOption
-				className={`${isActive ? 'active' : ''} ${inputLabel ? 'mt-2' : ''}  ${
-					error ? 'error' : ''
-				}`}
-				onClick={() => setIsOpen(!isOpen)}
-			>
-				{options.find(option => option[fieldValue] === value)?.[fieldTitle] ||
-					placeholder}{' '}
-				<IconCont open={isOpen}>
-					<ChevronDown />
-				</IconCont>
-			</SelectedOption>
+  return (
+    <div
+      ref={selectRef}
+      style={{ width }}
+      onFocus={() => setFocus(true)}
+      onBlur={() => setFocus(false)}
+      className={cn('relative', className)}
+    >
+      {inputLabel && <label className="leading-[16px] text-[13p.33px] text-neutral-900">{inputLabel}</label>}
 
-			{isOpen && (
-				<>
-					{!!options.length && (
-						<OptionsList>
-							{options.map(option => (
-								<Option key={option.id} onClick={() => handleSelect(option)}>
-									{option[fieldTitle]}
-								</Option>
-							))}
-						</OptionsList>
-					)}
-				</>
-			)}
+      <div
+        className={cn(
+          'flex h-[48px] w-full cursor-pointer items-center border-[1px] border-neutral-300 px-[9px] py-[8px]',
+          { ['border-neutral-900 text-neutral-900']: isActive, ['mt-2']: inputLabel, ['border-error500']: error },
+        )}
+        onClick={() => setIsOpen(!isOpen)}
+      >
+        {options.find((option) => option[fieldValue] === value)?.[fieldTitle] || placeholder} {/*position: absolute;*/}
+        <div
+          className={cn('absolute right-[15px] transition-all duration-[0.1s] ease-in-out', { ['rotate-180']: isOpen })}
+        >
+          <ChevronDown />
+        </div>
+      </div>
 
-			{errorMessage && <ErrorText>{errorMessage}</ErrorText>}
-		</SelectWrapper>
-	)
+      {isOpen && (
+        <>
+          {!!options.length && (
+            <ul className="absolute left-0 z-[1] m-0 max-h-[200px] w-full list-none overflow-y-auto border-[1px] border-neutral-300 bg-white p-0">
+              {options.map((option) => (
+                <li
+                  className="block h-auto cursor-pointer p-[8px] transition-all hover:bg-neutral-300"
+                  key={option.id}
+                  onClick={() => handleSelect(option)}
+                >
+                  {option[fieldTitle]}
+                </li>
+              ))}
+            </ul>
+          )}
+        </>
+      )}
+      {errorMessage && <label className="text-[11.11px] text-error500">{errorMessage}</label>}
+    </div>
+  )
 }
 
 export default CustomSelect

@@ -1,7 +1,6 @@
 import React, { FC, useEffect, useState } from 'react'
 import AuthLayout from '@/components/layouts/authLayout'
 import { AuthClient } from '@/shared/apis/authClient'
-import { ButtonInfoCont } from '@/shared/styles/styles'
 import Button from '@/shared/ui/button'
 import LoaderIcon from '@/shared/ui/loader'
 import TextField from '@/shared/ui/textField'
@@ -10,8 +9,6 @@ import { useRouter } from 'next/router'
 import { Clock } from 'react-feather'
 import { Trans, useTranslation } from 'react-i18next'
 import * as yup from 'yup'
-import { HeadingText } from '../styles'
-import { ResendSMSText, ResetPasswordContainer, TextFieldContainer, TimerContainer } from './styles'
 
 interface ResetPasswordProps {}
 
@@ -80,12 +77,13 @@ export const ResetPasswordPage: FC<ResetPasswordProps> = () => {
     <AuthLayout>
       <div className="" onClick={() => 'test'}></div>
       <form onSubmit={formik.handleSubmit}>
-        <ResetPasswordContainer>
-          <HeadingText>
+        <div className="mx-auto flex w-full max-w-[436px] flex-col gap-[20px]">
+          <p className="text-center text-[24px] font-[500] text-black">
             {/* <Trans i18nKey={'auth.resetPassword.headText'} /> */}
             {smsSent ? 'Код подтверждения был отправлен на ваш номер телефона' : 'Восстановление пароля'}
-          </HeadingText>
-          <TextFieldContainer>
+          </p>
+
+          <div className="relative mx-auto flex w-full flex-col gap-[12px]">
             <TextField
               error={formik.touched.phone_number && Boolean(formik.errors.phone_number)}
               errorMessage={formik.touched.phone_number && formik.errors.phone_number ? formik.errors.phone_number : ''}
@@ -96,21 +94,28 @@ export const ResetPasswordPage: FC<ResetPasswordProps> = () => {
             />
 
             {timeLeft !== 0 && (
-              <TimerContainer>
+              <div className="absolute right-[-80px] top-[10px] flex items-center gap-[6px] text-[#676767] sm:relative sm:right-0 sm:top-0 sm:justify-end">
                 <Clock size={24} />
 
                 <p>{formatTime(timeLeft)}</p>
-              </TimerContainer>
+              </div>
             )}
-            {smsSent && <ResendSMSText onClick={() => setTimeLeft(180)}>Отправить код еще раз</ResendSMSText>}
-          </TextFieldContainer>
+            {smsSent && (
+              <p
+                className="text-right text-[16px] font-[500] text-[#b91c1c] sm:text-left"
+                onClick={() => setTimeLeft(180)}
+              >
+                Отправить код еще раз
+              </p>
+            )}
+          </div>
 
           <Button type="submit" disabled={isLoading}>
-            <ButtonInfoCont>
+            <div className="flex items-center gap-[10px]">
               <Trans i18nKey={'auth.resetPassword.submit'} /> <LoaderIcon loading={isLoading} size={24} />
-            </ButtonInfoCont>
+            </div>
           </Button>
-        </ResetPasswordContainer>
+        </div>
       </form>
     </AuthLayout>
   )

@@ -4,7 +4,6 @@ import ShowAndHideIcon from '@/components/passwordShowAndHideIcon'
 import { AuthClient } from '@/shared/apis/authClient'
 import { TypeResetPassword } from '@/shared/lib/types/authTypes'
 import { PATH_AUTH } from '@/shared/routes/paths'
-import { ButtonInfoCont } from '@/shared/styles/styles'
 import Button from '@/shared/ui/button'
 import LoaderIcon from '@/shared/ui/loader'
 import TextField from '@/shared/ui/textField'
@@ -14,8 +13,7 @@ import { useRouter } from 'next/router'
 import { Clock, X } from 'react-feather'
 import { Trans, useTranslation } from 'react-i18next'
 import * as yup from 'yup'
-import { ResetPasswordContainer, TextFieldContainer } from '../resetPassword/styles'
-import { ButtonCont, HeadingText, PasswordHandlerCont } from '../styles'
+import cn from 'classnames'
 
 interface FormValues {
   new_password: string
@@ -89,13 +87,13 @@ export const NewPasswordPage: FC = () => {
 
   return (
     <AuthLayout>
-      <ResetPasswordContainer>
-        <HeadingText>
+      <div className="mx-auto flex w-full max-w-[436px] flex-col gap-[20px]">
+        <p className="text-center text-[24px] font-[500] text-black">
           <Trans i18nKey={'auth.resetPassword.headTextNewPassword'} />
-        </HeadingText>
+        </p>
 
         <form onSubmit={formik.handleSubmit}>
-          <TextFieldContainer>
+          <div className="relative mx-auto flex w-full flex-col gap-[12px]">
             <TextField
               error={formik.touched.new_password && Boolean(formik.errors.new_password)}
               errorMessage={formik.touched.new_password ? formik.errors.new_password : ''}
@@ -125,26 +123,42 @@ export const NewPasswordPage: FC = () => {
               })}
               placeholder={'Повторите пароль'}
             />
+            {/*  display: flex;*/}
+            {/*  align-items: center;*/}
+            {/*  gap: 5px;*/}
+            {/*  color: ${({ $error }) =>*/}
+            {/*    $error ? palette.SUCCESS[700] : palette.NEUTRAL[500]};*/}
 
-            <PasswordHandlerCont
-              $error={passwordLengthCheck({
-                password: formik.values.new_password,
-              })}
+            {/*  p {*/}
+            {/*    font-style: normal;*/}
+            {/*  font-weight: 500;*/}
+            {/*  font-size: 14px;*/}
+            {/*  line-height: 17px;*/}
+            {/*}*/}
+            <div
+              className={cn(
+                'flex items-center gap-[5px]',
+                passwordLengthCheck({
+                  password: formik.values.new_password,
+                })
+                  ? 'text-success700'
+                  : 'text-neutral-500',
+              )}
             >
               {passwordLengthCheck({ password: formik.values.new_password }) ? <Clock size={18} /> : <X size={18} />}
-              <p>Ваш пароль должен содержать мин. 8 букв</p>
-            </PasswordHandlerCont>
-          </TextFieldContainer>
+              <p className="text-[14px] font-[500] leading-[17px]">Ваш пароль должен содержать мин. 8 букв</p>
+            </div>
+          </div>
 
-          <ButtonCont>
+          <div className="mb-[62px] mt-[20px] flex w-full justify-center">
             <Button type="submit" disabled={isLoading}>
-              <ButtonInfoCont>
+              <div className="flex items-center gap-[10px]">
                 <Trans i18nKey={'auth.resetPassword.submit'} /> <LoaderIcon loading={isLoading} size={24} />
-              </ButtonInfoCont>
+              </div>
             </Button>
-          </ButtonCont>
+          </div>
         </form>
-      </ResetPasswordContainer>
+      </div>
     </AuthLayout>
   )
 }

@@ -1,18 +1,17 @@
 import React, { FC, ReactNode } from 'react'
 import Header from '../../headers/authHeader'
-import { Main, MainWrapper } from './styles'
 
 interface Props {
-	children: ReactNode
+  children: ReactNode
 }
 
 const MainLayout: FC<Props> = ({ children }) => {
-	return (
-		<MainWrapper>
-			<Header />
-			<Main>{children}</Main>
-		</MainWrapper>
-	)
+  return (
+    <div className="mx-auto mt-[23px] flex min-h-[100vh] w-full max-w-[1080px] flex-col">
+      <Header />
+      <div className="flex-1">{children}</div>
+    </div>
+  )
 }
 
 export default MainLayout

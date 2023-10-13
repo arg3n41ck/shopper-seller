@@ -19,19 +19,6 @@ module.exports = {
         purple: 'var(--purple)',
         orange: 'var(--orange)',
 
-        //=======NEUTRAL=======
-        neutral50: 'var(--neutral50)',
-        neutral100: 'var(--neutral100)',
-        neutral200: 'var(--neutral200)',
-        neutral300: 'var(--neutral300)',
-        neutral400: 'var(--neutral400)',
-        neutral500: 'var(--neutral500)',
-        neutral600: 'var(--neutral600)',
-        neutral700: 'var(--neutral700)',
-        neutral800: 'var(--neutral800)',
-        neutral900: 'var(--neutral900)',
-        //======================
-
         //========ERROR=========
         error50: 'var(--error50)',
         error300: 'var(--error300)',
@@ -55,6 +42,14 @@ module.exports = {
         primaryDash800: 'var(--primaryDash800)',
         primaryDash900: 'var(--primaryDash900)',
         //======================
+
+        //========SUCCESS=========
+        success50: 'var(--success50)',
+        success300: 'var(--success300)',
+        success500: 'var(--success500)',
+        success700: 'var(--success700)',
+        success900: 'var(--success900)',
+        //========================
       },
       textColor: {
         black: 'var(--black)',
