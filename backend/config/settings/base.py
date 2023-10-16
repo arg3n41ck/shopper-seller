@@ -31,8 +31,8 @@ THIRD_PARTY_APPS = [
     "mptt",
     "phonenumber_field",
     "storages",
-    # "django_elasticsearch_dsl",
-    # "django_elasticsearch_dsl_drf",
+    "django_elasticsearch_dsl",
+    "django_elasticsearch_dsl_drf",
 ]
 
 LOCAL_APPS = [
