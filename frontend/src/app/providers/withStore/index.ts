@@ -1,2 +1,2 @@
 export { WithStore } from './provider'
-export * from './config'
+export * from './store'
