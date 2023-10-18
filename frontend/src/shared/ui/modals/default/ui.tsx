@@ -1,4 +1,4 @@
-import React, { FC, ReactNode } from 'react'
+import React, { ReactNode } from 'react'
 import { X } from 'react-feather'
 import { AnimatePresence, motion } from 'framer-motion'
 
@@ -21,7 +21,7 @@ const modalVariants = {
   },
 }
 
-const Modal: FC<Props> = ({ children, open, onClose, style }) => {
+export const Modal = ({ children, open, onClose, style }: Props) => {
   return (
     <AnimatePresence>
       {open && (
@@ -50,5 +50,3 @@ const Modal: FC<Props> = ({ children, open, onClose, style }) => {
     </AnimatePresence>
   )
 }
-
-export default Modal

@@ -7,7 +7,7 @@ interface AccordionProps {
   children: React.ReactNode
 }
 
-const Accordion: React.FC<AccordionProps> = ({ title, children }) => {
+export const Accordion: React.FC<AccordionProps> = ({ title, children }) => {
   const [isOpen, setIsOpen] = useState(false)
 
   const handleAccordionClick = () => {
@@ -34,5 +34,3 @@ const Accordion: React.FC<AccordionProps> = ({ title, children }) => {
     </div>
   )
 }
-
-export default Accordion

@@ -134,7 +134,7 @@ export default ProductDetailsField
 // 	)
 // }
 
-// export default ProductDetailsField
+// export Skeleton ProductDetailsField
 // import React, { FC } from 'react';
 // import {
 //   ChildFormContainer,
@@ -233,4 +233,4 @@ export default ProductDetailsField
 //   );
 // };
 
-// export default ProductDetailsField;
+// export Skeleton ProductDetailsField;

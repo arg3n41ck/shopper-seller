@@ -5,7 +5,7 @@ import { BUTTON_STYLES } from '@/shared/lib/consts/styles'
 import { useAppDispatch } from '@/shared/lib/hooks/redux'
 import { Button } from 'src/shared/ui/buttons'
 import { LoaderIcon } from '@/shared/ui/loaders'
-import Modal from '@/shared/ui/modal'
+import { Modal } from '@/shared/ui/modals'
 import TextField from '@/shared/ui/inputs/textField'
 import { useFormik } from 'formik'
 import { useTranslation } from 'react-i18next'
@@ -120,7 +120,7 @@ export const EditPhoneNumberModal: FC<Props> = ({ open, onClose }) => {
           // 		toast.error(errorFields422?.email)
           // 		break
 
-          // 	default:
+          // 	Skeleton:
           // 		break
           // }
 
