@@ -2,7 +2,7 @@
 import { Provider } from 'react-redux'
 import { ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
-import { store } from '@/shared/store'
+import { store } from '@/app/store'
 import { AppPropsType } from 'next/dist/shared/lib/utils'
 import '@/localization'
 import '@/app/index.scss'
@@ -14,7 +14,7 @@ const jost = Jost({
 
 function App({ Component, pageProps }: AppPropsType) {
   return (
-      <main className={jost.className}>
+    <main className={jost.className}>
       <Provider store={store}>
         <ToastContainer
           position="top-right"

@@ -1,7 +1,12 @@
-import { SettingsPage } from '@/widgets/lkSeller'
+import { SettingsMainSection } from '@/sections-pages/seller-settings'
+import { LKSellerLayout } from 'src/widgets/layouts/lkSellerLayout'
 
 const Settings = () => {
-	return <SettingsPage />
+  return (
+    <LKSellerLayout>
+      <SettingsMainSection />
+    </LKSellerLayout>
+  )
 }
 
 export default Settings

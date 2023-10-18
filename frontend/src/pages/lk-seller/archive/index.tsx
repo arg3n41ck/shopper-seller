@@ -1,8 +1,13 @@
-import React, { FC } from 'react'
-import { ArchivePage } from '@/widgets/lkSeller'
+import React from 'react'
+import { LKSellerLayout } from 'src/widgets/layouts/lkSellerLayout'
+import { ArchiveMainSection } from '@/sections-pages/seller-archive'
 
-const Archive: FC = () => {
-	return <ArchivePage />
+const Archive = () => {
+  return (
+    <LKSellerLayout>
+      <ArchiveMainSection />
+    </LKSellerLayout>
+  )
 }
 
 export default Archive
