@@ -1,0 +1,17 @@
+.radioInput:checked + span:before {
+  @apply bg-black;
+}
+
+.radioInput:checked + span:after {
+  @apply opacity-[1];
+}
+
+.radioLabel:before {
+  content: '';
+  @apply absolute left-[50%] top-[50%] block h-[7px] w-[7px] -translate-x-[50%] -translate-y-[50%] rounded-[50%] bg-transparent;
+}
+
+.radioLabel:after {
+  content: '';
+  @apply absolute left-[50%] top-[50%] block h-1 w-1 -translate-x-[50%] -translate-y-[50%] rounded-[50%] bg-neutral-100;
+}

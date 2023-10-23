@@ -1,0 +1,1 @@
+export { ResetPasswordMainSection } from './ui'

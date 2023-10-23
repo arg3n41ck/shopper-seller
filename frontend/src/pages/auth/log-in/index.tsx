@@ -1,7 +1,12 @@
-import { LoginPage } from '@/widgets/auth'
+import { AuthLayout } from 'src/widgets/layouts/authLayout'
+import { LoginMainSection } from '@/sections-pages/auth-login'
 
 const Login = () => {
-	return <LoginPage />
+  return (
+    <AuthLayout>
+      <LoginMainSection />
+    </AuthLayout>
+  )
 }
 
 export default Login
