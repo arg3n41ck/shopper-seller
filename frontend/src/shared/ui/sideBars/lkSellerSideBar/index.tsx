@@ -1,13 +1,12 @@
 import React, { FC, useMemo } from 'react'
 import LogoIcon from '@/shared/assets/icons/LogoIcon'
-import { AuthClient } from '@/shared/apis/authClient'
-import { useAppDispatch, useAppSelector } from '@/shared/lib/hooks/redux'
-import { TypeLogOut } from '@/shared/lib/types/authTypes'
+import { useAppDispatch } from '@/shared/lib/hooks/redux'
 import { PATH_AUTH } from '@/shared/config'
 import { logOut } from '@/entities/user/model/slice'
 import { useRouter } from 'next/router'
 import { Clipboard, Folder, Home, List, LogOut, Menu, Settings, Users } from 'react-feather'
 import { motion } from 'framer-motion'
+import { $apiAccountsApi } from '@/shared/api'
 
 interface Props {
   open: boolean
@@ -21,8 +20,6 @@ interface RouterRef {
   active?: boolean
 }
 
-const authClient = new AuthClient()
-
 const variantsSidebar = {
   open: { width: 312 },
   closed: { width: 75 },
@@ -35,8 +32,6 @@ export const LKSellerSideBar: FC<Props> = ({ open, menuHandler }) => {
   const dispatch = useAppDispatch()
   const matchMyProducts = router.pathname.match(/\/lk-seller\/products-list/i)
   const isOpen = open ? 'open' : 'closed'
-
-  const { user } = useAppSelector((state) => state.user)
 
   const routersRef = useMemo<RouterRef[]>(
     () => [
@@ -76,8 +71,8 @@ export const LKSellerSideBar: FC<Props> = ({ open, menuHandler }) => {
     [router.pathname],
   )
 
-  const handleLogOutClick = async ({ user_id }: TypeLogOut) => {
-    await authClient.logOut({ user_id })
+  const handleLogOutClick = async () => {
+    await $apiAccountsApi.accountsAuthTokenLogoutCreate()
     dispatch(logOut())
     await router.push({ pathname: PATH_AUTH.root })
   }
@@ -123,7 +118,7 @@ export const LKSellerSideBar: FC<Props> = ({ open, menuHandler }) => {
             )
           })}
           <li
-            onClick={() => handleLogOutClick({ user_id: user?.id })}
+            onClick={handleLogOutClick}
             className={`
             relative mt-[95px] cursor-pointer
             p-[16px_16px_16px_24px] text-neutral-900 transition-all ease-in-out

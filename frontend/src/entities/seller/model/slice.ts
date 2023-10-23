@@ -1,86 +1,73 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
-import { SellerClient } from '@/shared/apis/sellerClient'
-import { TypeAddressData, TypeSellerInfoData } from '@/shared/lib/types/sellerTypes'
-
-const sellerClient = new SellerClient()
+import { Category, Product, Shop } from '@/shared/api/gen'
+import { $apiProductsApi, $apiSellersApi } from '@/shared/api'
 
 type SellerSliceState = {
-  seller: TypeSellerInfoData | null
-  branches: TypeAddressData[] | null
-  categories: any[]
+  seller: Shop | null
+  categories: Category[]
   error: any
   productDetailsMaterialChoice: []
   productDetailsChoice: []
   productDetailsSizeChoice: []
-  product: any
+  product: Product | null
 }
 
-export const fetchSeller = createAsyncThunk('seller/get', async (_, { rejectWithValue }) => {
+export const fetchSeller = createAsyncThunk('seller/get', async (slug: string, { rejectWithValue }) => {
   try {
-    const data = await sellerClient.fetchSeller()
+    const { data } = await $apiSellersApi.sellersSellerShopsRead(slug)
     return data
   } catch (error: any) {
     return rejectWithValue(error.response.status)
   }
 })
 
-export const fetchProduct = createAsyncThunk('seller/product/get', async (id: string, { rejectWithValue }) => {
+export const fetchProduct = createAsyncThunk('seller/product/get', async (slug: string, { rejectWithValue }) => {
   try {
-    const data = await sellerClient.fetchSellerProduct(id)
+    const { data } = await $apiProductsApi.productsSellerProductsRead(slug)
     return data
   } catch (error: any) {
     return rejectWithValue(error.response.status)
   }
 })
 
-export const fetchProductDetailsSizeChoice = createAsyncThunk(
-  'seller/fetchProductDetailsSizeChoice/get',
-  async (_, { rejectWithValue }) => {
-    try {
-      const data = await sellerClient.fetchProductDetailsSizeChoice()
-      return data
-    } catch (error: any) {
-      return rejectWithValue(error.response.status)
-    }
-  },
-)
+// export const fetchProductDetailsSizeChoice = createAsyncThunk(
+//   'seller/fetchProductDetailsSizeChoice/get',
+//   async (_, { rejectWithValue }) => {
+//     try {
+//       const data = await sellerClient.fetchProductDetailsSizeChoice()
+//       return data
+//     } catch (error: any) {
+//       return rejectWithValue(error.response.status)
+//     }
+//   },
+// )
 
-export const fetchProductDetailsMaterialChoice = createAsyncThunk(
-  'seller/fetchProductDetailsMaterialChoice/get',
-  async (_, { rejectWithValue }) => {
-    try {
-      const data = await sellerClient.fetchProductDetailsMaterialChoice()
-      return data
-    } catch (error: any) {
-      return rejectWithValue(error.response.status)
-    }
-  },
-)
+// export const fetchProductDetailsMaterialChoice = createAsyncThunk(
+//   'seller/fetchProductDetailsMaterialChoice/get',
+//   async (_, { rejectWithValue }) => {
+//     try {
+//       const data = await sellerClient.fetchProductDetailsMaterialChoice()
+//       return data
+//     } catch (error: any) {
+//       return rejectWithValue(error.response.status)
+//     }
+//   },
+// )
 
-export const fetchProductDetailsChoice = createAsyncThunk(
-  'seller/fetchProductDetailsChoice/get',
-  async (_, { rejectWithValue }) => {
-    try {
-      const data = await sellerClient.fetchProductDetailsChoice()
-      return data
-    } catch (error: any) {
-      return rejectWithValue(error.response.status)
-    }
-  },
-)
-
-export const fetchBranches = createAsyncThunk('seller-branches/get', async (_, { rejectWithValue }) => {
-  try {
-    const data = await sellerClient.fetchBranches()
-    return data
-  } catch (error: any) {
-    return rejectWithValue(error.response.status)
-  }
-})
-
+// export const fetchProductDetailsChoice = createAsyncThunk(
+//   'seller/fetchProductDetailsChoice/get',
+//   async (_, { rejectWithValue }) => {
+//     try {
+//       const data = await sellerClient.fetchProductDetailsChoice()
+//       return data
+//     } catch (error: any) {
+//       return rejectWithValue(error.response.status)
+//     }
+//   },
+// )
 export const fetchCategories = createAsyncThunk('categories/get', async (_, { rejectWithValue }) => {
   try {
-    const data = await sellerClient.fetchCategories()
+    const { data } = await $apiProductsApi.productsCategoriesList()
     return data
   } catch (error: any) {
     return rejectWithValue(error.response.status)
@@ -89,7 +76,6 @@ export const fetchCategories = createAsyncThunk('categories/get', async (_, { re
 
 const initialState: SellerSliceState = {
   seller: null,
-  branches: [],
   categories: [],
   error: null,
   productDetailsMaterialChoice: [],
@@ -119,34 +105,27 @@ const sellerSlice = createSlice({
       state.error = action.payload
     })
 
-    builder.addCase(fetchProductDetailsChoice.fulfilled, (state, action) => {
-      state.productDetailsChoice = action?.payload
-      state.error = false
-    })
-    builder.addCase(fetchProductDetailsChoice.rejected, (state, action) => {
-      state.error = action.payload
-    })
-    builder.addCase(fetchProductDetailsMaterialChoice.fulfilled, (state, action) => {
-      state.productDetailsMaterialChoice = action?.payload
-      state.error = false
-    })
-    builder.addCase(fetchProductDetailsMaterialChoice.rejected, (state, action) => {
-      state.error = action.payload
-    })
-    builder.addCase(fetchProductDetailsSizeChoice.fulfilled, (state, action) => {
-      state.productDetailsSizeChoice = action?.payload
-      state.error = false
-    })
-    builder.addCase(fetchProductDetailsSizeChoice.rejected, (state, action) => {
-      state.error = action.payload
-    })
-    builder.addCase(fetchBranches.fulfilled, (state, action) => {
-      state.branches = action?.payload
-      state.error = false
-    })
-    builder.addCase(fetchBranches.rejected, (state, action) => {
-      state.error = action.payload
-    })
+    // builder.addCase(fetchProductDetailsChoice.fulfilled, (state, action) => {
+    //   state.productDetailsChoice = action?.payload
+    //   state.error = false
+    // })
+    // builder.addCase(fetchProductDetailsChoice.rejected, (state, action) => {
+    //   state.error = action.payload
+    // })
+    // builder.addCase(fetchProductDetailsMaterialChoice.fulfilled, (state, action) => {
+    //   state.productDetailsMaterialChoice = action?.payload
+    //   state.error = false
+    // })
+    // builder.addCase(fetchProductDetailsMaterialChoice.rejected, (state, action) => {
+    //   state.error = action.payload
+    // })
+    // builder.addCase(fetchProductDetailsSizeChoice.fulfilled, (state, action) => {
+    //   state.productDetailsSizeChoice = action?.payload
+    //   state.error = false
+    // })
+    // builder.addCase(fetchProductDetailsSizeChoice.rejected, (state, action) => {
+    //   state.error = action.payload
+    // })
     builder.addCase(fetchCategories.fulfilled, (state, action) => {
       state.categories = action?.payload
       state.error = false

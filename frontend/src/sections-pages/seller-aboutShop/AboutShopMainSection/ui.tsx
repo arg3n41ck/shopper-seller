@@ -2,11 +2,12 @@ import React, { useCallback, useEffect, useState } from 'react'
 import { SellerClient } from '@/shared/apis/sellerClient'
 import { useAppDispatch, useAppSelector } from '@/shared/lib/hooks/redux'
 import { TypeAddressData } from '@/shared/lib/types/sellerTypes'
-import { fetchBranches, fetchSeller } from '@/entities/seller/model/slice'
+import { fetchSeller } from '@/entities/seller/model/slice'
 import { TextArea } from '@/shared/ui/inputs/textArea'
 import Image from 'next/image'
 import { useTranslation } from 'react-i18next'
 import { toast } from 'react-toastify'
+import { useRouter } from 'next/router'
 
 const sellerClient = new SellerClient()
 
@@ -17,6 +18,7 @@ const createAddressDefaultForm = {
 }
 
 export const AboutShopMainSection = () => {
+  const { query } = useRouter()
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
   const { user } = useAppSelector((state) => state.user)
@@ -53,13 +55,11 @@ export const AboutShopMainSection = () => {
 
   const deleteAddress = async (id: string) => {
     await sellerClient.deleteAddress(id).then(() => toast.success('Вы успешно удалили филиал'))
-    await dispatch(fetchBranches())
   }
 
   useEffect(() => {
-    dispatch(fetchSeller())
-    dispatch(fetchBranches())
-  }, [])
+    dispatch(fetchSeller((query?.slug as string) || ''))
+  }, [query])
 
   return (
     <>

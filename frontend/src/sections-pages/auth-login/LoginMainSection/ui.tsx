@@ -1,10 +1,8 @@
-import React, { FC, useState } from 'react'
+import React, { useState } from 'react'
 import ShowAndHideIcon from 'src/shared/ui/templates/passwordShowAndHideIcon'
-import { AuthClient } from '@/shared/apis/authClient'
 import { BUTTON_STYLES } from '@/shared/lib/consts/styles'
 import { useAppDispatch } from '@/shared/lib/hooks/redux'
 import { setLocalStorageValues } from '@/shared/lib/hooks/useLocalStorage'
-import { TypeLogIn } from '@/shared/lib/types/authTypes'
 import { PATH_AUTH, PATH_LK_SELLER } from '@/shared/config'
 import { Button } from 'src/shared/ui/buttons'
 import { LoaderIcon } from '@/shared/ui/loaders'
@@ -17,8 +15,8 @@ import { Trans, useTranslation } from 'react-i18next'
 import * as yup from 'yup'
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { AxiosError } from 'axios'
-
-const authClient = new AuthClient()
+import { $apiAccountsApi } from '@/shared/api'
+import { TokenObtainPair } from '@/shared/api/gen'
 
 interface IFormErrors {
   username?: string
@@ -31,7 +29,7 @@ const validationSchema = (t: (key: string) => string) =>
     password: yup.string().required(t('auth.validation.password.required')),
   })
 
-export const LoginMainSection: FC = () => {
+export const LoginMainSection = () => {
   const { t } = useTranslation()
   const router = useRouter()
   const dispatch = useAppDispatch()
@@ -39,7 +37,7 @@ export const LoginMainSection: FC = () => {
   const [showPassword, setShowPassword] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
 
-  const formik = useFormik<TypeLogIn>({
+  const formik = useFormik<TokenObtainPair>({
     initialValues: {
       username: '',
       password: '',
@@ -48,11 +46,14 @@ export const LoginMainSection: FC = () => {
     onSubmit: async (values) => {
       setIsLoading(true)
       try {
-        const loginResponse = await authClient.login(values)
+        //todo исправить позже типы
+        const { data } = (await $apiAccountsApi.accountsAuthTokenCreate(values)) as unknown as {
+          data: { access: string; refresh: string }
+        }
 
         setLocalStorageValues({
-          access_token: loginResponse.access_token,
-          refresh_token: loginResponse.refresh_token,
+          access_token: data.access,
+          refresh_token: data.refresh,
         })
 
         const { payload } = await dispatch(fetchMe())

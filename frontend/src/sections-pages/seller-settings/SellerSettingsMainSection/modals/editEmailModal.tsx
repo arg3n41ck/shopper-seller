@@ -1,9 +1,7 @@
 import React, { FC, useState } from 'react'
 import ShowAndHideIcon from 'src/shared/ui/templates/passwordShowAndHideIcon'
-import { AuthClient } from '@/shared/apis/authClient'
 import { BUTTON_STYLES } from '@/shared/lib/consts/styles'
 import { useAppDispatch } from '@/shared/lib/hooks/redux'
-import { setLocalStorageValues } from '@/shared/lib/hooks/useLocalStorage'
 import { fetchMe } from '@/entities/user/model/slice'
 import { Button } from 'src/shared/ui/buttons'
 import { LoaderIcon } from '@/shared/ui/loaders'
@@ -13,8 +11,7 @@ import { useFormik } from 'formik'
 import { useTranslation } from 'react-i18next'
 import { toast } from 'react-toastify'
 import * as yup from 'yup'
-
-const authClient = new AuthClient()
+import { $apiAccountsApi } from '@/shared/api'
 
 interface IFormValues {
   password: string
@@ -80,18 +77,19 @@ export const EditEmailModal: FC<Props> = ({ open, onClose }) => {
       repeat_email: '',
     },
     validationSchema: validationSchema(t),
-    onSubmit: async ({ email, password }, { resetForm }) => {
+    onSubmit: async ({ email, repeat_email, password }, { resetForm }) => {
       setIsLoading(true)
       try {
-        const changeEmailResponse = await authClient.changeEmail({
+        await $apiAccountsApi.accountsUsersChangeEmailRequest({
           email,
-          password,
+          current_password: password,
+          re_email: repeat_email,
         })
 
-        setLocalStorageValues({
-          access_token: changeEmailResponse.access_token,
-          refresh_token: changeEmailResponse.refresh_token,
-        })
+        // setLocalStorageValues({
+        //   access_token: changeEmailResponse.access_token,
+        //   refresh_token: changeEmailResponse.refresh_token,
+        // })
 
         await dispatch(fetchMe())
         setIsLoading(false)

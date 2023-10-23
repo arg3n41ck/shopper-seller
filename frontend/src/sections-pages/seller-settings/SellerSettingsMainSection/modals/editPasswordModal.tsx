@@ -1,6 +1,5 @@
 import React, { FC, useState } from 'react'
 import ShowAndHideIcon from 'src/shared/ui/templates/passwordShowAndHideIcon'
-import { AuthClient } from '@/shared/apis/authClient'
 import { BUTTON_STYLES } from '@/shared/lib/consts/styles'
 import { useAppDispatch } from '@/shared/lib/hooks/redux'
 import { fetchMe } from '@/entities/user/model/slice'
@@ -11,27 +10,20 @@ import TextField from '@/shared/ui/inputs/textField'
 import { useFormik } from 'formik'
 import { useTranslation } from 'react-i18next'
 import * as yup from 'yup'
-
-const authClient = new AuthClient()
+import { $apiAccountsApi } from '@/shared/api'
 
 interface IFormErrors {
   [key: string]: string
 }
 
-interface IFormValues {
-  old_password: string
-  new_password: string
-  repeat_password: string
-}
-
 const validationSchema = (t: (key: string) => string) =>
   yup.object({
-    old_password: yup.string().required('Обязательно брат'),
-    new_password: yup.string().required('Обязательно брат').min(8, t('auth.validation.password.minLength')),
-    repeat_password: yup
+    current_password: yup.string().required('Обязательное поле'),
+    password: yup.string().required('Обязательное поле').min(8, t('auth.validation.password.minLength')),
+    re_password: yup
       .string()
-      .required('Повтори пароль брат')
-      .oneOf([yup.ref('new_password')], 'Не совпадает брат'),
+      .required('Повторите пароль')
+      .oneOf([yup.ref('password')], 'Пароль не совпадает'),
   })
 
 interface Props {
@@ -44,22 +36,22 @@ export const EditPasswordModal: FC<Props> = ({ open, onClose }) => {
   const dispatch = useAppDispatch()
   const [isLoading, setIsLoading] = useState(false)
   const [showPassword, setShowPassword] = useState({
-    old_password: false,
-    new_password: false,
-    repeat_password: false,
+    current_password: false,
+    password: false,
+    re_password: false,
   })
 
-  const formik = useFormik<IFormValues>({
+  const formik = useFormik({
     initialValues: {
-      old_password: '',
-      new_password: '',
-      repeat_password: '',
+      current_password: '',
+      password: '',
+      re_password: '',
     },
     validationSchema: validationSchema(t),
-    onSubmit: async ({ new_password, old_password }, { resetForm }) => {
+    onSubmit: async (values, { resetForm }) => {
       setIsLoading(true)
       try {
-        await authClient.changePassword({ new_password, old_password })
+        await $apiAccountsApi.accountsUsersSetNewPassword(values)
         await dispatch(fetchMe())
         setIsLoading(false)
         onClose()
@@ -71,7 +63,7 @@ export const EditPasswordModal: FC<Props> = ({ open, onClose }) => {
           const formErrors: IFormErrors = {}
 
           if (data?.detail) {
-            formErrors.old_password = 'Неверно введённый пароль'
+            formErrors.current_password = 'Неверно введённый пароль'
           }
 
           formik.setErrors(formErrors)
@@ -104,52 +96,50 @@ export const EditPasswordModal: FC<Props> = ({ open, onClose }) => {
             <div className="flex flex-col gap-8">
               <TextField
                 placeholder={t('Пароль')}
-                error={formik.touched.old_password && Boolean(formik.errors.old_password)}
+                error={formik.touched.current_password && Boolean(formik.errors.current_password)}
                 errorMessage={
-                  formik.touched.old_password && formik.errors.old_password ? formik.errors.old_password : ''
+                  formik.touched.current_password && formik.errors.current_password
+                    ? formik.errors.current_password
+                    : ''
                 }
-                value={formik.values.old_password}
+                value={formik.values.current_password}
                 onChange={formik.handleChange}
-                name="old_password"
-                type={showPassword.old_password ? 'text' : 'password'}
+                name="current_password"
+                type={showPassword.current_password ? 'text' : 'password'}
                 endAdornment={ShowAndHideIcon({
-                  show: showPassword.old_password,
-                  onHide: () => handleShowPassword('old_password'),
-                  onShow: () => handleShowPassword('old_password'),
+                  show: showPassword.current_password,
+                  onHide: () => handleShowPassword('current_password'),
+                  onShow: () => handleShowPassword('current_password'),
                 })}
               />
 
               <TextField
                 placeholder={t('Новый пароль')}
-                error={formik.touched.new_password && Boolean(formik.errors.new_password)}
-                errorMessage={
-                  formik.touched.new_password && formik.errors.new_password ? formik.errors.new_password : ''
-                }
-                value={formik.values.new_password}
+                error={formik.touched.password && Boolean(formik.errors.password)}
+                errorMessage={formik.touched.password && formik.errors.password ? formik.errors.password : ''}
+                value={formik.values.password}
                 onChange={formik.handleChange}
-                name="new_password"
-                type={showPassword.new_password ? 'text' : 'password'}
+                name="password"
+                type={showPassword.password ? 'text' : 'password'}
                 endAdornment={ShowAndHideIcon({
-                  show: showPassword.new_password,
-                  onHide: () => handleShowPassword('new_password'),
-                  onShow: () => handleShowPassword('new_password'),
+                  show: showPassword.password,
+                  onHide: () => handleShowPassword('password'),
+                  onShow: () => handleShowPassword('password'),
                 })}
               />
 
               <TextField
                 placeholder={t('Подтвердите пароль')}
-                error={formik.touched.repeat_password && Boolean(formik.errors.repeat_password)}
-                errorMessage={
-                  formik.touched.repeat_password && formik.errors.repeat_password ? formik.errors.repeat_password : ''
-                }
-                value={formik.values.repeat_password}
+                error={formik.touched.re_password && Boolean(formik.errors.re_password)}
+                errorMessage={formik.touched.re_password && formik.errors.re_password ? formik.errors.re_password : ''}
+                value={formik.values.re_password}
                 onChange={formik.handleChange}
-                name="repeat_password"
-                type={showPassword.repeat_password ? 'text' : 'password'}
+                name="re_password"
+                type={showPassword.re_password ? 'text' : 'password'}
                 endAdornment={ShowAndHideIcon({
-                  show: showPassword.repeat_password,
-                  onHide: () => handleShowPassword('repeat_password'),
-                  onShow: () => handleShowPassword('repeat_password'),
+                  show: showPassword.re_password,
+                  onHide: () => handleShowPassword('re_password'),
+                  onShow: () => handleShowPassword('re_password'),
                 })}
               />
             </div>

@@ -7,7 +7,7 @@ base.ts
 common.ts
 configuration.ts
 git_push.sh
-store.ts
+index.ts
 package.json
 tsconfig.esm.json
 tsconfig.json
