@@ -1,0 +1,1 @@
+export { SignUpMainSection } from './ui'

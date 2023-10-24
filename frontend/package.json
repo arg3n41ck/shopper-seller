@@ -10,12 +10,15 @@
     "api-gen": "rm -rf src/shared/api/gen && openapi-generator generate -g typescript-axios -c openapi-config.yml -o src/shared/api/gen && cd src/shared/api/gen && yarn && yarn build"
   },
   "dependencies": {
+    "@tanstack/react-query": "^4.32.1",
+    "@tanstack/react-query-devtools": "^4.32.1",
     "@next/font": "^13.4.19",
     "@reduxjs/toolkit": "^1.9.5",
     "@types/node": "20.4.8",
     "@types/react": "18.2.18",
     "@types/react-dom": "18.2.7",
     "axios": "^1.4.0",
+    "classnames": "^2.3.2",
     "date-fns": "^2.30.0",
     "formik": "^2.4.3",
     "framer-motion": "^10.15.0",

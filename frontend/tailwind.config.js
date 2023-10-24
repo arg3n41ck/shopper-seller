@@ -1,4 +1,6 @@
 /** @type {import('tailwindcss').Config} */
+// const { NEUTRAL } = require('./src/shared/lib/consts/styles')
+
 module.exports = {
   content: ['./src/**/*.{js,ts,jsx,tsx}'],
   safelist: ['outline-none'],
@@ -16,6 +18,38 @@ module.exports = {
         green: 'var(--green)',
         purple: 'var(--purple)',
         orange: 'var(--orange)',
+
+        //========ERROR=========
+        error50: 'var(--error50)',
+        error300: 'var(--error300)',
+        error500: 'var(--error500)',
+        error700: 'var(--error700)',
+        error900: 'var(--error900)',
+        //======================
+
+        //========PRIMARY=========
+        //main
+        primaryMain300: 'var(--primaryMain300)',
+        primaryMain500: 'var(--primaryMain500)',
+        primaryMain700: 'var(--primaryMain700)',
+        primaryMain800: 'var(--primaryMain800)',
+        primaryMain900: 'var(--primaryMain900)',
+
+        //dashboard
+        primaryDash50: 'var(--primaryDash50)',
+        primaryDash400: 'var(--primaryDash400)',
+        primaryDash600: 'var(--primaryDash600)',
+        primaryDash800: 'var(--primaryDash800)',
+        primaryDash900: 'var(--primaryDash900)',
+        //======================
+
+        //========SUCCESS=========
+        success50: 'var(--success50)',
+        success300: 'var(--success300)',
+        success500: 'var(--success500)',
+        success700: 'var(--success700)',
+        success900: 'var(--success900)',
+        //========================
       },
       textColor: {
         black: 'var(--black)',
@@ -31,11 +65,11 @@ module.exports = {
       // },
     },
     screens: {
-      // '2xl': { max: '1400px' },
-      // xl: { max: '1200px' },
-      // lg: { max: '992px' },
-      // md: { max: '768px' },
-      // sm: { max: '576px' },
+      '2xl': { max: '1400px' },
+      xl: { max: '1200px' },
+      lg: { max: '992px' },
+      md: { max: '768px' },
+      sm: { max: '576px' },
     },
     container: {
       xl: {

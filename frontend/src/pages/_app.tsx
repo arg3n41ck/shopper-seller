@@ -1,12 +1,11 @@
 // pages/_app.js
-import { Provider } from 'react-redux'
 import { ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
-import { store } from '@/shared/store'
 import { AppPropsType } from 'next/dist/shared/lib/utils'
-import '@/localization'
+import 'src/shared/localization'
 import '@/app/index.scss'
 import { Jost } from '@next/font/google'
+import { WithProviders } from '@/app/providers'
 
 const jost = Jost({
   subsets: ['latin'],
@@ -14,8 +13,8 @@ const jost = Jost({
 
 function App({ Component, pageProps }: AppPropsType) {
   return (
-      <main className={jost.className}>
-      <Provider store={store}>
+    <main className={jost.className}>
+      <WithProviders pageProps={pageProps}>
         <ToastContainer
           position="top-right"
           autoClose={2000}
@@ -28,7 +27,7 @@ function App({ Component, pageProps }: AppPropsType) {
           pauseOnHover
         />
         <Component {...pageProps} />
-      </Provider>
+      </WithProviders>
     </main>
   )
 }

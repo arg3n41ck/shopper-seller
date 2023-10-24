@@ -1,0 +1,8 @@
+.Check {
+  @apply relative mr-[8px] inline-block h-[20px] w-[20px] rounded-[50%] border-[2px] border-black;
+}
+
+.Check:after {
+  @apply absolute left-[5px] top-[1px] hidden h-[11px] w-[6px] rotate-[45deg]
+  border-b-[2px] border-r-[2px] border-neutral-50 !content-[""];
+}
