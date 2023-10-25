@@ -10,6 +10,8 @@
     "api-gen": "rm -rf src/shared/api/gen && openapi-generator generate -g typescript-axios -c openapi-config.yml -o src/shared/api/gen && cd src/shared/api/gen && yarn && yarn build"
   },
   "dependencies": {
+    "@tanstack/react-query": "^4.32.1",
+    "@tanstack/react-query-devtools": "^4.32.1",
     "@next/font": "^13.4.19",
     "@reduxjs/toolkit": "^1.9.5",
     "@types/node": "20.4.8",

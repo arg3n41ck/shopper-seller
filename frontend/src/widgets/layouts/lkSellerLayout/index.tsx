@@ -1,14 +1,12 @@
 import React, { FC, ReactNode, useCallback, useState } from 'react'
 import { LKSellerHeader } from '@/widgets/layouts/headers'
 import { LKSellerSideBar } from '@/shared/ui/sideBars'
-import { AuthClient } from '@/shared/apis/authClient'
 import { useAppDispatch, useAppSelector } from '@/shared/lib/hooks/redux'
 import { PATH_AUTH } from '@/shared/config'
 import { fetchMe, logOut } from '@/entities/user/model/slice'
 import { useRouter } from 'next/router'
 import { motion } from 'framer-motion'
-
-const authClient = new AuthClient()
+import { $apiAccountsApi } from '@/shared/api'
 
 interface LKSellerLayoutProps {
   children: ReactNode
@@ -28,7 +26,7 @@ export const LKSellerLayout: FC<LKSellerLayoutProps> = ({ children }) => {
     if (!user) {
       const { payload } = await dispatch(fetchMe())
       if (payload?.user_type !== 'seller') {
-        await authClient.logOut({ user_id: payload.id })
+        await $apiAccountsApi.accountsAuthTokenLogoutCreate()
         await router.push({ pathname: PATH_AUTH.root })
         dispatch(logOut())
       }

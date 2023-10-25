@@ -14,7 +14,7 @@ const jost = Jost({
 function App({ Component, pageProps }: AppPropsType) {
   return (
     <main className={jost.className}>
-      <WithProviders>
+      <WithProviders pageProps={pageProps}>
         <ToastContainer
           position="top-right"
           autoClose={2000}

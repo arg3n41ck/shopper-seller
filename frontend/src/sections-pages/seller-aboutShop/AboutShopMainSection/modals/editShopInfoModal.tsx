@@ -1,4 +1,4 @@
-import React, { FC, useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { SellerClient } from '@/shared/apis/sellerClient'
 import { BUTTON_STYLES } from '@/shared/lib/consts/styles'
 import { useAppDispatch, useAppSelector } from '@/shared/lib/hooks/redux'
@@ -22,26 +22,23 @@ interface IFormValues {
   links: string[]
 }
 
-interface Props {
-  open: boolean
-  onClose: () => void
-}
-
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const validationSchema = (t: (key: string) => string) =>
   yup.object({
     shop_name: yup.string().required('Название магазина'),
-    site: yup.string().required('Сайт магазина').url('Неправильный формат URL брат'),
-    instagram: yup.string().required('Instagram').url('Неправильный формат URL брат'),
+    site: yup.string().required('Сайт магазина').url('Неправильный формат URL'),
+    instagram: yup.string().required('Instagram').url('Неправильный формат URL'),
   })
 
-interface Props {
+interface IEditShopInfoModalProps {
   open: boolean
   onClose: () => void
+  slug: string
 }
 
 const sellerClient = new SellerClient()
 
-export const EditShopInfoModal: FC<Props> = ({ open, onClose }) => {
+export const EditShopInfoModal = ({ open, onClose, slug }: IEditShopInfoModalProps) => {
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
   const [isLoading, setIsLoading] = useState(false)
@@ -55,6 +52,7 @@ export const EditShopInfoModal: FC<Props> = ({ open, onClose }) => {
       links: [],
     },
     validationSchema: validationSchema(t),
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     onSubmit: async ({ links, ...others }: IFormValues) => {
       setIsLoading(true)
 
@@ -66,7 +64,7 @@ export const EditShopInfoModal: FC<Props> = ({ open, onClose }) => {
       try {
         await sellerClient.changeInfoSeller(removeEmptyFields(others))
         await dispatch(fetchMe())
-        await dispatch(fetchSeller())
+        await dispatch(fetchSeller(slug))
         setIsLoading(false)
         onClose()
       } catch (error: any) {

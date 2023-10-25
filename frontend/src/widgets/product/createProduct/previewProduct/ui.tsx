@@ -1,13 +1,10 @@
 import React, { useEffect } from 'react'
-import ProductDetail from '@/widgets/product/createProduct/previewProduct/index'
-import { SellerClient } from '@/shared/apis/sellerClient'
+import { ProductDetail } from './detail'
 import { useAppDispatch, useAppSelector } from '@/shared/lib/hooks/redux'
 import { PATH_LK_SELLER } from '@/shared/config'
 import { fetchProduct } from '@/entities/seller/model/slice'
 import { useRouter } from 'next/router'
 import { FooterPreviewProduct } from './footer'
-
-const sellerClient = new SellerClient()
 
 const mockDataVariants = {
   id: Date.now(),
@@ -220,8 +217,8 @@ export const PreviewProduct = () => {
             publish_by_date: true,
           }
 
-    await sellerClient.editProduct({ id: product.id, body: isDraft })
-    router.push({ pathname: PATH_LK_SELLER.myProducts })
+    // await sellerClient.editProduct({ id: product.id, body: isDraft })
+    await router.push({ pathname: PATH_LK_SELLER.myProducts })
   }
 
   useEffect(() => {

@@ -1,6 +1,5 @@
 import React, { FC, useState } from 'react'
 import ShowAndHideIcon from 'src/shared/ui/templates/passwordShowAndHideIcon'
-import { AuthClient } from '@/shared/apis/authClient'
 import { BUTTON_STYLES } from '@/shared/lib/consts/styles'
 import { useAppDispatch } from '@/shared/lib/hooks/redux'
 import { Button } from 'src/shared/ui/buttons'
@@ -10,8 +9,6 @@ import TextField from '@/shared/ui/inputs/textField'
 import { useFormik } from 'formik'
 import { useTranslation } from 'react-i18next'
 import * as yup from 'yup'
-
-const authClient = new AuthClient()
 
 interface IFormValues {
   password: string

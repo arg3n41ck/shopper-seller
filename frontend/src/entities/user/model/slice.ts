@@ -1,20 +1,20 @@
 import { PayloadAction, createAsyncThunk, createSlice } from '@reduxjs/toolkit'
-import { AuthClient } from '@/shared/apis/authClient'
-import { TypeUser } from '@/shared/lib/types/authTypes'
-
-const authClient = new AuthClient()
+import { User } from '@/shared/api/gen'
+import { $apiAccountsApi } from '@/shared/api'
+import { removeFieldsFromLocalStorage } from '@/shared/lib/hooks/useLocalStorage'
 
 type UserSliceState = {
   role: string
-  user: TypeUser | null
-  error: any
+  user: User | null
+  error: unknown
   userAuthenticated: boolean
 }
 
-export const fetchMe: any = createAsyncThunk('user/get', async (_, { rejectWithValue }) => {
+export const fetchMe = createAsyncThunk('user/get', async (_, { rejectWithValue }) => {
   try {
-    const data = await authClient.getMe()
-    return data
+    const { data } = await $apiAccountsApi.accountsUsersMeRead()
+    // todo исправить позже как поменяют бэк
+    return data as unknown as User
   } catch (error: any) {
     return rejectWithValue(error.response.status)
   }
@@ -33,6 +33,7 @@ const userSlice = createSlice({
   reducers: {
     logOut(state) {
       Object.assign(state, initialState)
+      removeFieldsFromLocalStorage(['access_token', 'refresh_token'])
     },
     chooseRole(state, action: PayloadAction<string>) {
       state.role = action.payload
@@ -41,7 +42,7 @@ const userSlice = createSlice({
   extraReducers: (builder) => {
     builder.addCase(fetchMe.fulfilled, (state, action) => {
       state.user = action?.payload
-      state.role = action?.payload.user_type
+      state.role = action?.payload.type
       state.error = false
       state.userAuthenticated = true
     })

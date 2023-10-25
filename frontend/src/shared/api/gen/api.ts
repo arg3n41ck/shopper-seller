@@ -195,13 +195,13 @@ export interface Category {
      * @type {string}
      * @memberof Category
      */
-    'image'?: string;
+    'image'?: string | null;
     /**
      * 
-     * @type {string}
+     * @type {number}
      * @memberof Category
      */
-    'parent'?: string | null;
+    'parent'?: number | null;
     /**
      * 
      * @type {Array<Category>}
@@ -1177,6 +1177,25 @@ export interface ResetEmail {
 /**
  * 
  * @export
+ * @interface ResetEmailConfirm
+ */
+export interface ResetEmailConfirm {
+    /**
+     * 
+     * @type {string}
+     * @memberof ResetEmailConfirm
+     */
+    'uid': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof ResetEmailConfirm
+     */
+    'token': string;
+}
+/**
+ * 
+ * @export
  * @interface ResetPasswordConfirm
  */
 export interface ResetPasswordConfirm {
@@ -1230,6 +1249,50 @@ export interface ResetPasswordSendSMS {
      * @memberof ResetPasswordSendSMS
      */
     'phone_number': string;
+}
+/**
+ * 
+ * @export
+ * @interface ResetPhoneNumber
+ */
+export interface ResetPhoneNumber {
+    /**
+     * 
+     * @type {string}
+     * @memberof ResetPhoneNumber
+     */
+    'current_password': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof ResetPhoneNumber
+     */
+    'phone_number': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof ResetPhoneNumber
+     */
+    're_phone_number': string;
+}
+/**
+ * 
+ * @export
+ * @interface ResetPhoneNumberConfirm
+ */
+export interface ResetPhoneNumberConfirm {
+    /**
+     * 
+     * @type {string}
+     * @memberof ResetPhoneNumberConfirm
+     */
+    'uid': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof ResetPhoneNumberConfirm
+     */
+    'token': string;
 }
 /**
  * 
@@ -1854,6 +1917,162 @@ export const AccountsApiAxiosParamCreator = function (configuration?: Configurat
         },
         /**
          * 
+         * @param {ResetEmailConfirm} data 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        accountsUsersChangeEmailConfirm: async (data: ResetEmailConfirm, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'data' is not null or undefined
+            assertParamExists('accountsUsersChangeEmailConfirm', 'data', data)
+            const localVarPath = `/accounts/users/change_email_confirm/`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication Basic required
+            // http basic authentication required
+            setBasicAuthToObject(localVarRequestOptions, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(data, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {ResetEmail} data 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        accountsUsersChangeEmailRequest: async (data: ResetEmail, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'data' is not null or undefined
+            assertParamExists('accountsUsersChangeEmailRequest', 'data', data)
+            const localVarPath = `/accounts/users/change_email_request/`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication Basic required
+            // http basic authentication required
+            setBasicAuthToObject(localVarRequestOptions, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(data, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {ResetPhoneNumberConfirm} data 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        accountsUsersChangePhoneNumberConfirm: async (data: ResetPhoneNumberConfirm, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'data' is not null or undefined
+            assertParamExists('accountsUsersChangePhoneNumberConfirm', 'data', data)
+            const localVarPath = `/accounts/users/change_phone_number_confirm/`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication Basic required
+            // http basic authentication required
+            setBasicAuthToObject(localVarRequestOptions, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(data, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {ResetPhoneNumber} data 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        accountsUsersChangePhoneNumberRequest: async (data: ResetPhoneNumber, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'data' is not null or undefined
+            assertParamExists('accountsUsersChangePhoneNumberRequest', 'data', data)
+            const localVarPath = `/accounts/users/change_phone_number_request/`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication Basic required
+            // http basic authentication required
+            setBasicAuthToObject(localVarRequestOptions, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(data, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
          * @param {User} data 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -2285,84 +2504,6 @@ export const AccountsApiAxiosParamCreator = function (configuration?: Configurat
         },
         /**
          * 
-         * @param {User} data 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        accountsUsersResetEmailConfirm: async (data: User, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
-            // verify required parameter 'data' is not null or undefined
-            assertParamExists('accountsUsersResetEmailConfirm', 'data', data)
-            const localVarPath = `/accounts/users/reset_email_confirm/`;
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
-
-            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
-            const localVarHeaderParameter = {} as any;
-            const localVarQueryParameter = {} as any;
-
-            // authentication Basic required
-            // http basic authentication required
-            setBasicAuthToObject(localVarRequestOptions, configuration)
-
-
-    
-            localVarHeaderParameter['Content-Type'] = 'application/json';
-
-            setSearchParams(localVarUrlObj, localVarQueryParameter);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(data, localVarRequestOptions, configuration)
-
-            return {
-                url: toPathString(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
-        /**
-         * 
-         * @param {ResetEmail} data 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        accountsUsersResetEmailRequest: async (data: ResetEmail, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
-            // verify required parameter 'data' is not null or undefined
-            assertParamExists('accountsUsersResetEmailRequest', 'data', data)
-            const localVarPath = `/accounts/users/reset_email_request/`;
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
-
-            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
-            const localVarHeaderParameter = {} as any;
-            const localVarQueryParameter = {} as any;
-
-            // authentication Basic required
-            // http basic authentication required
-            setBasicAuthToObject(localVarRequestOptions, configuration)
-
-
-    
-            localVarHeaderParameter['Content-Type'] = 'application/json';
-
-            setSearchParams(localVarUrlObj, localVarQueryParameter);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(data, localVarRequestOptions, configuration)
-
-            return {
-                url: toPathString(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
-        /**
-         * 
          * @param {ResetPasswordConfirm} data 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -2449,84 +2590,6 @@ export const AccountsApiAxiosParamCreator = function (configuration?: Configurat
             // verify required parameter 'data' is not null or undefined
             assertParamExists('accountsUsersResetPasswordRequestPhoneNumber', 'data', data)
             const localVarPath = `/accounts/users/reset_password_request_phone_number/`;
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
-
-            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
-            const localVarHeaderParameter = {} as any;
-            const localVarQueryParameter = {} as any;
-
-            // authentication Basic required
-            // http basic authentication required
-            setBasicAuthToObject(localVarRequestOptions, configuration)
-
-
-    
-            localVarHeaderParameter['Content-Type'] = 'application/json';
-
-            setSearchParams(localVarUrlObj, localVarQueryParameter);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(data, localVarRequestOptions, configuration)
-
-            return {
-                url: toPathString(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
-        /**
-         * 
-         * @param {User} data 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        accountsUsersResetPhoneNumberConfirm: async (data: User, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
-            // verify required parameter 'data' is not null or undefined
-            assertParamExists('accountsUsersResetPhoneNumberConfirm', 'data', data)
-            const localVarPath = `/accounts/users/reset_phone_number_confirm/`;
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
-
-            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
-            const localVarHeaderParameter = {} as any;
-            const localVarQueryParameter = {} as any;
-
-            // authentication Basic required
-            // http basic authentication required
-            setBasicAuthToObject(localVarRequestOptions, configuration)
-
-
-    
-            localVarHeaderParameter['Content-Type'] = 'application/json';
-
-            setSearchParams(localVarUrlObj, localVarQueryParameter);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(data, localVarRequestOptions, configuration)
-
-            return {
-                url: toPathString(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
-        /**
-         * 
-         * @param {User} data 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        accountsUsersResetPhoneRequest: async (data: User, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
-            // verify required parameter 'data' is not null or undefined
-            assertParamExists('accountsUsersResetPhoneRequest', 'data', data)
-            const localVarPath = `/accounts/users/reset_phone_request/`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
             let baseOptions;
@@ -2689,6 +2752,46 @@ export const AccountsApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
+         * @param {ResetEmailConfirm} data 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async accountsUsersChangeEmailConfirm(data: ResetEmailConfirm, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResetEmailConfirm>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.accountsUsersChangeEmailConfirm(data, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
+         * @param {ResetEmail} data 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async accountsUsersChangeEmailRequest(data: ResetEmail, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResetEmail>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.accountsUsersChangeEmailRequest(data, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
+         * @param {ResetPhoneNumberConfirm} data 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async accountsUsersChangePhoneNumberConfirm(data: ResetPhoneNumberConfirm, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResetPhoneNumberConfirm>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.accountsUsersChangePhoneNumberConfirm(data, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
+         * @param {ResetPhoneNumber} data 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async accountsUsersChangePhoneNumberRequest(data: ResetPhoneNumber, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResetPhoneNumber>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.accountsUsersChangePhoneNumberRequest(data, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
          * @param {User} data 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -2801,26 +2904,6 @@ export const AccountsApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
-         * @param {User} data 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        async accountsUsersResetEmailConfirm(data: User, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<User>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.accountsUsersResetEmailConfirm(data, options);
-            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
-        },
-        /**
-         * 
-         * @param {ResetEmail} data 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        async accountsUsersResetEmailRequest(data: ResetEmail, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResetEmail>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.accountsUsersResetEmailRequest(data, options);
-            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
-        },
-        /**
-         * 
          * @param {ResetPasswordConfirm} data 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -2847,26 +2930,6 @@ export const AccountsApiFp = function(configuration?: Configuration) {
          */
         async accountsUsersResetPasswordRequestPhoneNumber(data: ResetPasswordSendSMS, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResetPasswordSendSMS>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.accountsUsersResetPasswordRequestPhoneNumber(data, options);
-            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
-        },
-        /**
-         * 
-         * @param {User} data 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        async accountsUsersResetPhoneNumberConfirm(data: User, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<User>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.accountsUsersResetPhoneNumberConfirm(data, options);
-            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
-        },
-        /**
-         * 
-         * @param {User} data 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        async accountsUsersResetPhoneRequest(data: User, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<User>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.accountsUsersResetPhoneRequest(data, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
         /**
@@ -2934,6 +2997,42 @@ export const AccountsApiFactory = function (configuration?: Configuration, baseP
          */
         accountsAuthTokenVerifyCreate(data: TokenVerify, options?: any): AxiosPromise<TokenVerify> {
             return localVarFp.accountsAuthTokenVerifyCreate(data, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {ResetEmailConfirm} data 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        accountsUsersChangeEmailConfirm(data: ResetEmailConfirm, options?: any): AxiosPromise<ResetEmailConfirm> {
+            return localVarFp.accountsUsersChangeEmailConfirm(data, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {ResetEmail} data 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        accountsUsersChangeEmailRequest(data: ResetEmail, options?: any): AxiosPromise<ResetEmail> {
+            return localVarFp.accountsUsersChangeEmailRequest(data, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {ResetPhoneNumberConfirm} data 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        accountsUsersChangePhoneNumberConfirm(data: ResetPhoneNumberConfirm, options?: any): AxiosPromise<ResetPhoneNumberConfirm> {
+            return localVarFp.accountsUsersChangePhoneNumberConfirm(data, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {ResetPhoneNumber} data 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        accountsUsersChangePhoneNumberRequest(data: ResetPhoneNumber, options?: any): AxiosPromise<ResetPhoneNumber> {
+            return localVarFp.accountsUsersChangePhoneNumberRequest(data, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -3038,24 +3137,6 @@ export const AccountsApiFactory = function (configuration?: Configuration, baseP
         },
         /**
          * 
-         * @param {User} data 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        accountsUsersResetEmailConfirm(data: User, options?: any): AxiosPromise<User> {
-            return localVarFp.accountsUsersResetEmailConfirm(data, options).then((request) => request(axios, basePath));
-        },
-        /**
-         * 
-         * @param {ResetEmail} data 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        accountsUsersResetEmailRequest(data: ResetEmail, options?: any): AxiosPromise<ResetEmail> {
-            return localVarFp.accountsUsersResetEmailRequest(data, options).then((request) => request(axios, basePath));
-        },
-        /**
-         * 
          * @param {ResetPasswordConfirm} data 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -3080,24 +3161,6 @@ export const AccountsApiFactory = function (configuration?: Configuration, baseP
          */
         accountsUsersResetPasswordRequestPhoneNumber(data: ResetPasswordSendSMS, options?: any): AxiosPromise<ResetPasswordSendSMS> {
             return localVarFp.accountsUsersResetPasswordRequestPhoneNumber(data, options).then((request) => request(axios, basePath));
-        },
-        /**
-         * 
-         * @param {User} data 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        accountsUsersResetPhoneNumberConfirm(data: User, options?: any): AxiosPromise<User> {
-            return localVarFp.accountsUsersResetPhoneNumberConfirm(data, options).then((request) => request(axios, basePath));
-        },
-        /**
-         * 
-         * @param {User} data 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        accountsUsersResetPhoneRequest(data: User, options?: any): AxiosPromise<User> {
-            return localVarFp.accountsUsersResetPhoneRequest(data, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -3161,6 +3224,42 @@ export interface AccountsApiInterface {
      * @memberof AccountsApiInterface
      */
     accountsAuthTokenVerifyCreate(data: TokenVerify, options?: AxiosRequestConfig): AxiosPromise<TokenVerify>;
+
+    /**
+     * 
+     * @param {ResetEmailConfirm} data 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof AccountsApiInterface
+     */
+    accountsUsersChangeEmailConfirm(data: ResetEmailConfirm, options?: AxiosRequestConfig): AxiosPromise<ResetEmailConfirm>;
+
+    /**
+     * 
+     * @param {ResetEmail} data 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof AccountsApiInterface
+     */
+    accountsUsersChangeEmailRequest(data: ResetEmail, options?: AxiosRequestConfig): AxiosPromise<ResetEmail>;
+
+    /**
+     * 
+     * @param {ResetPhoneNumberConfirm} data 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof AccountsApiInterface
+     */
+    accountsUsersChangePhoneNumberConfirm(data: ResetPhoneNumberConfirm, options?: AxiosRequestConfig): AxiosPromise<ResetPhoneNumberConfirm>;
+
+    /**
+     * 
+     * @param {ResetPhoneNumber} data 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof AccountsApiInterface
+     */
+    accountsUsersChangePhoneNumberRequest(data: ResetPhoneNumber, options?: AxiosRequestConfig): AxiosPromise<ResetPhoneNumber>;
 
     /**
      * 
@@ -3265,24 +3364,6 @@ export interface AccountsApiInterface {
 
     /**
      * 
-     * @param {User} data 
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof AccountsApiInterface
-     */
-    accountsUsersResetEmailConfirm(data: User, options?: AxiosRequestConfig): AxiosPromise<User>;
-
-    /**
-     * 
-     * @param {ResetEmail} data 
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof AccountsApiInterface
-     */
-    accountsUsersResetEmailRequest(data: ResetEmail, options?: AxiosRequestConfig): AxiosPromise<ResetEmail>;
-
-    /**
-     * 
      * @param {ResetPasswordConfirm} data 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -3307,24 +3388,6 @@ export interface AccountsApiInterface {
      * @memberof AccountsApiInterface
      */
     accountsUsersResetPasswordRequestPhoneNumber(data: ResetPasswordSendSMS, options?: AxiosRequestConfig): AxiosPromise<ResetPasswordSendSMS>;
-
-    /**
-     * 
-     * @param {User} data 
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof AccountsApiInterface
-     */
-    accountsUsersResetPhoneNumberConfirm(data: User, options?: AxiosRequestConfig): AxiosPromise<User>;
-
-    /**
-     * 
-     * @param {User} data 
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof AccountsApiInterface
-     */
-    accountsUsersResetPhoneRequest(data: User, options?: AxiosRequestConfig): AxiosPromise<User>;
 
     /**
      * 
@@ -3395,6 +3458,50 @@ export class AccountsApi extends BaseAPI implements AccountsApiInterface {
      */
     public accountsAuthTokenVerifyCreate(data: TokenVerify, options?: AxiosRequestConfig) {
         return AccountsApiFp(this.configuration).accountsAuthTokenVerifyCreate(data, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {ResetEmailConfirm} data 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof AccountsApi
+     */
+    public accountsUsersChangeEmailConfirm(data: ResetEmailConfirm, options?: AxiosRequestConfig) {
+        return AccountsApiFp(this.configuration).accountsUsersChangeEmailConfirm(data, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {ResetEmail} data 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof AccountsApi
+     */
+    public accountsUsersChangeEmailRequest(data: ResetEmail, options?: AxiosRequestConfig) {
+        return AccountsApiFp(this.configuration).accountsUsersChangeEmailRequest(data, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {ResetPhoneNumberConfirm} data 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof AccountsApi
+     */
+    public accountsUsersChangePhoneNumberConfirm(data: ResetPhoneNumberConfirm, options?: AxiosRequestConfig) {
+        return AccountsApiFp(this.configuration).accountsUsersChangePhoneNumberConfirm(data, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {ResetPhoneNumber} data 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof AccountsApi
+     */
+    public accountsUsersChangePhoneNumberRequest(data: ResetPhoneNumber, options?: AxiosRequestConfig) {
+        return AccountsApiFp(this.configuration).accountsUsersChangePhoneNumberRequest(data, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -3522,28 +3629,6 @@ export class AccountsApi extends BaseAPI implements AccountsApiInterface {
 
     /**
      * 
-     * @param {User} data 
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof AccountsApi
-     */
-    public accountsUsersResetEmailConfirm(data: User, options?: AxiosRequestConfig) {
-        return AccountsApiFp(this.configuration).accountsUsersResetEmailConfirm(data, options).then((request) => request(this.axios, this.basePath));
-    }
-
-    /**
-     * 
-     * @param {ResetEmail} data 
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof AccountsApi
-     */
-    public accountsUsersResetEmailRequest(data: ResetEmail, options?: AxiosRequestConfig) {
-        return AccountsApiFp(this.configuration).accountsUsersResetEmailRequest(data, options).then((request) => request(this.axios, this.basePath));
-    }
-
-    /**
-     * 
      * @param {ResetPasswordConfirm} data 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -3573,28 +3658,6 @@ export class AccountsApi extends BaseAPI implements AccountsApiInterface {
      */
     public accountsUsersResetPasswordRequestPhoneNumber(data: ResetPasswordSendSMS, options?: AxiosRequestConfig) {
         return AccountsApiFp(this.configuration).accountsUsersResetPasswordRequestPhoneNumber(data, options).then((request) => request(this.axios, this.basePath));
-    }
-
-    /**
-     * 
-     * @param {User} data 
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof AccountsApi
-     */
-    public accountsUsersResetPhoneNumberConfirm(data: User, options?: AxiosRequestConfig) {
-        return AccountsApiFp(this.configuration).accountsUsersResetPhoneNumberConfirm(data, options).then((request) => request(this.axios, this.basePath));
-    }
-
-    /**
-     * 
-     * @param {User} data 
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof AccountsApi
-     */
-    public accountsUsersResetPhoneRequest(data: User, options?: AxiosRequestConfig) {
-        return AccountsApiFp(this.configuration).accountsUsersResetPhoneRequest(data, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**

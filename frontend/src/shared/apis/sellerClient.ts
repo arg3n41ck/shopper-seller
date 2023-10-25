@@ -1,17 +1,7 @@
 import ApiClient from '@/shared/api/apiClient'
 import { TypeAddressData, TypeSellerInfoData } from '@/shared/lib/types/sellerTypes'
 
-//todo убррать это все и перенести в апи-ген
 export class SellerClient {
-  async fetchSeller(): Promise<any> {
-    try {
-      const { data } = await ApiClient.get<TypeSellerInfoData>('/sellers/info/')
-      return data
-    } catch (error) {
-      throw error
-    }
-  }
-
   async fetchProductDetailsSizeChoice(): Promise<any> {
     try {
       const { data } = await ApiClient.get<any>('/sellers/product_details/product_details_size_choice/')
@@ -132,59 +122,6 @@ export class SellerClient {
   async editProduct({ id, body }: any): Promise<any> {
     try {
       const { data } = await ApiClient.put<any>(`'/products/sellers_products/${id}/`, body)
-      return data
-    } catch (error) {
-      throw error
-    }
-  }
-
-  async createProductDetails(body: any): Promise<any> {
-    try {
-      const { data } = await ApiClient.post<any>('/sellers/product_details/product_details/', body)
-      return data
-    } catch (error) {
-      throw error
-    }
-  }
-
-  async editProductDetails({ id, body }: any): Promise<any> {
-    try {
-      const { data } = await ApiClient.put<any>(`/sellers/product_details/product_details/${id}/`, body)
-      return data
-    } catch (error) {
-      throw error
-    }
-  }
-
-  async createProductPreview(body: any): Promise<any> {
-    try {
-      const { data } = await ApiClient.post<any>('/sellers/product_previews/', body)
-      return data
-    } catch (error) {
-      throw error
-    }
-  }
-
-  async createProductPreviewSizes(body: any): Promise<any> {
-    try {
-      const { data } = await ApiClient.post<any>('/sellers/product_previews_sizes/', body)
-      return data
-    } catch (error) {
-      throw error
-    }
-  }
-
-  async createProductPreviewImages({ image, product_preview_id, main_image }: any): Promise<any> {
-    try {
-      const { data } = await ApiClient.post<any>('/sellers/product_images/', image, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-        params: {
-          product_preview_id,
-          main_image,
-        },
-      })
       return data
     } catch (error) {
       throw error

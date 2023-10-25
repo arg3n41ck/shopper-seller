@@ -18,7 +18,7 @@ const NameOfFieldTextMemo = memo(({ item }: { item: any }) => (
   </p>
 ))
 
-const ProductDetail = ({ data }: any) => {
+export const ProductDetail = ({ data }: any) => {
   const [selectedPreview, setSelectedPreview] = useState<any>(data?.preview[0])
   const isData = !data || !selectedPreview
   const [publishByDate, setPublishByDate] = useState(false)
@@ -229,5 +229,3 @@ const ProductDetail = ({ data }: any) => {
     </>
   )
 }
-
-export default ProductDetail
