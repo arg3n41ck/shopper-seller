@@ -100,15 +100,7 @@ USE_TZ = True
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-
-STATIC_URL = '/staticfiles/'
-STATIC_ROOT = BASE_DIR / 'staticfiles'
-MEDIA_URL = '/media/'
-MEDIA_ROOT = BASE_DIR / 'media'
-
-
 DOMAIN = os.environ["DOMAIN"]
-
 
 SMS_PRO_LOGIN = os.environ["SMS_PRO_LOGIN"]
 SMS_PRO_PASSWORD = os.environ["SMS_PRO_PASSWORD"]

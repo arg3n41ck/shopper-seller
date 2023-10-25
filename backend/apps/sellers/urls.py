@@ -1,11 +1,19 @@
 from rest_framework.routers import DefaultRouter
 
-from apps.sellers.views import ShopCustomerViewSet, ShopSellerViewSet, ShopBranchViewSet
+from apps.sellers.views import (
+    ShopViewSet,
+    ShopBranchViewSet,
+    ProductViewSet,
+    ProductVariantViewSet,
+    ProductVariantImageViewSet,
+)
 
 router = DefaultRouter()
-router.register("customer/shops", ShopCustomerViewSet, basename="customer_shops")
-router.register("seller/shops", ShopSellerViewSet, basename="seller_shops")
-router.register("seller/branches", ShopBranchViewSet, basename="seller_branches")
+router.register("shops", ShopViewSet, basename="shops")
+router.register("branches", ShopBranchViewSet, basename="branches")
+router.register("products", ProductViewSet, basename="products")
+router.register("products/variants", ProductVariantViewSet, basename="products_variants")
+router.register("products/variant_images", ProductVariantImageViewSet, basename="products_variant_images")
 
 urlpatterns = []
 

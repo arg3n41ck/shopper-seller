@@ -4,6 +4,7 @@ from django.utils.translation import gettext_lazy as _
 
 from mptt.fields import TreeForeignKey
 from mptt.models import MPTTModel
+from django_elasticsearch_dsl_drf.wrappers import dict_to_obj
 
 from apps.sellers.models import Shop
 from apps.customers.models import Customer
@@ -153,6 +154,12 @@ class Product(TimeStampedBaseModel):
         verbose_name=_("Tag"),
         blank=True,
     )
+    """
+    Example specifications: [
+        {"title": title, "value": value}, 
+        ...
+    ]
+    """
     specifications = models.JSONField(
         validators=[validate_specifications],
         verbose_name=_("Specifications"),
@@ -193,6 +200,31 @@ class Product(TimeStampedBaseModel):
     def rating(self):
         return self.reviews.aggregate(models.Avg("star"))["star__avg"] or 0
 
+    @property
+    def shop_indexing(self):
+        return dict_to_obj({
+            "id": self.shop.id,
+            "title": self.shop.title,
+        })
+
+    @property
+    def category_indexing(self):
+        return dict_to_obj({
+            "id": self.category.id,
+            "title": self.category.title},
+        )
+
+    @property
+    def tags_indexing(self):
+        return [tag.title for tag in self.tags.all()]
+
+    @property
+    def variants_indexing(self):
+        return [{
+            "title": variant.title,
+            "image": variant.images.first()
+        } for variant in self.variants.all()]
+
 
 @generate_slug_from_field("title")
 class ProductVariant(TimeStampedBaseModel):
@@ -215,6 +247,12 @@ class ProductVariant(TimeStampedBaseModel):
     description = models.TextField(
         verbose_name=_("Description"),
     )
+    """
+    Example size variants: [
+        {"size", "quantity"}, 
+        ...
+    ]
+    """
     size_variants = models.JSONField(
         validators=[validate_size_variants],
         verbose_name=_("Size variants"),

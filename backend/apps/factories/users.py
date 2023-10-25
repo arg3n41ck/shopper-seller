@@ -11,15 +11,15 @@ from apps.accounts.constants import UserTypeChoice
 fake = faker.Faker()
 
 
-class UserBaseFactory(factory.django.DjangoModelFactory):
+class BaseUserFactory(factory.django.DjangoModelFactory):
+    email = factory.Faker("email")
+
     class Meta:
         model = User
         django_get_or_create = (
             "email",
             "phone_number",
         )
-
-    email = factory.Faker("email")
 
     @factory.lazy_attribute
     def phone_number(self):
@@ -29,9 +29,9 @@ class UserBaseFactory(factory.django.DjangoModelFactory):
         return phonenumbers.format_number(parsed_phone_number, PhoneNumberFormat.E164)
 
 
-class UserCustomerFactory(UserBaseFactory):
+class UserCustomerFactory(BaseUserFactory):
     type = UserTypeChoice.CUSTOMER
 
 
-class UserSellerFactory(UserBaseFactory):
+class UserSellerFactory(BaseUserFactory):
     type = UserTypeChoice.SELLER

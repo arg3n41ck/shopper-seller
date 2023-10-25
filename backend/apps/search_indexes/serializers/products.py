@@ -13,10 +13,9 @@ class ProductDocumentSerializer(DocumentSerializer):
             "gender",
             "for_kids",
             "price_from",
-            "discount",
             "category",
             "tags",
             "specifications",
             "shop",
-            "status",
+            "variants",
         )

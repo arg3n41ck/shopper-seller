@@ -1,9 +1,10 @@
-from django.core.exceptions import ValidationError
-from django.core.validators import DecimalValidator
 from decimal import Decimal
 
+from django.core.exceptions import ValidationError
+from django.core.validators import DecimalValidator
 
-def validate_size(value):
+
+def validate_size(value: dict) -> None:
     if not isinstance(value, dict):
         raise ValidationError("Size must be a dictionary.")
 
@@ -29,7 +30,7 @@ def validate_size(value):
             raise ValidationError("Discount must be an integer between 0 and 100.")
 
 
-def validate_size_variants(value):
+def validate_size_variants(value: list) -> None:
     if not isinstance(value, list):
         raise ValidationError("Size variants must be a list.")
 
@@ -49,7 +50,7 @@ def validate_size_variants(value):
             raise ValidationError("Quantity must be a positive integer.")
 
 
-def validate_specifications(value):
+def validate_specifications(value: list) -> None:
     if not isinstance(value, list):
         raise ValidationError("Size variants must be a list of dictionaries.")
 
