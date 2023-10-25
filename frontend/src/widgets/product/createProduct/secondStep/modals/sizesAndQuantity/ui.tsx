@@ -2,7 +2,7 @@ import React, { FC } from 'react'
 import { BUTTON_STYLES } from '@/shared/lib/consts/styles'
 import { Button } from 'src/shared/ui/buttons'
 import TextField from '@/shared/ui/inputs/textField'
-import { FormikErrors, FormikTouched, useFormik } from 'formik'
+import { FormikErrors, FormikTouched } from 'formik'
 import { Plus } from 'react-feather'
 import { SizeQuantityType } from '../createVariantModal/ui'
 
@@ -11,10 +11,6 @@ interface Props {
   onChange: (name: string, value: string | SizeQuantityType[]) => void
   touched: FormikTouched<SizeQuantityType>[] | undefined
   error: FormikErrors<SizeQuantityType>[] | string | string[] | undefined
-}
-
-interface FormValues {
-  size_quantity: SizeQuantityType[]
 }
 
 const isFieldsFilledBeforeIndex = (values: SizeQuantityType[], index: number) => {
@@ -35,15 +31,6 @@ const func2 = (obj: any, key: string) => {
 }
 
 const SizesAndQuantity: FC<Props> = ({ value, onChange, touched, error }) => {
-  const formik = useFormik<FormValues>({
-    initialValues: {
-      size_quantity: [{ size: '', quantity: '' }],
-    },
-    onSubmit: (_, { resetForm }) => {
-      resetForm()
-    },
-  })
-
   const handleAddFields = async () => {
     if (isFieldsFilledBeforeIndex(value, value.length)) {
       onChange('size_quantity', [...value, { size: '', quantity: '' }])
@@ -59,7 +46,6 @@ const SizesAndQuantity: FC<Props> = ({ value, onChange, touched, error }) => {
               name={`size_quantity[${index}].size`}
               value={sizeQuantityItem.size}
               onChange={(e) => {
-                formik.handleChange(e)
                 onChange(`size_quantity[${index}].size`, e.target.value)
               }}
               placeholder={'Размер'}
@@ -71,7 +57,6 @@ const SizesAndQuantity: FC<Props> = ({ value, onChange, touched, error }) => {
               name={`size_quantity[${index}].quantity`}
               value={sizeQuantityItem.quantity}
               onChange={(e) => {
-                formik.handleChange(e)
                 onChange(`size_quantity[${index}].quantity`, e.target.value)
               }}
               placeholder={'Количество'}
