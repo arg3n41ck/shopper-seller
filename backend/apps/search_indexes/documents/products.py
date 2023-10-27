@@ -27,7 +27,7 @@ class ProductDocument(Document):
         }
     )
     for_kids = fields.BooleanField()
-    price_from = fields.DoubleField()
+    price_from = fields.FloatField()
     category = fields.ObjectField(
         attr="category_indexing",
         properties={
@@ -45,7 +45,7 @@ class ProductDocument(Document):
         attr="tags_indexing",
         analyzer=html_strip,
         fields={
-            "raw": StringField(analyzer="keyword", multi=True),
+            "raw": KeywordField(multi=True),
             "suggest": fields.CompletionField(multi=True),
         },
         multi=True,
@@ -83,7 +83,26 @@ class ProductDocument(Document):
             )
         }
     )
-    # variants =
+    variants = fields.ListField(
+        fields.ObjectField(
+            properties={
+                "title": StringField(
+                    analyzer=html_strip,
+                    fields={
+                        "raw": KeywordField(),
+                        "suggest": fields.CompletionField(),
+                    }
+                ),
+                "image": StringField(analyzer=html_strip)
+            }
+        )
+    )
+    status = StringField(
+        analyzer=html_strip,
+        fields={
+            "raw": KeywordField(),
+        }
+    )
 
     class Django(object):
         model = Product

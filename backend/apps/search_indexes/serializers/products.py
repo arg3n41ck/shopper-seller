@@ -18,4 +18,5 @@ class ProductDocumentSerializer(DocumentSerializer):
             "specifications",
             "shop",
             "variants",
+            "status",
         )

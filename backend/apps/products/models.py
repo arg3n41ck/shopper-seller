@@ -249,7 +249,7 @@ class ProductVariant(TimeStampedBaseModel):
     )
     """
     Example size variants: [
-        {"size", "quantity"}, 
+        {"size", "quantity", "price"}, 
         ...
     ]
     """
@@ -277,12 +277,18 @@ class ProductVariantImage(models.Model):
         upload_to="images/products",
         verbose_name=_("Image"),
     )
+    is_main = models.BooleanField(
+        verbose_name=_("Is main"),
+        blank=True,
+        null=True,
+    )
 
     objects = ProductVariantImageManager()
 
     class Meta:
         verbose_name = _("Product image")
         verbose_name_plural = _("Product images")
+        unique_together = ("variant", "is_main")
 
     def __str__(self):
         return self.variant.title

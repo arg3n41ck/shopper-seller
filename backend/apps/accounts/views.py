@@ -1,3 +1,4 @@
+from django.db import transaction
 from django.contrib.auth.tokens import default_token_generator
 from rest_framework import viewsets, status, views, generics
 from rest_framework.decorators import action
@@ -20,7 +21,6 @@ from apps.accounts.serializers import (
     ResetPhoneNumberConfirmSerializer,
 )
 from apps.accounts.services.user_service import UserService
-from apps.accounts.mixins import CreateUserApiViewMixin
 from apps.accounts.constants import UserMessage
 from apps.customers.services.customer_services import UserCustomerService
 from apps.sellers.services.seller_service import UserSellerService
@@ -36,6 +36,29 @@ class TokenDestroyView(views.APIView):
         from apps.accounts import utils
         utils.logout_user(request)
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+class CreateUserApiViewMixin:
+    """
+    Mixin for creating users with different roles.
+    """
+    service_class = None  # You should set this attribute in subclasses
+    serializer_class = None  # You should set this attribute in subclasses
+
+    @transaction.atomic()
+    def perform_create(self, serializer):
+        return self.service_class.create_user(**serializer.validated_data)
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        jwt_token = self.perform_create(serializer)
+        response_data = {
+            "message": UserMessage.USER_CREATED,
+            "code": status.HTTP_201_CREATED,
+            "response": jwt_token,
+        }
+        return Response(response_data, status=status.HTTP_201_CREATED)
 
 
 class UserCustomerCreateApiView(CreateUserApiViewMixin, generics.CreateAPIView):

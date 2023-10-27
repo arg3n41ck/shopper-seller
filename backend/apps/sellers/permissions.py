@@ -10,7 +10,7 @@ class IsSeller(permissions.BasePermission):
             and request.user.type == UserTypeChoice.SELLER
         )
 
-    def has_object_permission(self, request, view, obj):
-        if request.method in permissions.SAFE_METHODS:
-            return True
-        return obj.owner == request.user
+    # def has_object_permission(self, request, view, obj):
+    #     if request.method in permissions.SAFE_METHODS:
+    #         return True
+    #     return obj.owner == request.user

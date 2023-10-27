@@ -14,8 +14,6 @@ from apps.products.serializers import (
     ProductFavouriteSerializer,
     ProductReviewSerializer,
 )
-from apps.sellers.models import Shop
-from apps.sellers.serializers import ShopSerializer
 
 
 class CustomerViewSet(viewsets.ModelViewSet):
@@ -23,28 +21,3 @@ class CustomerViewSet(viewsets.ModelViewSet):
     serializer_class = CustomerSerializer
     permission_classes = [IsCustomer]
     filterset_fields = ["user"]
-
-
-class ProductViewSet(mixins.RetrieveModelMixin, viewsets.GenericViewSet):
-    queryset = Product.objects.all().prefetch_related("variants", "reviews")
-    serializer_class = ProductSerializer
-    permission_classes = [AllowAny]
-    lookup_field = "slug"
-
-
-class ShopViewSet(viewsets.ReadOnlyModelViewSet):
-    queryset = Shop.objects.all().prefetch_related("branches")
-    serializer_class = ShopSerializer
-    lookup_field = "slug"
-
-
-class ProductFavouriteViewSet(viewsets.ModelViewSet):
-    queryset = ProductFavourite.objects.all()
-    serializer_class = ProductFavouriteSerializer
-    permission_classes = [IsCustomer]
-
-
-class ProductReviewViewSet(viewsets.ModelViewSet):
-    queryset = ProductReview.objects.all()
-    serializer_class = ProductReviewSerializer
-    permission_classes = [IsCustomer]
