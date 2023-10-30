@@ -4,11 +4,13 @@ from django.utils.translation import gettext_lazy as _
 
 from mptt.fields import TreeForeignKey
 from mptt.models import MPTTModel
+from django_elasticsearch_dsl_drf.wrappers import dict_to_obj
 
 from apps.sellers.models import Shop
 from apps.customers.models import Customer
 from apps.products.constants import GenderChoice, ProductStatusChoice
 from apps.products.validators import validate_size_variants, validate_specifications
+from apps.products.managers import ProductVariantImageManager
 from shared.custom_slugify import generate_slug_from_field
 from shared.abstract_models import TimeStampedBaseModel
 
@@ -125,7 +127,7 @@ class Product(TimeStampedBaseModel):
     price_from = models.DecimalField(
         max_digits=10,
         decimal_places=2,
-        verbose_name=_("Price"),
+        verbose_name=_("Price from"),
     )
     discount = models.PositiveIntegerField(
         validators=[MinValueValidator(0),
@@ -152,6 +154,12 @@ class Product(TimeStampedBaseModel):
         verbose_name=_("Tag"),
         blank=True,
     )
+    """
+    Example specifications: [
+        {"title": title, "value": value}, 
+        ...
+    ]
+    """
     specifications = models.JSONField(
         validators=[validate_specifications],
         verbose_name=_("Specifications"),
@@ -192,6 +200,31 @@ class Product(TimeStampedBaseModel):
     def rating(self):
         return self.reviews.aggregate(models.Avg("star"))["star__avg"] or 0
 
+    @property
+    def shop_indexing(self):
+        return dict_to_obj({
+            "id": self.shop.id,
+            "title": self.shop.title,
+        })
+
+    @property
+    def category_indexing(self):
+        return dict_to_obj({
+            "id": self.category.id,
+            "title": self.category.title},
+        )
+
+    @property
+    def tags_indexing(self):
+        return [tag.title for tag in self.tags.all()]
+
+    @property
+    def variants_indexing(self):
+        return [{
+            "title": variant.title,
+            "image": variant.images.first()
+        } for variant in self.variants.all()]
+
 
 @generate_slug_from_field("title")
 class ProductVariant(TimeStampedBaseModel):
@@ -214,6 +247,12 @@ class ProductVariant(TimeStampedBaseModel):
     description = models.TextField(
         verbose_name=_("Description"),
     )
+    """
+    Example size variants: [
+        {"size", "quantity", "price"}, 
+        ...
+    ]
+    """
     size_variants = models.JSONField(
         validators=[validate_size_variants],
         verbose_name=_("Size variants"),
@@ -238,10 +277,18 @@ class ProductVariantImage(models.Model):
         upload_to="images/products",
         verbose_name=_("Image"),
     )
+    is_main = models.BooleanField(
+        verbose_name=_("Is main"),
+        blank=True,
+        null=True,
+    )
+
+    objects = ProductVariantImageManager()
 
     class Meta:
         verbose_name = _("Product image")
         verbose_name_plural = _("Product images")
+        unique_together = ("variant", "is_main")
 
     def __str__(self):
         return self.variant.title
@@ -292,3 +339,4 @@ class ProductReview(TimeStampedBaseModel):
     class Meta:
         verbose_name = _("Product review")
         verbose_name_plural = _("Product reviews")
+        unique_together = ("product", "customer")

@@ -87,5 +87,4 @@ class SMSProService:
         notification.save()
 
     def _parse_response_xml(self, response):
-        root = ElementTree.fromstring(response)
-        return root
+        return ElementTree.fromstring(response)

@@ -24,12 +24,9 @@ class Customer(TimeStampedBaseModel):
             max_length=255,
             choices=CustomerPreferenceChoice.choices,
         ),
-        verbose_name=_("Preferences")
+        verbose_name=_("Preferences"),
     )
 
     class Meta:
         verbose_name = _("Customer")
         verbose_name_plural = _("Customers")
-
-    def __str__(self):
-        return self.user.email

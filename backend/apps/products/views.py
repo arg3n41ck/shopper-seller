@@ -1,36 +1,32 @@
-from rest_framework import viewsets
+from rest_framework import viewsets, mixins
 from rest_framework.filters import SearchFilter
 from rest_framework.parsers import MultiPartParser
-from django_filters.rest_framework import DjangoFilterBackend
-
-
-from apps.products.services import ProductSellerService
 
 from apps.products.models import (
     Category,
     Tag,
+    Specification,
     Product,
     ProductVariant,
     ProductVariantImage,
-    Specification,
     ProductFavourite,
     ProductReview,
 )
 from apps.products.serializers import (
     CategorySerializer,
     TagSerializer,
-    ProductSerializer,
-    ProductVariantSerializer,
-    ProductVariantImageSerializer,
-    ProductCreateSerializer,
-    ProductVariantCreateSerializer,
     SpecificationSerializer,
+    ProductSerializer,
+    ProductCreateSerializer,
+    ProductVariantSerializer,
+    ProductVariantCreateSerializer,
+    ProductVariantImageSerializer,
     ProductFavouriteSerializer,
     ProductReviewSerializer,
 )
-from apps.products.filters import ProductFilter
-from apps.customers.permissions import IsCustomer
 from apps.sellers.permissions import IsSeller
+from apps.customers.permissions import IsCustomer
+from shared.mixins import DynamicSerializerMixin
 
 
 class CategoryViewSet(viewsets.ReadOnlyModelViewSet):
@@ -46,7 +42,7 @@ class CategoryViewSet(viewsets.ReadOnlyModelViewSet):
         )
 
 
-class TagViewSet(viewsets.ModelViewSet):
+class TagViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
     queryset = Tag.objects.all()
     serializer_class = TagSerializer
     filter_backends = [SearchFilter]
@@ -55,7 +51,7 @@ class TagViewSet(viewsets.ModelViewSet):
     lookup_field = "slug"
 
 
-class SpecificationViewSet(viewsets.ReadOnlyModelViewSet):
+class SpecificationViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
     queryset = Specification.objects.all()
     serializer_class = SpecificationSerializer
     filter_backends = [SearchFilter]
@@ -64,59 +60,48 @@ class SpecificationViewSet(viewsets.ReadOnlyModelViewSet):
     lookup_field = "slug"
 
 
-class ProductCustomerViewSet(viewsets.ReadOnlyModelViewSet):
-    queryset = Product.objects.all()\
-        .prefetch_related("variants", "reviews")
+class SellerProductViewSet(DynamicSerializerMixin, viewsets.ModelViewSet):
+    queryset = Product.objects.all().prefetch_related("variants", "reviews")
     serializer_class = ProductSerializer
-    filter_backends = [DjangoFilterBackend, SearchFilter]
-    filterset_class = ProductFilter
-    lookup_field = "slug"
-
-
-class ProductSellerViewSet(viewsets.ModelViewSet):
-    queryset = Product.objects.all()\
-        .prefetch_related("variants", "reviews")
-    serializer_class = ProductSerializer
+    serializer_classes = {
+        "create": ProductCreateSerializer,
+    }
     permission_classes = [IsSeller]
-    filter_backends = [SearchFilter]
-    filterset_class = ProductFilter
-    search_fields = ["sku", "title"]
     lookup_field = "slug"
-    service = ProductSellerService()
-
-    def get_serializer_class(self):
-        if self.action == "create":
-            return ProductCreateSerializer
-        return self.serializer_class
 
 
-class ProductVariantSellerViewSet(viewsets.ModelViewSet):
-    queryset = ProductVariant.objects.all()\
-        .prefetch_related("images")
+class SellerProductVariantViewSet(DynamicSerializerMixin, viewsets.ModelViewSet):
+    queryset = ProductVariant.objects.all().prefetch_related("images")
     serializer_class = ProductVariantSerializer
+    serializer_classes = {
+        "create": ProductVariantCreateSerializer,
+    }
     permission_classes = [IsSeller]
     lookup_field = "slug"
 
-    def get_serializer_class(self):
-        if self.action == "create":
-            return ProductVariantCreateSerializer
-        return self.serializer_class
 
-
-class ProductVariantImageSellerViewSet(viewsets.ModelViewSet):
+class SellerProductVariantImageViewSet(viewsets.ModelViewSet):
     queryset = ProductVariantImage.objects.all()
     serializer_class = ProductVariantImageSerializer
     permission_classes = [IsSeller]
     parser_classes = [MultiPartParser]
 
 
-class ProductFavouriteCustomerViewSet(viewsets.ModelViewSet):
+class CustomerProductViewSet(mixins.RetrieveModelMixin, viewsets.GenericViewSet):
+    queryset = Product.objects.all().prefetch_related("variants", "reviews")
+    serializer_class = ProductSerializer
+    lookup_field = "slug"
+
+
+class CustomerProductFavouriteViewSet(mixins.ListModelMixin, mixins.CreateModelMixin,
+                                      viewsets.GenericViewSet):
     queryset = ProductFavourite.objects.all()
     serializer_class = ProductFavouriteSerializer
     permission_classes = [IsCustomer]
 
 
-class ProductReviewCustomerViewSet(viewsets.ModelViewSet):
+class CustomerProductReviewViewSet(mixins.ListModelMixin, mixins.CreateModelMixin,
+                                   viewsets.GenericViewSet):
     queryset = ProductReview.objects.all()
     serializer_class = ProductReviewSerializer
     permission_classes = [IsCustomer]

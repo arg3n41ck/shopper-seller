@@ -49,6 +49,9 @@ class Seller(TimeStampedBaseModel):
         verbose_name = _("Seller")
         verbose_name_plural = _("Sellers")
 
+    def __str__(self):
+        return self.user.email
+
     def set_key(self, key: SellerKey):
         self.key = key
         self.save()

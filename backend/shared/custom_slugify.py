@@ -8,6 +8,7 @@ from transliterate import slugify as slugify_translit
 from shared.utils import generate_random_string
 
 
+# Lib
 def generate_slug_from_field(field: str):
     def decorator(model):
         assert hasattr(model, field), f"Model has no field {field!r}"

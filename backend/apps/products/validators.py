@@ -1,9 +1,10 @@
-from django.core.exceptions import ValidationError
-from django.core.validators import DecimalValidator
 from decimal import Decimal
 
+from django.core.exceptions import ValidationError
+from django.core.validators import DecimalValidator
 
-def validate_size(value):
+
+def validate_size(value: dict) -> None:
     if not isinstance(value, dict):
         raise ValidationError("Size must be a dictionary.")
 
@@ -29,7 +30,7 @@ def validate_size(value):
             raise ValidationError("Discount must be an integer between 0 and 100.")
 
 
-def validate_size_variants(value):
+def validate_size_variants(value: list) -> None:
     if not isinstance(value, list):
         raise ValidationError("Size variants must be a list.")
 
@@ -37,10 +38,11 @@ def validate_size_variants(value):
         if not isinstance(variant, dict):
             raise ValidationError("Each variant must be a dictionary.")
 
-        required_keys = {"size", "quantity"}
+        # Price can be removed
+        required_keys = {"size", "quantity", "price"}
 
         if not required_keys.issubset(variant.keys()):
-            raise ValidationError("Each size variant must have 'size' and 'quantity' keys.")
+            raise ValidationError("Each size variant must have 'size', 'quantity' and 'price' keys.")
 
         if not isinstance(variant["size"], str):
             raise ValidationError("Size must be a string.")
@@ -48,8 +50,13 @@ def validate_size_variants(value):
         if not isinstance(variant["quantity"], int) or variant["quantity"] <= 0:
             raise ValidationError("Quantity must be a positive integer.")
 
+        if "price" in variant and variant["price"] is not None:
+            price = Decimal(str(variant["price"]))
+            decimal_validator = DecimalValidator(max_digits=10, decimal_places=2)
+            decimal_validator(price)
 
-def validate_specifications(value):
+
+def validate_specifications(value: list) -> None:
     if not isinstance(value, list):
         raise ValidationError("Size variants must be a list of dictionaries.")
 
