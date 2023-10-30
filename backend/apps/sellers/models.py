@@ -80,6 +80,11 @@ class Shop(TimeStampedBaseModel):
         max_length=255,
         verbose_name=_("Title"),
     )
+    description = models.TextField(
+        verbose_name=_("Description"),
+        blank=True,
+        null=True,
+    )
     seller = models.OneToOneField(
         Seller,
         on_delete=models.CASCADE,

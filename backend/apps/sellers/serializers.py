@@ -51,6 +51,7 @@ class ShopSerializer(serializers.ModelSerializer):
             "slug",
             "logo",
             "title",
+            "description",
             "seller",
             "status",
             "site_link",

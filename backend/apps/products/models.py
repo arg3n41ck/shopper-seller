@@ -211,8 +211,8 @@ class Product(TimeStampedBaseModel):
     def category_indexing(self):
         return dict_to_obj({
             "id": self.category.id,
-            "title": self.category.title},
-        )
+            "title": self.category.title
+        })
 
     @property
     def tags_indexing(self):
