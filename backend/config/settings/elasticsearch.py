@@ -1,8 +1,8 @@
 
 ELASTICSEARCH_DSL = {
     'default': {
-        'hosts': 'http://localhost:9200',
-        'http_auth': ('elastic', 'fiOor2ZWrHJGYGsrjeFm')
+        'hosts': 'http://elasticsearch:9200',
+        # 'http_auth': ('elastic', 'fiOor2ZWrHJGYGsrjeFm')
     },
 }
 
