@@ -339,3 +339,4 @@ class ProductReview(TimeStampedBaseModel):
     class Meta:
         verbose_name = _("Product review")
         verbose_name_plural = _("Product reviews")
+        unique_together = ("product", "customer")
