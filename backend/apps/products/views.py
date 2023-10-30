@@ -18,6 +18,7 @@ from apps.products.serializers import (
     SpecificationSerializer,
     ProductSerializer,
     ProductCreateSerializer,
+    ProductUpdateSerializer,
     ProductVariantSerializer,
     ProductVariantCreateSerializer,
     ProductVariantImageSerializer,
@@ -65,6 +66,7 @@ class SellerProductViewSet(DynamicSerializerMixin, viewsets.ModelViewSet):
     serializer_class = ProductSerializer
     serializer_classes = {
         "create": ProductCreateSerializer,
+        "partial_update": ProductUpdateSerializer,
     }
     permission_classes = [IsSeller]
     lookup_field = "slug"

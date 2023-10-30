@@ -197,3 +197,21 @@ class ProductCreateSerializer(serializers.ModelSerializer):
             "shop",
             "publish_date",
         )
+
+
+class ProductUpdateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Product
+        fields = (
+            "title",
+            "description",
+            "recommendation",
+            "gender",
+            "for_kids",
+            "price_from",
+            "discount",
+            "category",
+            "country",
+            "tags",
+            "specifications",
+        )
