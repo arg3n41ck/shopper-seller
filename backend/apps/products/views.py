@@ -43,7 +43,8 @@ class CategoryViewSet(viewsets.ReadOnlyModelViewSet):
         )
 
 
-class TagViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
+class TagViewSet(mixins.CreateModelMixin, mixins.ListModelMixin,
+                 viewsets.GenericViewSet):
     queryset = Tag.objects.all()
     serializer_class = TagSerializer
     filter_backends = [SearchFilter]
