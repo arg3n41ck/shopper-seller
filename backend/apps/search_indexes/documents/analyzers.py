@@ -1,22 +1,15 @@
-from elasticsearch_dsl import analyzer, token_filter
+from elasticsearch_dsl import analyzer
+from django_elasticsearch_dsl_drf.versions import ELASTICSEARCH_GTE_7_0
 
 
-edge_ngram_completion_filter = token_filter(
-    'edge_ngram_completion_filter',
-    type="edge_ngram",
-    min_gram=1,
-    max_gram=20
-)
-
-edge_ngram_completion = analyzer(
-    "edge_ngram_completion",
-    tokenizer="standard",
-    filter=["lowercase", edge_ngram_completion_filter]
-)
+if ELASTICSEARCH_GTE_7_0:
+    _filters = ["lowercase", "stop", "snowball"]
+else:
+    _filters = ["standard", "lowercase", "stop", "snowball"]
 
 html_strip = analyzer(
     "html_strip",
     tokenizer="standard",
-    filter=["standard", "lowercase", "stop", "snowball"],
+    filter=_filters,
     char_filter=["html_strip"]
 )
