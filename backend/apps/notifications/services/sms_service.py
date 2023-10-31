@@ -10,7 +10,7 @@ from apps.notifications.models import NotificationSMSPro
 
 
 class SMSProRepository:
-    BASE_URL = " https://smspro.nikita.kg/api"
+    BASE_URL = "https://smspro.nikita.kg/api"
 
     def __init__(self):
         self.login = settings.SMS_PRO_LOGIN
@@ -24,6 +24,7 @@ class SMSProRepository:
         try:
             response = method(url, data=xml_data, headers=headers)
             response.raise_for_status()  # Raise HTTPError for non-2xx responses
+            print(response.content)
             return response.content
         except requests.exceptions.RequestException as e:
             # Handle HTTP request errors here (e.g., connection issues, timeouts)
@@ -53,7 +54,7 @@ class SMSProService:
     def send_sms(self, phone_numbers: list[str], text: str) -> None:
         notification = self.notification_sms_model.objects.create(
             text=text,
-            phone_numbers=[phone_numbers]
+            phone_numbers=phone_numbers
         )
         xml_data = f"""
         <?xml version="1.0" encoding="UTF-8"?>
@@ -75,16 +76,16 @@ class SMSProService:
         response = self.repository.request_send_sms(xml_data=xml_data)
         root = self._parse_response_xml(response=response)
 
-        notification.response = {
-            "id": root.find("id").text,
-            "status": root.find("status").text,
-            "status_message": self.MESSAGES.get(int(root.find("status").text),
-                                                _("Unknown message")),
-            "phones": root.find("phones").text,
-            "smscnt": root.find("smscnt").text,
-            "message": root.find("message").text,
-        }
-        notification.save()
+        # notification.response = {
+        #     "id": root.find("id").text,
+        #     "status": root.find("status").text,
+        #     "status_message": self.MESSAGES.get(int(root.find("status").text),
+        #                                         _("Unknown message")),
+        #     "phones": root.find("phones").text,
+        #     "smscnt": root.find("smscnt").text,
+        #     "message": root.find("message").text,
+        # }
+        # notification.save()
 
     def _parse_response_xml(self, response):
         return ElementTree.fromstring(response)

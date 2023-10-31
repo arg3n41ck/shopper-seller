@@ -14,6 +14,8 @@ class UserSerializer(serializers.ModelSerializer):
         model = User
         fields = (
             "id",
+            "first_name",
+            "last_name",
             "email",
             "phone_number",
             "type",
@@ -29,7 +31,7 @@ class PasswordRetypeSerializer(serializers.Serializer):
     }
 
     def validate(self, attrs):
-        if attrs["password"] != attrs.pop("re_password"):
+        if attrs["password"] != attrs["re_password"]:
             self.fail("password_mismatch")
         return attrs
 
