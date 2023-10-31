@@ -14,7 +14,7 @@ import { $apiProductsApi } from '@/shared/api'
 import { useMutation } from '@tanstack/react-query'
 import { Accordion } from '@/shared/ui/accordions'
 import { TypeProduct, TypeVariant } from '@/shared/lib/types/sellerTypes'
-import { ProductUpdate } from '@/shared/api/gen/dist'
+import { ProductUpdate } from '@/shared/api/gen'
 import { PATH_LK_SELLER } from '@/shared/config'
 
 interface PreviewProductProps {

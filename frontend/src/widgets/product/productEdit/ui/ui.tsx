@@ -17,7 +17,7 @@ import { Button } from '@/shared/ui/buttons'
 import { $apiProductsApi } from '@/shared/api'
 import { useMutation, useQuery } from '@tanstack/react-query'
 import { TypeProduct } from '@/shared/lib/types/sellerTypes'
-import { Product, ProductCreate } from '@/shared/api/gen/dist'
+import { Product, ProductCreate } from '@/shared/api/gen'
 
 const sellerClient = new SellerClient()
 
@@ -29,26 +29,6 @@ const editProduct = async (productId: string, updatedData: ProductCreate) => {
 interface ProductEditPageProps {
   product: Product
 }
-
-// interface FormValues {
-//   title: string
-//   description: string
-//   gender: string
-//   for_kids: boolean
-//   price_from: string
-//   discount: string
-//   parent_category: string
-//   category: string
-//   country: string
-//   tags: string[]
-//   specifications: SpecificationInput[]
-//   publish_date: string
-//   recommendation: string
-//   sku: string
-
-//   variants: TypeVarians
-//   images: any
-// }
 
 type GenderType = {
   id: string
@@ -137,11 +117,10 @@ export const ProductEditPage: FC<ProductEditPageProps> = ({ product }) => {
 
     innerRef: initialValuesRef,
     validationSchema: validationSchema(t),
-    onSubmit: async (values) => {
+    onSubmit: async (values, { resetForm }) => {
       try {
         // eslint-disable-next-line
         const { parent_category, variants, publish_date, sku, ...restValues } = values
-        // const productData = removeEmptyFields({ ...restValues }, ['for_kids', 'category'])
 
         // eslint-disable-next-line
         //@ts-ignore
@@ -151,7 +130,7 @@ export const ProductEditPage: FC<ProductEditPageProps> = ({ product }) => {
         // 	pathname: PATH_LK_SELLER_CREATE_PRODUCT.step2,
         // 	query: { id: data.id },
         // })
-        // resetForm()
+        resetForm()
       } catch (error) {
         throw new Error()
       }
@@ -165,13 +144,6 @@ export const ProductEditPage: FC<ProductEditPageProps> = ({ product }) => {
   }, [formik])
 
   const handleFieldsValueChange = (fieldName: string, value: string) => formik.setFieldValue(fieldName, value)
-  // useEffect(() => {
-  // 	// Update Formik's field values when selectedColor changes
-  // 	formik.setValues({
-  // 		title: productData[selectedColor]?.title || '',
-  // 		description: productData[selectedColor]?.description || '',
-  // 	})
-  // }, [selectedColor])
 
   const handleTagsChange = (newTags: string[]) => formik.setFieldValue('tags', newTags)
 
