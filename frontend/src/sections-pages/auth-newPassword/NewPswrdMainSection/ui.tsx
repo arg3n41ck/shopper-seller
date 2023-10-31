@@ -43,6 +43,7 @@ export const NewPasswordMainSection = () => {
           query: {
             title: t('auth.resetPassword.successChangePassword'),
             path: PATH_AUTH.root,
+            buttonTitle: 'Перейти в авторизацию',
           },
         })
       } catch (error) {

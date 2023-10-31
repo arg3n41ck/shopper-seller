@@ -19,7 +19,7 @@ import { Edit, Plus } from 'react-feather'
 import { useMutation, useQuery } from '@tanstack/react-query'
 import { $apiProductsApi } from '@/shared/api'
 import { removeEmptyFields } from '@/shared/lib/helpers'
-import { ProductCreate } from '@/shared/api/gen/dist'
+import { ProductCreate } from '@/shared/api/gen'
 import { TypeCategory, TypeImage, TypeProduct, TypeSizeQuantity, TypeVariant } from '@/shared/lib/types/sellerTypes'
 
 const sellerClient = new SellerClient()
