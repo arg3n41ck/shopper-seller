@@ -4,10 +4,10 @@ import cn from 'classnames'
 interface TextFieldProps extends ComponentPropsWithRef<'input'> {
   startAdornment?: ReactNode
   endAdornment?: ReactNode
-  value: string
+  value: string | number
   label?: string | ReactNode
   error?: boolean
-  errorMessage?: any
+  errorMessage?: string
   helperText?: string
 }
 
@@ -42,7 +42,9 @@ const TextField = ({
           },
         )}
       >
-        {startAdornment && startAdornment}
+        {startAdornment && (
+          <div className={cn('text-neutral-400', { ['!text-neutral-900']: isActive })}>{startAdornment}</div>
+        )}
 
         <input hidden autoComplete="" />
         <input

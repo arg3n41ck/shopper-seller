@@ -1,4 +1,4 @@
-import React, { FC, useEffect, useState } from 'react'
+import React, { FC, useState } from 'react'
 import { ProductDetailCarouselIMages } from '@/feautures/product/product-detail'
 import { Edit2 } from 'react-feather'
 import { BUTTON_STYLES } from '@/shared/lib/consts/styles'
@@ -6,8 +6,8 @@ import { useRouter } from 'next/router'
 import { PATH_LK_SELLER } from '@/shared/config'
 import { Button } from '@/shared/ui/buttons'
 import { VariantProduct } from '../../createProduct'
-
-const images = ['/child.png', '/dog.jpg', '/dog2.jpg', '/fish.jpeg']
+import { ProductVariantDetailModal } from '../modal'
+import { TypeProductFromBack, TypeSpecification, TypeVariant } from '@/shared/lib/types/sellerTypes'
 
 const gender = [
   {
@@ -24,115 +24,27 @@ const getGenderTitle = (value: string) => {
   return gender.find((item) => item.value === value)?.title
 }
 
-const mockDataVariants = [
-  {
-    id: Date.now(),
-    images: [
-      {
-        id: Date.now(),
-        main_image: true,
-        image: '/dog.jpg',
-      },
-      {
-        id: Date.now(),
-        main_image: false,
-        image: '/dog2.jpg',
-      },
-    ],
-    title: 'red',
-    size_variants: [
-      {
-        id: Date.now() + 1,
-        size: 'XL',
-      },
-      {
-        id: Date.now() + 2,
-        size: 'L',
-      },
-    ],
-    residue: 543,
-    price: '35 990',
-    description: 'Прекрасное описание товара для варианта 1',
-  },
-  {
-    id: Date.now() + 3,
-    images: [
-      {
-        id: Date.now() + 4,
-        main_image: true,
-        image: '/child.png',
-      },
-      {
-        id: Date.now() + 5,
-        main_image: false,
-        image: '/dog.jpg',
-      },
-    ],
-    title: 'blue',
-    size_variants: [
-      {
-        id: Date.now() + 6,
-        size: 'M',
-      },
-      {
-        id: Date.now() + 7,
-        size: 'S',
-      },
-    ],
-    residue: 320,
-    price: '29 990',
-    description: 'Замечательное описание товара для варианта 2',
-  },
-  {
-    id: Date.now() + 8,
-    images: [
-      {
-        id: Date.now() + 9,
-        main_image: false,
-        image: '/child.png',
-      },
-      {
-        id: Date.now() + 10,
-        main_image: true,
-        image: '/fish.jpeg',
-      },
-    ],
-    title: 'green',
-    size_variants: [
-      {
-        id: Date.now() + 11,
-        size: 'XXL',
-      },
-      {
-        id: Date.now() + 12,
-        size: 'XS',
-      },
-    ],
-    residue: 120,
-    price: '42 990',
-    description: 'Отличное описание товара для варианта 3',
-  },
-]
-
 interface ProductDetailPageProps {
-  product: any
+  product: TypeProductFromBack
 }
 
 export const ProductDetailPage: FC<ProductDetailPageProps> = ({ product }) => {
-  console.log(product)
   const router = useRouter()
-  const [selectedVariant, setSelectedVariant] = useState<any>(null)
+  const [showVariantDetail, setShowVariantDetail] = useState(false)
+  const [selectedVariant, setSelectedVariant] = useState<TypeVariant | null>(null)
 
-  const handleSelectVariant = (variant: any) => setSelectedVariant(variant)
+  const handleSelectVariant = (variant: TypeVariant) => {
+    setSelectedVariant(variant)
+  }
+
+  const handleShowVariantDetail = () => {
+    setShowVariantDetail((prev) => !prev)
+  }
 
   const navigateToEditProduct = (slug: string) =>
     router.push({
       pathname: `${PATH_LK_SELLER.productsList}/product-edit/${slug}`,
     })
-
-  useEffect(() => {
-    setSelectedVariant(product?.variants[0])
-  }, [product])
 
   if (!product?.id) return null
 
@@ -143,40 +55,40 @@ export const ProductDetailPage: FC<ProductDetailPageProps> = ({ product }) => {
       <div className="grid grid-cols-1 gap-10">
         <div className="mt-10 flex items-start justify-between">
           <div className="flex items-start gap-[70px]">
-            <ProductDetailCarouselIMages images={selectedVariant?.images} uniqueCarouselId="product-detail" />
+            <ProductDetailCarouselIMages images={product?.variants[0]?.images} uniqueCarouselId="product-detail" />
 
             <div>
-              <p className="text-[32px] font-medium text-[#000]">{selectedVariant?.title}</p>
-              <p className="text-[16px] font-normal text-[#676767]">{selectedVariant?.description} </p>
+              <p className="text-[32px] font-medium text-[#000]">{product?.title}</p>
+              <p className="text-[16px] font-normal text-[#676767]">{product?.description} </p>
 
               <div className="mt-4 grid grid-cols-1 gap-4">
                 {!!product?.publish_date && (
                   <div>
-                    <p className="text-[32px] font-medium text-[#000]">Дата публикации</p>
-                    <p className="text-[12px] font-semibold text-[#676767]">{product.publish_date}</p>
+                    <p className="text-[12px] font-semibold text-[#676767]">Дата публикации</p>
+                    <p className="text-[16px] font-semibold text-[#171717]">{product.publish_date}</p>
                   </div>
                 )}
 
                 <div>
-                  <p className="text-[32px] font-medium text-[#000]">Количество в наличии</p>
-                  <p className="text-[12px] font-semibold text-[#676767]">200 шт.</p>
+                  <p className="text-[12px] font-semibold text-[#676767]">Количество в наличии</p>
+                  <p className="text-[16px] font-semibold text-[#171717]">200 шт.</p>
                 </div>
 
                 <div>
-                  <p className="text-[32px] font-medium text-[#000]">Цена</p>
-                  <p className="text-[12px] font-semibold text-[#676767]">23990 сом</p>
+                  <p className="text-[12px] font-semibold text-[#676767]">Цена</p>
+                  <p className="text-[16px] font-semibold text-[#171717]">23990 сом</p>
                 </div>
 
                 {!!product?.sku && (
                   <div>
-                    <p className="text-[32px] font-medium text-[#000]">Артикул товара</p>
-                    <p className="text-[12px] font-semibold text-[#676767]">{product.sku}</p>
+                    <p className="text-[12px] font-semibold text-[#676767]">Артикул товара</p>
+                    <p className="text-[16px] font-semibold text-[#171717]">{product.sku}</p>
                   </div>
                 )}
 
                 <div>
-                  <p className="text-[32px] font-medium text-[#000]">Статус</p>
-                  <p className="text-[12px] font-semibold text-[#676767]">{product?.status}</p>
+                  <p className="text-[12px] font-semibold text-[#676767]">Статус</p>
+                  <p className="text-[16px] font-semibold text-[#171717]">{product?.status}</p>
                 </div>
               </div>
             </div>
@@ -227,25 +139,34 @@ export const ProductDetailPage: FC<ProductDetailPageProps> = ({ product }) => {
           <p className="text-[18px] font-medium text-[#000]">Дополнительная информация</p>
 
           <div className="grid grid-cols-[1fr_1fr] gap-6">
-            <div className="flex flex-col gap-[10px]">
-              <p className="text-[14px] font-semibold text-[#676767]">Состав товара</p>
-              <p className="text-[16px] font-semibold text-[#171717]">
-                Наружный Материал: Шерсть 65%, Шелк 35% Подкладка: Шелк 100%
-              </p>
-            </div>
+            {!!product?.specifications?.length && (
+              <div className="flex flex-col gap-[10px]">
+                <p className="text-[14px] font-semibold text-[#676767]">Состав товара</p>
 
-            <div className="flex flex-col gap-[10px]">
-              <p className="text-[14px] font-semibold text-[#676767]">Описание</p>
-              <p className="text-[16px] font-semibold text-[#171717]">
-                Черный/белый, шелк, сатиновый финиш, узор в диагональную полоску, завышенная талия, потайная застежка на
-                молнии сбоку, прямой подол и длина миди.
-              </p>
-            </div>
+                <div>
+                  {product?.specifications.map((specification: TypeSpecification, index: number) => (
+                    <span className="text-[16px] font-semibold text-[#171717]" key={specification.title}>
+                      {`${specification.title}: ${specification.value}`}
+                      {index < product.specifications.length - 1 && ', '}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            )}
 
-            <div className="flex flex-col gap-[10px]">
-              <p className="text-[14px] font-semibold text-[#676767]">Рекомендации по уходу</p>
-              <p className="text-[16px] font-semibold text-[#171717]">Информацию можно найти на этикетке товара</p>
-            </div>
+            {!!product?.variants[0]?.description && (
+              <div className="flex flex-col gap-[10px]">
+                <p className="text-[14px] font-semibold text-[#676767]">Описание</p>
+                <p className="text-[16px] font-semibold text-[#171717]">{product?.variants[0]?.description}</p>
+              </div>
+            )}
+
+            {!!product?.recommendation && (
+              <div className="flex flex-col gap-[10px]">
+                <p className="text-[14px] font-semibold text-[#676767]">Рекомендации по уходу</p>
+                <p className="text-[16px] font-semibold text-[#171717]">{product?.recommendation}</p>
+              </div>
+            )}
           </div>
         </div>
 
@@ -254,13 +175,37 @@ export const ProductDetailPage: FC<ProductDetailPageProps> = ({ product }) => {
             <p className="text-[18px] font-medium text-[#000]">Варианты товара</p>
 
             <div className="relative flex max-w-[528px] items-start gap-6 overflow-x-auto">
-              {product.variants.map((variant: any) => (
-                <VariantProduct key={variant.slug} data={variant} selectVariant={handleSelectVariant} />
+              {product.variants.map((variant: TypeVariant) => (
+                <div key={variant.slug} className="group/edit relative overflow-hidden">
+                  <VariantProduct key={variant.slug} data={variant} />
+
+                  <Button
+                    onClick={() => {
+                      handleSelectVariant(variant)
+                      handleShowVariantDetail()
+                    }}
+                    variant={BUTTON_STYLES.primaryCtaIndigo}
+                    className="invisible absolute left-2 top-2 z-[1] h-[25px] max-w-[65px] px-1 py-2 !text-[12px] !font-normal group-hover/edit:visible"
+                  >
+                    Посмотреть
+                    {/* <Edit size={16} /> */}
+                  </Button>
+                </div>
               ))}
             </div>
           </div>
         )}
       </div>
+
+      {showVariantDetail && (
+        <ProductVariantDetailModal
+          // eslint-disable-next-line
+          //@ts-ignore
+          variant={selectedVariant}
+          open={showVariantDetail}
+          handleClose={handleShowVariantDetail}
+        />
+      )}
     </>
   )
 }

@@ -26,7 +26,7 @@ export const Modal = ({ children, open, onClose, style }: Props) => {
     <AnimatePresence>
       {open && (
         <motion.div
-          className="fixed left-0 top-0 z-[1] h-full w-full overflow-auto bg-[rgba(0,0,0,0.5)]"
+          className="fixed left-0 top-0 z-[15] h-full w-full overflow-auto bg-[rgba(0,0,0,0.5)]"
           onClick={onClose}
           variants={modalVariants}
           initial="hidden"
@@ -34,7 +34,7 @@ export const Modal = ({ children, open, onClose, style }: Props) => {
           exit="hidden"
         >
           <div
-            className="absolute left-[50%] top-[50%] w-full max-w-[528px] translate-x-[-50%] translate-y-[-50%] bg-neutral-50"
+            className="absolute left-[50%] top-[50%] w-full max-w-[528px] translate-x-[-50%] translate-y-[-50%] bg-white"
             onClick={(e) => e.stopPropagation()}
             style={style}
           >

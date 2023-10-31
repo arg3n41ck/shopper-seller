@@ -24,7 +24,7 @@ const Backdrop: FC<Props> = ({ children, open, onClose }) => {
     <AnimatePresence>
       {open && (
         <motion.div
-          className="fixed left-0 top-0 z-[3] h-full w-full overflow-auto bg-[rgba(0,0,0,0.5)]"
+          className="fixed left-0 top-0 z-[15] h-full w-full overflow-auto bg-[rgba(0,0,0,0.5)]"
           onClick={onClose}
           variants={backdropVariants}
           initial="hidden"

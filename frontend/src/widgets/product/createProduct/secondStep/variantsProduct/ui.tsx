@@ -1,83 +1,42 @@
-import React, { FC, useEffect, useState } from 'react'
-import { steps } from '@/components/layouts/createProductLayout'
-import { StepBlock } from '@/components/layouts/createProductLayout/styles'
+import React, { FC, useState } from 'react'
 import { BUTTON_STYLES } from '@/shared/lib/consts/styles'
-import { useAppDispatch, useAppSelector } from '@/shared/lib/hooks/redux'
-import { PATH_LK_SELLER_CREATE_PRODUCT } from '@/shared/routes/paths'
-import { fetchProduct } from '@/shared/store/slices/seller'
-import { ButtonInfoCont } from '@/shared/styles/styles'
-import Button from '@/shared/ui/button'
-import { useRouter } from 'next/router'
-import { ChevronRight, Plus } from 'react-feather'
-import CreateProductPaginationSlot from '../../slots/createProductStepPagination/ui'
-import CreateProductSubmitButtonSlot from '../../slots/createProductSubmitButtonSlot/ui'
+import { Plus } from 'react-feather'
 import { CreateVariantModal } from '../modals/createVariantModal'
-import { PreviewVariantsContainer, VariantsContainer } from '../styles'
 import { VariantProduct } from '../variantProduct'
+import { Button } from '@/shared/ui/buttons'
+import { TypeVariant, TypeVariants } from '@/shared/lib/types/sellerTypes'
 
 interface VariantsProductProps {
-	data: any
-	onChange: (value: any) => void
-	removeVariant?: (data: any) => void
+  data: TypeVariants
 }
 
-const VariantsProduct: FC<VariantsProductProps> = ({
-	data,
-	onChange,
-	removeVariant,
-}) => {
-	const router = useRouter()
-	const id = (router.query?.id as string) || ''
-	const dispatch = useAppDispatch()
-	const [createVariantModal, setCreateVariantModal] = useState(false)
-	const { product } = useAppSelector(state => state.seller)
+const VariantsProduct: FC<VariantsProductProps> = ({ data }) => {
+  const [createVariantModal, setCreateVariantModal] = useState(false)
 
-	const handleShowCreateVariantModal = () =>
-		setCreateVariantModal(prev => !prev)
+  const handleShowCreateVariantModal = () => setCreateVariantModal((prev) => !prev)
 
-	const handleNavigate = () =>
-		!!product?.preview?.length &&
-		router.push({
-			pathname: PATH_LK_SELLER_CREATE_PRODUCT.step3,
-			query: { id },
-		})
+  // useEffect(() => {
+  //   id && dispatch(fetchProduct(id))
+  // }, [])
 
-	useEffect(() => {
-		id && dispatch(fetchProduct(id))
-	}, [])
+  return (
+    <>
+      <div className="flex w-full items-center gap-6">
+        <div className="relative flex max-w-[528px] items-start gap-6 overflow-x-scroll">
+          {!!data?.length &&
+            data.map((variant: TypeVariant, index: number) => <VariantProduct key={index} data={variant} />)}
+        </div>
 
-	return (
-		<>
-			<VariantsContainer>
-				<PreviewVariantsContainer>
-					{!!data?.length &&
-						data.map((variant: any, index: number) => (
-							<VariantProduct
-								key={index}
-								data={variant}
-								removeVariant={removeVariant}
-							/>
-						))}
-				</PreviewVariantsContainer>
+        <Button onClick={handleShowCreateVariantModal} variant={BUTTON_STYLES.primaryCta} className={'max-w-[48px]'}>
+          <Plus />
+        </Button>
+      </div>
 
-				<Button
-					onClick={handleShowCreateVariantModal}
-					variant={BUTTON_STYLES.primaryCta}
-					className={'max-w-[48px]'}
-				>
-					<Plus />
-				</Button>
-			</VariantsContainer>
-
-			{createVariantModal && (
-				<CreateVariantModal
-					open={createVariantModal}
-					handleClose={handleShowCreateVariantModal}
-					onChange={onChange}
-				/>
-			)}
-		</>
-	)
+      {createVariantModal && (
+        <CreateVariantModal open={createVariantModal} handleClose={handleShowCreateVariantModal} />
+      )}
+    </>
+  )
 }
 
 export default VariantsProduct

@@ -2,27 +2,27 @@ import styled from 'styled-components'
 import * as palette from '@/shared/lib/consts/styles'
 
 export const TableContainer = styled.table`
-	position: relative;
-	width: 100%;
-	background-color: ${palette.NEUTRAL[50]};
-	/* border-radius: 6px 6px 0 0; */
-	overflow: hidden;
+  position: relative;
+  width: 100%;
+  /* background-color: ${palette.NEUTRAL[50]}; */
+  /* border-radius: 6px 6px 0 0; */
+  overflow: hidden;
 
-	&:before {
-		content: '';
-		position: absolute;
-		top: 0;
-		left: 0;
-		right: 0;
-		bottom: 0;
-		border: 0.5px solid ${palette.NEUTRAL[300]};
-		/* border-radius: 6px 6px 0 0; */
-		pointer-events: none;
-	}
+  &:before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border: 0.5px solid ${palette.NEUTRAL[300]};
+    /* border-radius: 6px 6px 0 0; */
+    pointer-events: none;
+  }
 `
 
 export const TableHeader = styled.thead`
-	background-color: ${palette.NEUTRAL[100]};
+  background-color: ${palette.NEUTRAL[100]};
 `
 
 // export const TableHeaderCell = styled.th`
@@ -51,20 +51,20 @@ export const TableHeader = styled.thead`
 // `
 
 export const CheckboxContainer = styled.div`
-	display: flex;
-	align-items: center;
-	justify-content: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 `
 
 export const TableBottom = styled.div`
-	background-color: ${palette.NEUTRAL[100]};
-	padding: 12px 20px;
-	display: flex;
-	align-items: center;
-	justify-content: flex-end;
-	gap: 10px;
-	border: 0.5px solid ${palette.NEUTRAL[300]};
-	border-top: none;
+  background-color: ${palette.NEUTRAL[100]};
+  padding: 12px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+  border: 0.5px solid ${palette.NEUTRAL[300]};
+  border-top: none;
 `
 
 // export const TableBottomPaginationIconsContainer = styled.div`

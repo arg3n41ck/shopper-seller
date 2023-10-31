@@ -1,7 +1,6 @@
 import React, { FC, useState } from 'react'
 import ShowAndHideIcon from 'src/shared/ui/templates/passwordShowAndHideIcon'
 import { BUTTON_STYLES } from '@/shared/lib/consts/styles'
-import { useAppDispatch } from '@/shared/lib/hooks/redux'
 import { Button } from 'src/shared/ui/buttons'
 import { LoaderIcon } from '@/shared/ui/loaders'
 import { Modal } from '@/shared/ui/modals'
@@ -9,6 +8,7 @@ import TextField from '@/shared/ui/inputs/textField'
 import { useFormik } from 'formik'
 import { useTranslation } from 'react-i18next'
 import * as yup from 'yup'
+import { $apiAccountsApi } from '@/shared/api'
 
 interface IFormValues {
   password: string
@@ -16,44 +16,19 @@ interface IFormValues {
   repeat_phone_number: string
 }
 
-interface IFormErrors {
-  [key: string]: string
-}
-
 interface Props {
   open: boolean
   onClose: () => void
 }
 
-type ErrorMessages = {
-  phone_number?: string
-  password?: string
-}
-
-const errorMessages = new Map<number, ErrorMessages>([
-  [
-    400,
-    {
-      phone_number: 'Введенный электронный адрес уже зарегистрирован',
-      password: 'Неверно введённый пароль',
-    },
-  ],
-  [
-    422,
-    {
-      phone_number: 'Введенный электронный адрес не является действительным',
-    },
-  ],
-])
-
 const validationSchema = (t: (key: string) => string) =>
   yup.object({
-    password: yup.string().required('Обязательно брат'),
-    phone_number: yup.string().required('Обязательно брат'),
+    password: yup.string().required(t('Обязательно брат')),
+    phone_number: yup.string().required(t('Обязательно брат')),
     repeat_phone_number: yup
       .string()
-      .required('Повтори номер телефона брат')
-      .oneOf([yup.ref('phone_number')], 'Не совпадает брат'),
+      .required(t('Повтори номер телефона брат'))
+      .oneOf([yup.ref('phone_number')], t('Не совпадает брат')),
   })
 
 interface Props {
@@ -63,7 +38,6 @@ interface Props {
 
 export const EditPhoneNumberModal: FC<Props> = ({ open, onClose }) => {
   const { t } = useTranslation()
-  const dispatch = useAppDispatch()
   const [isLoading, setIsLoading] = useState(false)
   const [showPassword, setShowPassword] = useState(false)
 
@@ -74,9 +48,14 @@ export const EditPhoneNumberModal: FC<Props> = ({ open, onClose }) => {
       repeat_phone_number: '',
     },
     validationSchema: validationSchema(t),
-    onSubmit: async ({ phone_number, password }, { resetForm }) => {
+    onSubmit: async ({ password, phone_number, repeat_phone_number }, { resetForm }) => {
       setIsLoading(true)
       try {
+        await $apiAccountsApi.accountsUsersChangePhoneNumberRequest({
+          current_password: password,
+          phone_number,
+          re_phone_number: repeat_phone_number,
+        })
         // const changePhoneNumberResponse = await authClient.changeEmail({
         // 	phone_number,
         // 	password,
@@ -91,10 +70,10 @@ export const EditPhoneNumberModal: FC<Props> = ({ open, onClose }) => {
         setIsLoading(false)
         onClose()
         resetForm()
-      } catch (error: any) {
+      } catch (error) {
         setIsLoading(false)
         if (error) {
-          console.log(error)
+          throw new Error()
           // const response = error.response
           // const formErrors: IFormErrors = {}
 

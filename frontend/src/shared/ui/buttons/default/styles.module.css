@@ -26,3 +26,12 @@
 .OnlyTextButton {
   @apply border-none bg-transparent font-[500] hover:bg-neutral-100;
 }
+
+.ErrorButton {
+  @apply text-error700 hover:bg-neutral-100;
+  border: 1px solid #b91c1c;
+}
+
+.ErrorButtonWithBackground {
+  @apply bg-error700 text-white hover:bg-error500;
+}

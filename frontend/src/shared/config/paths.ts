@@ -24,7 +24,7 @@ export const PATH_AUTH: TypedPathAuth = {
 export const PATH_LK_SELLER: TypedPathLKSeller = {
   root: LK_SELLER_ROOT,
   aboutShop: path(LK_SELLER_ROOT, '/about-shop'),
-  myProducts: path(LK_SELLER_ROOT, '/products-list'),
+  productsList: path(LK_SELLER_ROOT, '/products-list'),
   archive: path(LK_SELLER_ROOT, '/archive'),
   settings: path(LK_SELLER_ROOT, '/settings'),
 }

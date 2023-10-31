@@ -1,16 +1,10 @@
-import React, { useEffect, useState } from 'react'
-import { SellerClient } from '@/shared/apis/sellerClient'
+import React, { useState } from 'react'
 import { BUTTON_STYLES } from '@/shared/lib/consts/styles'
-import { useAppDispatch, useAppSelector } from '@/shared/lib/hooks/redux'
-import { fetchSeller } from '@/entities/seller/model/slice'
-import { fetchMe } from '@/entities/user/model/slice'
 import { Button } from 'src/shared/ui/buttons'
 import { LoaderIcon } from '@/shared/ui/loaders'
 import { Modal } from '@/shared/ui/modals'
 import TextField from '@/shared/ui/inputs/textField'
-import { removeEmptyFields } from '@/shared/lib/helpers'
 import { useFormik } from 'formik'
-import { isEqual } from 'lodash'
 import { PlusCircle } from 'react-feather'
 import { useTranslation } from 'react-i18next'
 import * as yup from 'yup'
@@ -25,9 +19,9 @@ interface IFormValues {
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const validationSchema = (t: (key: string) => string) =>
   yup.object({
-    shop_name: yup.string().required('Название магазина'),
-    site: yup.string().required('Сайт магазина').url('Неправильный формат URL'),
-    instagram: yup.string().required('Instagram').url('Неправильный формат URL'),
+    shop_name: yup.string().required(t('Название магазина')),
+    site: yup.string().required(t('Сайт магазина')).url(t('Неправильный формат URL')),
+    instagram: yup.string().required(t('Instagram')).url(t('Неправильный формат URL')),
   })
 
 interface IEditShopInfoModalProps {
@@ -36,13 +30,9 @@ interface IEditShopInfoModalProps {
   slug: string
 }
 
-const sellerClient = new SellerClient()
-
-export const EditShopInfoModal = ({ open, onClose, slug }: IEditShopInfoModalProps) => {
+export const EditShopInfoModal = ({ open, onClose }: IEditShopInfoModalProps) => {
   const { t } = useTranslation()
-  const dispatch = useAppDispatch()
   const [isLoading, setIsLoading] = useState(false)
-  const { seller } = useAppSelector((state) => state.seller)
 
   const formik = useFormik<IFormValues>({
     initialValues: {
@@ -56,21 +46,21 @@ export const EditShopInfoModal = ({ open, onClose, slug }: IEditShopInfoModalPro
     onSubmit: async ({ links, ...others }: IFormValues) => {
       setIsLoading(true)
 
-      if (isEqual(others, seller)) {
-        onClose()
-        return
-      }
+      // if (isEqual(others, seller)) {
+      //   onClose()
+      //   return
+      // }
 
       try {
-        await sellerClient.changeInfoSeller(removeEmptyFields(others))
-        await dispatch(fetchMe())
-        await dispatch(fetchSeller(slug))
-        setIsLoading(false)
-        onClose()
-      } catch (error: any) {
+        // await sellerClient.changeInfoSeller(removeEmptyFields(others))
+        // await dispatch(fetchMe())
+        // await dispatch(fetchSeller(slug))
+        // setIsLoading(false)
+        // onClose()
+      } catch (error: Error | unknown) {
         setIsLoading(false)
         if (error) {
-          console.log(error)
+          throw new Error()
         }
       }
     },
@@ -85,20 +75,20 @@ export const EditShopInfoModal = ({ open, onClose, slug }: IEditShopInfoModalPro
     formik.setFieldValue('links', newLinks)
   }
 
-  const setSellerFieldsInfo = async () => {
-    const values: IFormValues = {
-      shop_name: seller?.shop_name || '',
-      site: seller?.site || '',
-      instagram: seller?.instagram || '',
-      links: [],
-    }
+  // const setSellerFieldsInfo = async () => {
+  //   const values: IFormValues = {
+  //     shop_name: seller?.shop_name || '',
+  //     site: seller?.site || '',
+  //     instagram: seller?.instagram || '',
+  //     links: [],
+  //   }
 
-    formik.setValues(values)
-  }
+  //   formik.setValues(values)
+  // }
 
-  useEffect(() => {
-    setSellerFieldsInfo()
-  }, [seller])
+  // useEffect(() => {
+  //   setSellerFieldsInfo()
+  // }, [seller])
 
   return (
     <Modal open={open} onClose={handleClose}>

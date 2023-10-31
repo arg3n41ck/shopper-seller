@@ -1,8 +1,6 @@
 import React, { FC, useState } from 'react'
 import ShowAndHideIcon from 'src/shared/ui/templates/passwordShowAndHideIcon'
 import { BUTTON_STYLES } from '@/shared/lib/consts/styles'
-import { useAppDispatch } from '@/shared/lib/hooks/redux'
-import { fetchMe } from '@/entities/user/model/slice'
 import { Button } from 'src/shared/ui/buttons'
 import { LoaderIcon } from '@/shared/ui/loaders'
 import { Modal } from '@/shared/ui/modals'
@@ -12,6 +10,7 @@ import { useTranslation } from 'react-i18next'
 import { toast } from 'react-toastify'
 import * as yup from 'yup'
 import { $apiAccountsApi } from '@/shared/api'
+import { isAxiosError } from 'axios'
 
 interface IFormValues {
   password: string
@@ -51,12 +50,12 @@ const errorMessages = new Map<number, ErrorMessages>([
 
 const validationSchema = (t: (key: string) => string) =>
   yup.object({
-    password: yup.string().required('Обязательно брат'),
-    email: yup.string().email('Неправильно брат').required('Обязательно брат'),
+    password: yup.string().required(t('Обязательно брат')),
+    email: yup.string().email(t('Неправильно брат')).required(t('Обязательно брат')),
     repeat_email: yup
       .string()
-      .required('Повтори Эл почту брат')
-      .oneOf([yup.ref('email')], 'Не совпадает брат'),
+      .required(t('Повтори Эл почту брат'))
+      .oneOf([yup.ref('email')], t('Не совпадает брат')),
   })
 
 interface Props {
@@ -66,7 +65,6 @@ interface Props {
 
 export const EditEmailModal: FC<Props> = ({ open, onClose }) => {
   const { t } = useTranslation()
-  const dispatch = useAppDispatch()
   const [isLoading, setIsLoading] = useState(false)
   const [showPassword, setShowPassword] = useState(false)
 
@@ -91,19 +89,20 @@ export const EditEmailModal: FC<Props> = ({ open, onClose }) => {
         //   refresh_token: changeEmailResponse.refresh_token,
         // })
 
-        await dispatch(fetchMe())
+        // await dispatch(fetchMe())
         setIsLoading(false)
         onClose()
         resetForm()
-      } catch (error: any) {
+      } catch (error: unknown) {
         setIsLoading(false)
-        if (error) {
+        if (isAxiosError(error)) {
           const response = error.response
           const formErrors: IFormErrors = {}
+          const errorFields400 = errorMessages.get(400)
+          const errorFields422 = errorMessages.get(422)
 
-          switch (response.status) {
+          switch (response?.status) {
             case 400:
-              const errorFields400 = errorMessages.get(400)
               if (response.data.detail.includes('Email')) {
                 formErrors.email = 'Введеная Эл Почта уже зарегистрирована'
                 toast.error(errorFields400?.email)
@@ -114,7 +113,6 @@ export const EditEmailModal: FC<Props> = ({ open, onClose }) => {
               break
 
             case 422:
-              const errorFields422 = errorMessages.get(422)
               formErrors.email = t('auth.validation.email.invalid')
               formErrors.repeat_email = t('auth.validation.email.invalid')
               toast.error(errorFields422?.email)

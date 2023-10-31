@@ -1,13 +1,14 @@
-import React, { FC, memo, useCallback, useState } from 'react'
+import React, { FC, useCallback, useState } from 'react'
 import cn from 'classnames'
+import { TypeVariant } from '@/shared/lib/types/sellerTypes'
 
 interface ChooseSizesProps {
-  preview: any
+  variant: TypeVariant
 }
 
-type Size = { id: number; size: string }
+type Size = { id?: number; size: string }
 
-const ChooseSizes: FC<ChooseSizesProps> = memo(({ preview }) => {
+const ChooseSizes: FC<ChooseSizesProps> = ({ variant }) => {
   const [selectedSizes, setSelectedSizes] = useState<Size[]>([])
 
   const handleSizeClick = useCallback(
@@ -26,11 +27,11 @@ const ChooseSizes: FC<ChooseSizesProps> = memo(({ preview }) => {
   return (
     <div>
       <p className="text-[16px] text-gray">
-        Цвет: <span className="text-black">{preview?.color}</span>
+        Цвет: <span className="text-black">{variant?.title}</span>
       </p>
 
       <div className="mt-3 flex gap-[16px]">
-        {preview?.size.map((item: Size) => (
+        {variant?.size_variants.map((item: Size) => (
           <div
             key={item.id}
             className={cn(
@@ -52,6 +53,6 @@ const ChooseSizes: FC<ChooseSizesProps> = memo(({ preview }) => {
       </div>
     </div>
   )
-})
+}
 
 export default ChooseSizes

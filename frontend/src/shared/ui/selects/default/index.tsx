@@ -1,15 +1,16 @@
-import React, { FC, useRef, useState } from 'react'
+import React, { useRef, useState } from 'react'
 import { ChevronDown } from 'react-feather'
 import useOutsideClick from '@/shared/lib/hooks/useOutsideClick'
 import cn from 'classnames'
 
 type SelectProps = {
+  // eslint-disable-next-line
   options: any[]
   value: string
   inputLabel?: string
   placeholder?: string
   error?: boolean
-  errorMessage?: any
+  errorMessage?: string
   onChange: (value: string) => void
   width?: string
   fieldTitle: string
@@ -35,6 +36,7 @@ const CustomSelect = ({
   const [focused, setFocus] = useState(false)
   const isActive = focused || value
 
+  // eslint-disable-next-line
   const handleSelect = (optionValue: any) => {
     setIsOpen(false)
     onChange(optionValue[fieldValue])
@@ -56,15 +58,13 @@ const CustomSelect = ({
 
       <div
         className={cn(
-          'flex h-[48px] w-full cursor-pointer items-center border-[1px] border-neutral-300 px-[9px] py-[8px]',
+          'flex h-[48px] w-full cursor-pointer items-center justify-between gap-[6px] border-[1px] border-neutral-300 px-[9px] py-[8px] text-[18px] text-neutral-400',
           { ['border-neutral-900 text-neutral-900']: isActive, ['mt-2']: inputLabel, ['border-error500']: error },
         )}
         onClick={() => setIsOpen(!isOpen)}
       >
         {options.find((option) => option[fieldValue] === value)?.[fieldTitle] || placeholder}
-        <div
-          className={cn('absolute right-[15px] transition-all duration-[0.1s] ease-in-out', { ['rotate-180']: isOpen })}
-        >
+        <div className={cn('transition-all duration-[0.1s] ease-in-out', { ['rotate-180']: isOpen })}>
           <ChevronDown />
         </div>
       </div>

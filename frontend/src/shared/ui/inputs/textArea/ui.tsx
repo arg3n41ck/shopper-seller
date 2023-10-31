@@ -8,10 +8,10 @@ interface TextAreaProps {
   label?: string | ReactNode
   onChange?: (event: ChangeEvent<HTMLTextAreaElement>) => void
   error?: boolean
-  errorMessage?: any
+  errorMessage?: string
   helperText?: string
   className?: string
-  [x: string]: any
+  [x: string]: unknown
 }
 
 const TextArea: FC<TextAreaProps> = ({
@@ -38,7 +38,7 @@ const TextArea: FC<TextAreaProps> = ({
         onClick={() => textareaRef.current && textareaRef.current.focus()}
         className={cn(
           'relative flex items-center gap-[16px] border-[1px] border-neutral-300 px-[16px] py-[13px] text-black',
-          { ['!border-neutral-900']: isActive, ['!border-error500']: error },
+          { ['!border-neutral-900']: isActive, ['!border-error500']: error, ['mt-2']: !!label },
         )}
       >
         {startAdornment && startAdornment}

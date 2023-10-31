@@ -1,12 +1,12 @@
-import React, { FC, useMemo } from 'react'
+import React, { FC, useMemo, useState } from 'react'
 import LogoIcon from '@/shared/assets/icons/LogoIcon'
-import { useAppDispatch } from '@/shared/lib/hooks/redux'
 import { PATH_AUTH } from '@/shared/config'
-import { logOut } from '@/entities/user/model/slice'
 import { useRouter } from 'next/router'
 import { Clipboard, Folder, Home, List, LogOut, Menu, Settings, Users } from 'react-feather'
 import { motion } from 'framer-motion'
 import { $apiAccountsApi } from '@/shared/api'
+import cn from 'classnames'
+import LogOutBackdrop from './logOutModal'
 
 interface Props {
   open: boolean
@@ -29,9 +29,11 @@ const transitionForAnimate = { type: 'spring', stiffness: 400, damping: 30 }
 
 export const LKSellerSideBar: FC<Props> = ({ open, menuHandler }) => {
   const router = useRouter()
-  const dispatch = useAppDispatch()
   const matchMyProducts = router.pathname.match(/\/lk-seller\/products-list/i)
   const isOpen = open ? 'open' : 'closed'
+  const [isLogOut, setIsLogOut] = useState<boolean>(false)
+
+  const handleShowLogOutBackdrop = () => setIsLogOut((prev) => !prev)
 
   const routersRef = useMemo<RouterRef[]>(
     () => [
@@ -73,7 +75,7 @@ export const LKSellerSideBar: FC<Props> = ({ open, menuHandler }) => {
 
   const handleLogOutClick = async () => {
     await $apiAccountsApi.accountsAuthTokenLogoutCreate()
-    dispatch(logOut())
+    // dispatch(logOut())
     await router.push({ pathname: PATH_AUTH.root })
   }
 
@@ -103,10 +105,15 @@ export const LKSellerSideBar: FC<Props> = ({ open, menuHandler }) => {
           {routersRef.map((item: RouterRef) => {
             return (
               <li
-                className={`
+                className={cn(
+                  `
                 relative cursor-pointer p-[16px_16px_16px_24px] text-neutral-900 
-                transition-all ease-in-out hover:bg-neutral-200 active:bg-neutral-900 active:text-white
-                `}
+                transition-all ease-in-out hover:bg-neutral-200 
+                `,
+                  {
+                    ['bg-neutral-900 text-white']: item.active || router.pathname === item.path,
+                  },
+                )}
                 onClick={() => router.push({ pathname: item.path })}
                 key={item.name}
               >
@@ -118,7 +125,7 @@ export const LKSellerSideBar: FC<Props> = ({ open, menuHandler }) => {
             )
           })}
           <li
-            onClick={handleLogOutClick}
+            onClick={handleShowLogOutBackdrop}
             className={`
             relative mt-[95px] cursor-pointer
             p-[16px_16px_16px_24px] text-neutral-900 transition-all ease-in-out
@@ -132,6 +139,8 @@ export const LKSellerSideBar: FC<Props> = ({ open, menuHandler }) => {
           </li>
         </motion.ul>
       </motion.div>
+
+      <LogOutBackdrop open={isLogOut} onClose={handleShowLogOutBackdrop} logOut={handleLogOutClick} />
     </>
   )
 }

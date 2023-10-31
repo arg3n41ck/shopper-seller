@@ -6,7 +6,7 @@ export const signUpValidationSchema = () =>
     phone_number: yup.string().required('Введите номер телефона'),
     email: yup.string().email('Неверный формат электронной почты').required('Введите электронную почту'),
     password: yup.string().min(8, 'Пароль должен содержать минимум 8 символов').required('Введите пароль'),
-    repeat_password: yup
+    re_password: yup
       .string()
       .oneOf([yup.ref('password')], 'Пароли должны совпадать')
       .required('Повторите пароль'),

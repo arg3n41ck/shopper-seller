@@ -36,7 +36,7 @@ ApiClient.interceptors.response.use(
 
       try {
         const refreshToken = localStorage.getItem('refresh_token')
-        if (!refreshToken) {
+        if (!refreshToken || refreshToken === 'undefined') {
           window.location.href = '/auth'
           // No refresh token available, reject the promise
           return Promise.reject(error)

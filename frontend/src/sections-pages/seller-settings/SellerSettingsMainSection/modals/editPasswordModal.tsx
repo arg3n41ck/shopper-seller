@@ -1,8 +1,6 @@
 import React, { FC, useState } from 'react'
 import ShowAndHideIcon from 'src/shared/ui/templates/passwordShowAndHideIcon'
 import { BUTTON_STYLES } from '@/shared/lib/consts/styles'
-import { useAppDispatch } from '@/shared/lib/hooks/redux'
-import { fetchMe } from '@/entities/user/model/slice'
 import { Button } from 'src/shared/ui/buttons'
 import { LoaderIcon } from '@/shared/ui/loaders'
 import { Modal } from '@/shared/ui/modals'
@@ -11,6 +9,7 @@ import { useFormik } from 'formik'
 import { useTranslation } from 'react-i18next'
 import * as yup from 'yup'
 import { $apiAccountsApi } from '@/shared/api'
+import { isAxiosError } from 'axios'
 
 interface IFormErrors {
   [key: string]: string
@@ -33,7 +32,6 @@ interface Props {
 
 export const EditPasswordModal: FC<Props> = ({ open, onClose }) => {
   const { t } = useTranslation()
-  const dispatch = useAppDispatch()
   const [isLoading, setIsLoading] = useState(false)
   const [showPassword, setShowPassword] = useState({
     current_password: false,
@@ -52,21 +50,24 @@ export const EditPasswordModal: FC<Props> = ({ open, onClose }) => {
       setIsLoading(true)
       try {
         await $apiAccountsApi.accountsUsersSetNewPassword(values)
-        await dispatch(fetchMe())
+        // await dispatch(fetchMe())
         setIsLoading(false)
         onClose()
         resetForm()
-      } catch (error: any) {
+      } catch (error) {
         setIsLoading(false)
-        if (error.response && error.response.status === 400) {
-          const { data } = error.response
-          const formErrors: IFormErrors = {}
 
-          if (data?.detail) {
-            formErrors.current_password = 'Неверно введённый пароль'
+        if (isAxiosError(error)) {
+          if (error.response && error.response.status === 400) {
+            const { data } = error.response
+            const formErrors: IFormErrors = {}
+
+            if (data?.detail) {
+              formErrors.current_password = 'Неверно введённый пароль'
+            }
+
+            formik.setErrors(formErrors)
           }
-
-          formik.setErrors(formErrors)
         }
       }
     },

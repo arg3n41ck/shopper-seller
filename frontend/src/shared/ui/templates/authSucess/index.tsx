@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { FC } from 'react'
 import { Check } from 'react-feather'
 import { Button } from '@/shared/ui/buttons'
 import { Trans } from 'react-i18next'
@@ -6,10 +6,14 @@ import { SUCCESS } from '@/shared/lib/consts/styles'
 import { PATH_AUTH } from '@/shared/config'
 import { useRouter } from 'next/router'
 
-const SuccessAction = () => {
+interface SuccessActionProps {
+  path: string
+  title: string
+  buttonTitle: string
+}
+
+const SuccessAction: FC<SuccessActionProps> = ({ path, title, buttonTitle }) => {
   const router = useRouter()
-  const title = (router.query?.title as string) || ''
-  const path = (router.query?.path as string) || ''
 
   const navigateToPersonalCabinet = () => router.push({ pathname: path ? path : PATH_AUTH.root })
 
@@ -24,7 +28,7 @@ const SuccessAction = () => {
       </div>
 
       <Button onClick={navigateToPersonalCabinet}>
-        <Trans i18nKey={'auth.authSuccessPage.toLKPage'} />
+        <Trans i18nKey={buttonTitle} />
       </Button>
     </div>
   )

@@ -1,88 +1,95 @@
 import React, { FC } from 'react'
 import { BUTTON_STYLES } from '@/shared/lib/consts/styles'
-import { Button } from 'src/shared/ui/buttons'
+import { Plus, Trash2 } from 'react-feather'
 import TextField from '@/shared/ui/inputs/textField'
-import { Plus } from 'react-feather'
-import cn from 'classnames'
-
+import { Button } from '@/shared/ui/buttons'
+import clsx from 'classnames'
 interface SpecificationInput {
+  title: string
   value: string
-  placeholder: string
-}
-
-interface SpecificationGroup {
-  inputs: SpecificationInput[]
 }
 
 interface ProductDetailsFieldProps {
   title?: string
   fieldName: string
   className?: string
+  // eslint-disable-next-line
   formik: any
 }
 
 const ProductDetailsField: FC<ProductDetailsFieldProps> = ({ title, fieldName, className, formik }) => {
   const handleAddInput = () => {
     const updatedValues = [...formik.values[fieldName]]
-    const newGroup: SpecificationGroup = {
-      inputs: [
-        { value: '', placeholder: 'Состав товара' },
-        { value: '', placeholder: '40%' },
-      ],
-    }
-    updatedValues.push(newGroup)
+    updatedValues.push({ title: '', value: '' })
     formik.setFieldValue(fieldName, updatedValues)
   }
 
-  const handleInputChange = (groupIndex: number, inputIndex: number, value: string) => {
+  const handleRemoveInput = (inputIndexToDelete: number) => {
+    const updatedValues = [...formik.values[fieldName]].filter((_, index: number) => index !== inputIndexToDelete)
+    formik.setFieldValue(fieldName, updatedValues)
+  }
+
+  const handleTitleChange = (index: number, value: string) => {
     const updatedValues = [...formik.values[fieldName]]
-    if (groupIndex >= 0 && groupIndex < updatedValues.length) {
-      const group = updatedValues[groupIndex]
-      if (inputIndex >= 0 && inputIndex < group.inputs.length) {
-        const updatedInputs = [...group.inputs]
-        updatedInputs[inputIndex] = { ...updatedInputs[inputIndex], value }
-        updatedValues[groupIndex] = { ...group, inputs: updatedInputs }
-        formik.setFieldValue(fieldName, updatedValues)
-      }
+
+    if (index >= 0 && index < updatedValues.length) {
+      const updatedItem = { ...updatedValues[index] }
+      updatedItem.title = value
+      updatedValues[index] = updatedItem
+      formik.setFieldValue(fieldName, updatedValues)
+    }
+  }
+
+  const handleValueChange = (index: number, value: string) => {
+    const updatedValues = [...formik.values[fieldName]]
+
+    if (index >= 0 && index < updatedValues.length) {
+      const updatedItem = { ...updatedValues[index] }
+      updatedItem.value = value
+      updatedValues[index] = updatedItem
+      formik.setFieldValue(fieldName, updatedValues)
     }
   }
 
   return (
-    <div className={cn('flex flex-col gap-[25px]', className)}>
-      {title && <p className="text-[16px] font-[600] leading-[19px] text-black">{title}</p>}
+    <div className={clsx(className, 'flex flex-col gap-[25px]')}>
+      {title && <p className="text-[16px] font-semibold  text-[#000]">{title}</p>}
 
       <div className={'grid-cols-[1fr, 68px] grid w-[100%]'}>
-        <div className="flex flex-col gap-[24px]">
-          {formik.values[fieldName].map((group: SpecificationGroup, groupIndex: number) => (
-            <div className="grid w-full grid-cols-[1fr_68px] items-center gap-[24px]" key={groupIndex}>
-              {group.inputs.map((input: SpecificationInput, inputIndex: number) => (
-                <div key={inputIndex}>
+        <div className="flex flex-col gap-6">
+          {formik.values[fieldName].map((input: SpecificationInput, index: number) => (
+            <div className="flex items-end gap-5" key={index}>
+              <div className="grid w-full grid-cols-[1fr_68px] items-center gap-6">
+                <div>
                   <TextField
-                    value={input.value}
-                    placeholder={input.placeholder}
-                    onChange={(e) => handleInputChange(groupIndex, inputIndex, e.target.value)}
-                    // error={
-                    // 	formik.touched.specifications &&
-                    // 	formik.touched.specifications[groupIndex] &&
-                    // 	Boolean(
-                    // 		formik.errors.specifications &&
-                    // 			formik.errors?.specifications[groupIndex]
-                    // 	)
-                    // }
-                    // errorMessage={
-                    // 	formik.touched.specifications &&
-                    // 	formik.touched.specifications[groupIndex]
-                    // 		? formik.errors?.specifications[groupIndex]
-                    // 		: ''
-                    // }
+                    value={input.title}
+                    placeholder={'Состав товара'}
+                    label={'Состав товара'}
+                    onChange={(e) => handleTitleChange(index, e.target.value)}
                   />
                 </div>
-              ))}
+                <div>
+                  <TextField
+                    value={input.value}
+                    placeholder={'Кол-во'}
+                    label={'Кол-во'}
+                    onChange={(e) => handleValueChange(index, e.target.value)}
+                  />
+                </div>
+              </div>
+
+              <Button
+                variant={BUTTON_STYLES.primaryCta}
+                className="max-w-[48px]"
+                onClick={() => handleRemoveInput(index)}
+              >
+                <Trash2 size={24} />
+              </Button>
             </div>
           ))}
         </div>
 
-        <Button onClick={handleAddInput} variant={BUTTON_STYLES.withoutBackground} className={'mt-5'}>
+        <Button onClick={handleAddInput} variant={BUTTON_STYLES.primaryCta} className={'mx-auto mt-5 max-w-[48px]'}>
           <Plus />
         </Button>
       </div>
@@ -91,146 +98,3 @@ const ProductDetailsField: FC<ProductDetailsFieldProps> = ({ title, fieldName, c
 }
 
 export default ProductDetailsField
-
-// interface ProductDetailsFieldProps
-// {
-// 	title?: string
-// 	fieldName: string
-// 	formik: any // Переданный объект formik
-// 	className?: string
-// }
-
-// const ProductDetailsField: FC<ProductDetailsFieldProps> = ({
-// 	title,
-// 	fieldName,
-// 	className,
-// 	formik,
-// }) => {
-// 	return (
-// 		<FormAndHeadTextContainer className={className}>
-// 			{title && <HeadTextOfForm>{title}</HeadTextOfForm>}
-
-// 			<div className={'w-[100%] grid grid-cols-[1fr, 68px]'}>
-// 				<ChildFormContainer>
-// 					{/* Отображение инпутов в соответствии с полем specifications в formik */}
-// 					{formik.values[fieldName]?.map((value: string, index: number) => (
-// 						<SelectedOptionsType key={index}>
-// 							<div>
-// 								<TextField
-// 									value={value}
-// 									placeholder={`Specification ${index + 1}`} // Или используйте нужный вам формат
-// 									onChange={e => {
-// 										const updatedValues = [...formik.values[fieldName]]
-// 										updatedValues[index] = e.target.value
-// 										formik.setFieldValue(fieldName, updatedValues)
-// 									}}
-// 								/>
-// 							</div>
-// 						</SelectedOptionsType>
-// 					))}
-// 				</ChildFormContainer>
-// 			</div>
-// 		</FormAndHeadTextContainer>
-// 	)
-// }
-
-// export Skeleton ProductDetailsField
-// import React, { FC } from 'react';
-// import {
-//   ChildFormContainer,
-//   FormAndHeadTextContainer,
-//   FormContainer,
-//   HeadTextOfForm,
-//   InputWithIconCont,
-//   SelectedOptionsType,
-// } from '../styles';
-// import Autocomplete from '@/shared/ui/autocomplete';
-// import TextField from '@/shared/ui/textField';
-// import { Trash2 } from 'react-feather';
-// import { OptionType } from '@/shared/lib/types/sellerTypes';
-
-// interface ProductDetaulsFieldProps {
-//   title: string;
-//   placeholder: string;
-//   options: any;
-//   formik: any;
-//   handleChangeOption: (type: any, value: string) => void;
-//   handleFieldsValueChange: (type: string, value: string) => void;
-//   handleRemoveOption: (type: any, index: number) => void;
-//   fieldName: string;
-// }
-
-// const ProductDetailsField: FC<ProductDetaulsFieldProps> = ({
-//   title,
-//   placeholder,
-//   options,
-//   formik,
-//   handleChangeOption,
-//   handleFieldsValueChange,
-//   handleRemoveOption,
-//   fieldName,
-// }) => {
-//   return (
-//     <FormAndHeadTextContainer>
-//       <HeadTextOfForm>{title}</HeadTextOfForm>
-//       <FormContainer>
-//         <Autocomplete
-//           placeholder={placeholder}
-//           options={options}
-//           onChange={(value) => handleChangeOption(fieldName, value)}
-//           width="100%"
-//           fieldTitle="title"
-//           fieldValue="title"
-//         />
-//         <ChildFormContainer>
-//           {!!formik.values?.[fieldName]?.length &&
-//             formik.values?.[fieldName].map(
-//               (option: OptionType, index: number) => (
-//                 <SelectedOptionsType key={index}>
-//                   <HeadTextOfForm>{option.name}</HeadTextOfForm>
-//                   <InputWithIconCont>
-//                     <TextField
-//                       value={option.value}
-//                       onChange={(e) =>
-//                         handleFieldsValueChange(
-//                           `${fieldName}.${index}.value`,
-//                           e.target.value
-//                         )
-//                       }
-//                       placeholder={'0%'}
-//                       name={`${fieldName}.${index}.value`}
-//                     />
-//                     <Trash2
-//                       cursor="pointer"
-//                       onClick={() => handleRemoveOption(fieldName, index)}
-//                     />
-//                   </InputWithIconCont>
-//                 </SelectedOptionsType>
-//               )
-//             )}
-//         </ChildFormContainer>
-//       </FormContainer>
-
-//       {/* <SelectedOptionsType>
-//         <HeadTextOfForm>Уход</HeadTextOfForm>
-//         <InputWithIconCont>
-//           <TextField value={formik.values.care} onChange={formik.handleChange} placeholder="Уход" name="care" />
-//         </InputWithIconCont>
-//       </SelectedOptionsType> */}
-
-//       {/* <SelectedOptionsType>
-//         <HeadTextOfForm>Номер актикля</HeadTextOfForm>
-//         <InputWithIconCont>
-//           <TextField
-//             value={formik.values.article_number}
-//             onChange={formik.handleChange}
-//             placeholder={'Номер актикля'}
-//             name="article_number"
-//           />
-//         </InputWithIconCont>
-//       </SelectedOptionsType> */}
-//     </FormAndHeadTextContainer>
-//   );
-// };
-
-// export Skeleton ProductDetailsField;

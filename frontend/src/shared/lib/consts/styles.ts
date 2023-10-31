@@ -4,6 +4,8 @@ export type ButtonVariant =
   | 'SecondaryCTAButton'
   | 'WithoutBackgroundButton'
   | 'OnlyTextButton'
+  | 'ErrorButton'
+  | 'ErrorButtonWithBackground'
 
 export const BUTTON_STYLES: Record<string, ButtonVariant> = {
   primaryCta: 'PrimaryCTAButton',
@@ -11,6 +13,8 @@ export const BUTTON_STYLES: Record<string, ButtonVariant> = {
   secondaryCtaIndigo: 'SecondaryCTAButton',
   withoutBackground: 'WithoutBackgroundButton',
   onlyText: 'OnlyTextButton',
+  error: 'ErrorButton',
+  errorWithBackground: 'ErrorButtonWithBackground',
 }
 
 export const NEUTRAL = {

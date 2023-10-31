@@ -20,13 +20,12 @@ export const ResetPasswordMainSection = () => {
       code: '',
     },
     validationSchema: resetPasswordValidationSchema(t),
-    onSubmit: async (values) => {
+    onSubmit: async () => {
       setIsLoading(true)
 
       try {
         setTimeLeft(180)
         setSmsSent(true)
-        console.log(values)
         // const { user_exists } =
         //   await authClient.checkUserByEmailForResetPassword({ phone_number });
         setIsLoading(false)
@@ -37,7 +36,6 @@ export const ResetPasswordMainSection = () => {
         //   });
       } catch (error) {
         setIsLoading(false)
-        console.log(error)
       }
     },
   })
@@ -61,7 +59,7 @@ export const ResetPasswordMainSection = () => {
   }
 
   return (
-    <>
+    <div className="mx-auto w-full max-w-[1440px]">
       <div className="" onClick={() => 'test'}></div>
       <form onSubmit={formik.handleSubmit}>
         <div className="mx-auto flex w-full max-w-[436px] flex-col gap-[20px]">
@@ -104,6 +102,6 @@ export const ResetPasswordMainSection = () => {
           </Button>
         </div>
       </form>
-    </>
+    </div>
   )
 }

@@ -53,7 +53,7 @@ export const NewPasswordMainSection = () => {
   })
 
   return (
-    <>
+    <div className="mx-auto w-full max-w-[1440px]">
       <div className="mx-auto flex w-full max-w-[436px] flex-col gap-[20px]">
         <p className="text-center text-[24px] font-[500] text-black">
           <Trans i18nKey={'auth.resetPassword.headTextNewPassword'} />
@@ -114,6 +114,6 @@ export const NewPasswordMainSection = () => {
           </div>
         </form>
       </div>
-    </>
+    </div>
   )
 }

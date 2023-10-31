@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "api-gen": "rm -rf src/shared/api/gen && openapi-generator generate -g typescript-axios -c openapi-config.yml -o src/shared/api/gen && cd src/shared/api/gen && yarn && yarn build"
+    "api-gen": "rm -rf src/shared/api/gen && openapi-generator-cli generate -g typescript-axios -c openapi-config.yml -o src/shared/api/gen && cd src/shared/api/gen && yarn && yarn build"
   },
   "dependencies": {
     "@tanstack/react-query": "^4.32.1",

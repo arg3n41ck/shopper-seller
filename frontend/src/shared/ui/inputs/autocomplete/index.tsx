@@ -3,6 +3,7 @@ import { ChevronDown } from 'react-feather'
 import cn from 'classnames'
 
 type AutocompleteProps = {
+  // eslint-disable-next-line
   options: any[]
   inputLabel?: string
   width?: string
@@ -11,7 +12,8 @@ type AutocompleteProps = {
   placeholder?: string
   errorMessage?: string
   helperText?: string
-  value?: string
+  // eslint-disable-next-line
+  value?: any
   fieldTitle: string
   fieldValue: string
   className?: string
@@ -38,17 +40,18 @@ const Autocomplete = ({
   const [focused, setFocus] = useState(false)
   const isActive = focused || value || inputValue
 
+  // eslint-disable-next-line
   const filteredOptions = useMemo<any[]>(() => {
     return options.filter((option) => option[fieldTitle]?.toLowerCase().includes(inputValue?.toLowerCase()))
   }, [options, inputValue])
 
   const handleInputChange = useCallback((event: ChangeEvent<HTMLInputElement>) => {
-    console.log(event.target)
     const { value } = event.target
     setInputValue(value)
     setShowOptions(true)
   }, [])
 
+  // eslint-disable-next-line
   const handleItemClick = (option: any) => {
     setInputValue(option[fieldTitle])
     setShowOptions(false)
@@ -73,12 +76,12 @@ const Autocomplete = ({
   }, [showOptions])
 
   return (
-    <div className={'w-[100%]'}>
+    <div className={cn(className, 'w-[100%]')}>
       {inputLabel && <label className="text-[13.33px] leading-[16px] text-neutral-900">{inputLabel}</label>}
       <div
         onFocus={() => setFocus(true)}
         onBlur={() => setFocus(false)}
-        className={cn(`relative max-w-[${width}] flex w-full flex-col items-end justify-center`, className, {
+        className={cn(`relative max-w-[${width}] flex w-full flex-col items-end justify-center`, {
           ['mt-2']: inputLabel,
         })}
       >
@@ -93,8 +96,8 @@ const Autocomplete = ({
           className={cn(
             'w-full border-[1px] border-neutral-300 bg-none py-[11px] pl-[11px] pr-[40px] text-[16px] text-neutral-400 outline-none',
             {
-              ['text-neutral-900']: isActive,
-              ['text-error500']: error,
+              ['!border-neutral-900 text-neutral-900']: isActive,
+              ['!border-error500 text-error500']: error,
             },
           )}
         />

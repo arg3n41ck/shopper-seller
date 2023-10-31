@@ -1,5 +1,6 @@
 import React, { ComponentPropsWithRef } from 'react'
 import cn from 'classnames'
+import { toast } from 'react-toastify'
 
 interface DateInputProps extends ComponentPropsWithRef<'input'> {
   handleChange: (value: string) => void
@@ -29,10 +30,10 @@ export const DateInput = ({ handleChange, className, ...other }: DateInputProps)
       const date = new Date(year, month - 1, day)
 
       if (!isNaN(date.getTime())) {
-        console.log('Допустимая дата:', date.toDateString())
+        toast.warning(`Допустимая дата:, ${date.toDateString()}`)
       }
     } else {
-      console.log('Недопустимая дата')
+      throw new Error()
     }
   }
 

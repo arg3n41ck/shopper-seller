@@ -2,15 +2,10 @@ import React, { FC, useEffect, useRef, useState } from 'react'
 import Image from 'next/image'
 import { ChevronDown, ChevronUp } from 'react-feather'
 import cn from 'classnames'
-
-interface Image {
-  id: number
-  main_image: boolean
-  image_url: string
-}
+import { TypeImageFile } from '@/shared/lib/types/sellerTypes'
 
 interface CarouselWithMainImageProps {
-  images: Image[]
+  images: TypeImageFile[]
 }
 
 export const CarouselWithMainImage: FC<CarouselWithMainImageProps> = ({ images }) => {
@@ -44,7 +39,7 @@ export const CarouselWithMainImage: FC<CarouselWithMainImageProps> = ({ images }
   }
 
   useEffect(() => {
-    const mainImageIndex = sortedImages.findIndex((image: Image) => image.main_image)
+    const mainImageIndex = sortedImages.findIndex((image: TypeImageFile) => image.main_image)
     setActiveIndex(mainImageIndex !== -1 ? mainImageIndex : 0)
     scrollToImage(mainImageIndex !== -1 ? mainImageIndex : 0)
   }, [images])
@@ -74,12 +69,12 @@ export const CarouselWithMainImage: FC<CarouselWithMainImageProps> = ({ images }
               key={image.id}
               onClick={() => handleImageClick(index)}
               className={cn('w-[120px] opacity-[0.6] transition-all hover:opacity-100', {
-                ['opacity-100']: activeIndex === index,
+                ['!opacity-100']: activeIndex === index,
               })}
             >
               <Image
-                className="h-[120px] min-h-[103px] w-[120px] cursor-pointer object-cover "
-                src={image.image_url}
+                className="h-[120px] min-h-[103px] w-[120px] cursor-pointer object-cover"
+                src={image.image}
                 alt={`Carousel image ${index}`}
                 width={80}
                 height={80}
@@ -92,7 +87,7 @@ export const CarouselWithMainImage: FC<CarouselWithMainImageProps> = ({ images }
       <div className="h-[633px] w-[475px]">
         <Image
           className="h-full w-full object-cover"
-          src={sortedImages[activeIndex]?.image_url}
+          src={sortedImages[activeIndex]?.image}
           alt={`Main carousel image`}
           width={476}
           height={563}

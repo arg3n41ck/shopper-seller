@@ -1,16 +1,16 @@
 import { $apiProductsApi } from '@/shared/api'
-import { LKSellerLayout } from '@/widgets/layouts'
-import { ProductEditPage } from '@/widgets/product'
+import { PreviewProductPage } from '@/widgets/product'
 import { useQuery } from '@tanstack/react-query'
 import { useRouter } from 'next/router'
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
+import { LKSellerLayout } from 'src/widgets/layouts/lkSellerLayout'
 
 const fetchProduct = async (slug: string) => {
   const { data } = await $apiProductsApi.productsSellerProductsRead(slug)
   return data
 }
 
-const ProductDetail = () => {
+const PreviewProduct = () => {
   const router = useRouter()
   const id = (router.query?.id as string) || ''
   const [isQueryEnabled, setIsQueryEnabled] = useState(false)
@@ -29,9 +29,9 @@ const ProductDetail = () => {
     <LKSellerLayout>
       {/* eslint-disable-next-line */}
       {/* @ts-ignore */}
-      <ProductEditPage product={data} />
+      <PreviewProductPage product={data} />
     </LKSellerLayout>
   )
 }
 
-export default ProductDetail
+export default PreviewProduct

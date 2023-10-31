@@ -6,12 +6,12 @@ import Backdrop from 'src/shared/ui/templates/backdrop'
 interface Props {
   open: boolean
   onClose: () => void
-  deleteVariant: () => void
+  logOut: () => void
 }
 
-const DeleteVariantBackdrop: FC<Props> = ({ open, onClose, deleteVariant }) => {
+const LogOutBackdrop: FC<Props> = ({ open, onClose, logOut }) => {
   const deleteFunc = async () => {
-    await deleteVariant()
+    await logOut()
     onClose()
   }
 
@@ -24,17 +24,15 @@ const DeleteVariantBackdrop: FC<Props> = ({ open, onClose, deleteVariant }) => {
 			p-10
 			`}
       >
-        <p className="text-center text-2xl font-medium text-[#000]">Удалить вариант?</p>
-
-        <p className="text-center text-base font-normal text-neutral-900">Вы уверены, что хотите удалить вариант?</p>
+        <p className="text-center text-2xl font-medium text-[#000]">Вы уверены что хотите выйти?</p>
 
         <div className="flex items-center justify-between gap-5">
           <Button variant={BUTTON_STYLES.withoutBackground} onClick={onClose}>
             Отмена
           </Button>
 
-          <Button variant={BUTTON_STYLES.errorWithBackground} onClick={deleteFunc}>
-            Удалить
+          <Button variant={BUTTON_STYLES.primaryCta} onClick={deleteFunc}>
+            Выйти
           </Button>
         </div>
       </div>
@@ -42,4 +40,4 @@ const DeleteVariantBackdrop: FC<Props> = ({ open, onClose, deleteVariant }) => {
   )
 }
 
-export default DeleteVariantBackdrop
+export default LogOutBackdrop

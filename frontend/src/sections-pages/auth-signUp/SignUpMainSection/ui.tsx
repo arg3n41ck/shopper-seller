@@ -11,6 +11,10 @@ import { useRouter } from 'next/router'
 import { Trans, useTranslation } from 'react-i18next'
 import cn from 'classnames'
 import { signUpValidationSchema } from './schema'
+import { setLocalStorageValues } from '@/shared/lib/hooks/useLocalStorage'
+import { $apiAccountsApi } from '@/shared/api'
+import { toast } from 'react-toastify'
+import { PATH_AUTH, PATH_LK_SELLER } from '@/shared/config'
 
 export const SignUpMainSection = () => {
   const { t } = useTranslation()
@@ -20,10 +24,10 @@ export const SignUpMainSection = () => {
 
   const [showPassword, setShowPassword] = useState<{
     password: boolean
-    repeat_password: boolean
+    re_password: boolean
   }>({
     password: false,
-    repeat_password: false,
+    re_password: false,
   })
   const handlePasswordToggle = (field: keyof typeof showPassword) => {
     setShowPassword((prev) => ({ ...prev, [field]: !prev[field] }))
@@ -35,7 +39,7 @@ export const SignUpMainSection = () => {
       phone_number: '',
       email,
       password: '',
-      repeat_password: '',
+      re_password: '',
       code: '',
       agree: false,
     },
@@ -44,17 +48,59 @@ export const SignUpMainSection = () => {
       setIsLoading(true)
 
       try {
-        console.log(values)
         setIsLoading(false)
-      } catch (error) {
+
+        const body = {
+          ...values,
+          seller_key: {
+            key: values.code,
+          },
+          shop: {
+            title: values.shop_name,
+          },
+        }
+
+        const {
+          data: { response },
+        } = (await $apiAccountsApi.accountsUsersCreateSellerCreate(body)) as unknown as {
+          data: {
+            code: number
+            message: string
+            response: { access: string; refresh: string }
+          }
+        }
+
+        setLocalStorageValues({
+          access_token: response.access,
+          refresh_token: response.refresh,
+        })
+
+        toast.success('Вы успешно создали аккаунт')
+
+        await router.push({
+          pathname: PATH_AUTH.authSuccess,
+          query: {
+            title: t('Вы успешно зарегестрировались!'),
+            buttonTitle: 'Перейти в личный кабинет',
+            path: PATH_LK_SELLER.root,
+          },
+        })
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+      } catch (error: AxiosError) {
         setIsLoading(false)
-        console.log(error)
+        const keysName = Object.keys(error.response.data)
+
+        if (keysName?.includes('seller_key')) {
+          toast.error(error.response.data.seller_key.key[0])
+        }
+        toast.error(error.response.data[keysName[0]][0])
       }
     },
   })
 
   return (
-    <>
+    <div className="mx-auto w-full max-w-[1440px]">
       <form onSubmit={formik.handleSubmit}>
         <div className="mx-auto flex w-full max-w-[436px] flex-col gap-[20px]">
           <p className="text-center text-[24px] font-[500] text-black">
@@ -122,18 +168,16 @@ export const SignUpMainSection = () => {
             </div>
 
             <TextField
-              value={formik.values.repeat_password}
-              error={formik.touched.repeat_password && Boolean(formik.errors.repeat_password)}
-              errorMessage={
-                formik.touched.repeat_password && formik.errors.repeat_password ? formik.errors.repeat_password : ''
-              }
+              value={formik.values.re_password}
+              error={formik.touched.re_password && Boolean(formik.errors.re_password)}
+              errorMessage={formik.touched.re_password && formik.errors.re_password ? formik.errors.re_password : ''}
               onChange={formik.handleChange}
-              name="repeat_password"
-              type={showPassword.repeat_password ? 'text' : 'password'}
+              name="re_password"
+              type={showPassword.re_password ? 'text' : 'password'}
               endAdornment={ShowAndHideIcon({
-                show: showPassword.repeat_password,
-                onHide: () => handlePasswordToggle('repeat_password'),
-                onShow: () => handlePasswordToggle('repeat_password'),
+                show: showPassword.re_password,
+                onHide: () => handlePasswordToggle('re_password'),
+                onShow: () => handlePasswordToggle('re_password'),
               })}
               placeholder="Повторите пароль"
             />
@@ -161,6 +205,6 @@ export const SignUpMainSection = () => {
           </Button>
         </div>
       </form>
-    </>
+    </div>
   )
 }

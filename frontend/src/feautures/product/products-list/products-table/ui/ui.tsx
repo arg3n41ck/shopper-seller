@@ -1,70 +1,36 @@
-import React, { ReactNode, useState } from 'react'
-import Checkbox from '@/shared/ui/checkbox'
-import { TableBottom, TableContainer, TableHeader } from './styles'
-import { ChevronLeft, ChevronRight } from 'react-feather'
-
-interface Product {
-	[key: string]: string | number | boolean
-}
+import React, { ReactNode } from 'react'
 
 interface ProductTableProps {
-	tableHeader: ReactNode
-	tableBody: ReactNode
-	tableFooter: ReactNode
+  tableHeader: ReactNode
+  tableBody: ReactNode
+  tableFooter: ReactNode
 }
 
-export const ProductTable: React.FC<ProductTableProps> = ({
-	tableHeader,
-	tableBody,
-	tableFooter,
-}) => {
-	const [selectedProducts, setSelectedProducts] = useState<boolean[]>([])
+export const ProductTable: React.FC<ProductTableProps> = ({ tableHeader, tableBody, tableFooter }) => {
+  return (
+    <div>
+      <table
+        className="relative w-full max-w-[1200px] 
+        table-fixed overflow-auto
+        before:pointer-events-none
+        before:absolute
+        before:bottom-0
+        before:left-0
+        before:right-0 before:top-0 
+        before:border-[0.5px] before:border-neutral-300 
+        
+      "
+      >
+        <thead className="bg-neutral-100">
+          <tr>{tableHeader}</tr>
+        </thead>
 
-	const toggleCheckbox = (index: number) => {
-		const updatedSelectedProducts = [...selectedProducts]
-		updatedSelectedProducts[index] = !selectedProducts[index]
-		setSelectedProducts(updatedSelectedProducts)
-	}
+        <tbody>{tableBody}</tbody>
+      </table>
 
-	// if (!data?.length) return null
-
-	return (
-		<div>
-			<TableContainer>
-				<TableHeader>
-					<tr>
-						{/* {columns.map((column, index) => (
-							<TableHeaderCell key={index}>
-								<TableHeaderCellText>{column.title}</TableHeaderCellText>
-							</TableHeaderCell>
-						))} */}
-
-						{tableHeader}
-					</tr>
-				</TableHeader>
-
-				<tbody>
-					{/* {data.map((product, index) => (
-						<TableRow key={index} selected={selectedProducts[index] === true}>
-							{columns.map((column, columnIndex) => (
-								<TableCell key={columnIndex}>{product[column.value]}</TableCell>
-							))}
-						</TableRow>
-					))} */}
-
-					{tableBody}
-				</tbody>
-			</TableContainer>
-
-			<TableBottom>
-				{/* <p>1-10 из 276</p>
-				<TableBottomPaginationIconsContainer className='flex items-center gap-5'>
-					<ChevronLeft cursor={'pointer'} />
-					<ChevronRight cursor={'pointer'} />
-				</TableBottomPaginationIconsContainer> */}
-
-				{tableFooter}
-			</TableBottom>
-		</div>
-	)
+      <div className="flex items-center justify-end gap-[10px] border-[0.5px] border-t-0 border-neutral-300 bg-neutral-100 px-5 py-3">
+        {tableFooter}
+      </div>
+    </div>
+  )
 }

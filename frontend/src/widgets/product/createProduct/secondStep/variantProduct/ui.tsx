@@ -1,50 +1,21 @@
 import React, { FC, useCallback, useState } from 'react'
-import Carousel from '@/components/carousels/createProductCarousel'
-import { SellerClient } from '@/shared/apis/sellerClient'
-import { useAppDispatch } from '@/shared/lib/hooks/redux'
-import { fetchProduct } from '@/shared/store/slices/seller'
-import DeleteVariantBackdrop from '../modals/deleteVariantBackboard/ui'
-import {
-  DescriptionText,
-  PreviewVariant,
-  PreviewVariantsInfo,
-  PriceText,
-  ResidueText,
-  Size,
-  SizesContainer,
-  TitleText,
-} from '../styles'
+import Carousel from '@/shared/ui/carousels/createProductCarousel'
+import { TypeImageFile, TypeSizeQuantity, TypeVariant } from '@/shared/lib/types/sellerTypes'
 
 interface VariantProps {
-  data: any
-  removeVariant?: (data: any) => void
-  selectVariant?: (variant: any) => void
+  data: TypeVariant
+  selectVariant?: (variant: TypeVariant) => void
 }
 
-const sellerClient = new SellerClient()
-
-const VariantProduct: FC<VariantProps> = ({ data, removeVariant, selectVariant }: VariantProps) => {
-  const dispatch = useAppDispatch()
+const VariantProduct: FC<VariantProps> = ({ data, selectVariant }: VariantProps) => {
   const [hovering, setHovering] = useState<boolean>(false)
-  const [showDeleteBackdrop, setShowDeleteBackdrop] = useState<boolean>(false)
 
   const handleMouseEnter = useCallback(() => setHovering(true), [])
   const handleMouseLeave = useCallback(() => setHovering(false), [])
 
-  const handleShowBackdrop = (): void => setShowDeleteBackdrop((prev: boolean) => !prev)
-
-  const deleteVariantByIndex = async () => {
-    !!removeVariant && removeVariant(data)
-    handleShowBackdrop()
-  }
-
-  // const deleteVariantById = async (): Promise<void> => {
-  // 	await sellerClient.deleteSellerProductPreview(data.id)
-  // 	dispatch(fetchProduct(data.product_id))
-  // }
-
-  // Конвертация изображений в URL, если они являются файлами
-  const convertedImages = data.images.map((item: any) => {
+  const convertedImages = data.images.map((item: TypeImageFile) => {
+    // eslint-disable-next-line
+    //@ts-ignore
     if (typeof window !== 'undefined' && (item.image instanceof File || item.image instanceof Blob)) {
       return {
         ...item,
@@ -58,31 +29,28 @@ const VariantProduct: FC<VariantProps> = ({ data, removeVariant, selectVariant }
 
   return (
     <>
-      <PreviewVariant
+      <div
+        className="flex h-full w-full max-w-[160px] cursor-pointer flex-col gap-6 hover:border-primaryDash900"
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
         onClick={() => selectVariant && selectVariant(data)}
       >
-        <Carousel slides={convertedImages} hovering={hovering} handleShowBackdrop={handleShowBackdrop} />
-        <PreviewVariantsInfo>
-          <TitleText>{data.title}</TitleText>
-          <DescriptionText>{data.description}</DescriptionText>
-          <SizesContainer>
+        <Carousel slides={convertedImages} hovering={hovering} />
+        <div className="flex flex-col gap-3">
+          <p className="text-[18px] font-[600] text-neutral-900">{data.title}</p>
+          <p className="text-[14px] font-normal text-[#262626]">{data.description}</p>
+          <div className="flex flex-wrap items-center gap-2">
             {!!data.size_variants?.length &&
-              data.size_variants.map((item: any, index: number) => <Size key={index}>{item.size}</Size>)}
-          </SizesContainer>
+              data.size_variants.map((item: TypeSizeQuantity, index: number) => (
+                <div className="color-[#676767] text-[12px] font-normal" key={index}>
+                  {item.size}
+                </div>
+              ))}
+          </div>
           {/* <ResidueText>700 шт.</ResidueText> */}
-          <PriceText>{data.price} сом</PriceText>
-        </PreviewVariantsInfo>
-      </PreviewVariant>
-
-      {showDeleteBackdrop && (
-        <DeleteVariantBackdrop
-          open={showDeleteBackdrop}
-          onClose={handleShowBackdrop}
-          deleteVariant={deleteVariantByIndex}
-        />
-      )}
+          {/* <p className="text-[19.2px] font-[600] text-neutral-900">{data.price} сом</p> */}
+        </div>
+      </div>
     </>
   )
 }

@@ -1,13 +1,11 @@
 import React, { useState } from 'react'
 import ShowAndHideIcon from 'src/shared/ui/templates/passwordShowAndHideIcon'
 import { BUTTON_STYLES } from '@/shared/lib/consts/styles'
-import { useAppDispatch } from '@/shared/lib/hooks/redux'
 import { setLocalStorageValues } from '@/shared/lib/hooks/useLocalStorage'
 import { PATH_AUTH, PATH_LK_SELLER } from '@/shared/config'
 import { Button } from 'src/shared/ui/buttons'
 import { LoaderIcon } from '@/shared/ui/loaders'
 import TextField from '@/shared/ui/inputs/textField'
-import { fetchMe } from '@/entities/user'
 import { useFormik } from 'formik'
 import { useRouter } from 'next/router'
 import { ArrowRight } from 'react-feather'
@@ -32,7 +30,6 @@ const validationSchema = (t: (key: string) => string) =>
 export const LoginMainSection = () => {
   const { t } = useTranslation()
   const router = useRouter()
-  const dispatch = useAppDispatch()
   // const email = (router.query?.email as string) || ''
   const [showPassword, setShowPassword] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
@@ -56,15 +53,12 @@ export const LoginMainSection = () => {
           refresh_token: data.refresh,
         })
 
-        const { payload } = await dispatch(fetchMe())
-        const isSeller = payload?.user_type === 'seller'
-
         setIsLoading(false)
         await router.push({
           pathname: PATH_AUTH.authSuccess,
           query: {
             title: t('auth.logIn.welcome'),
-            path: isSeller ? PATH_LK_SELLER.root : PATH_AUTH.root,
+            path: PATH_LK_SELLER.root,
           },
         })
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -98,7 +92,7 @@ export const LoginMainSection = () => {
   }
 
   return (
-    <>
+    <div className="mx-auto w-full max-w-[1440px]">
       <div className="flex w-full justify-between gap-[20px] md:justify-center">
         <div className="md:hidden">
           <h1 className="text-[60px] font-[600] text-black">СТАНЬ ПАРТНЕРОМ</h1>
@@ -162,6 +156,6 @@ export const LoginMainSection = () => {
           </Button>
         </div>
       </div>
-    </>
+    </div>
   )
 }

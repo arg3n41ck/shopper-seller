@@ -4,10 +4,7 @@ import { useFormik } from 'formik'
 import { Check, Edit2, MapPin, Phone, Trash2 } from 'react-feather'
 import { useTranslation } from 'react-i18next'
 import * as yup from 'yup'
-
-import { useAppDispatch } from '@/shared/lib/hooks/redux'
 import { TypeAddressData } from '@/shared/lib/types/sellerTypes'
-import { fetchBranches } from '@/entities/seller/model/slice'
 import { isEqual } from 'lodash'
 import { DeleteAddressBackdrop } from './modals/deleteAddressBackboard'
 import cn from 'classnames'
@@ -30,18 +27,19 @@ interface FormValues {
 const validationSchema = (t: (key: string) => string) =>
   yup.object({
     address: yup.string(),
-    phone_number: yup.string().test('phone_number', 'Номер телефона должен быть в формате +996555667788', (value) => {
-      if (!value) {
-        return false
-      }
-      const phoneNumberRegex = /^\+996\d{9}$/
-      return phoneNumberRegex.test(value)
-    }),
+    phone_number: yup
+      .string()
+      .test('phone_number', t('Номер телефона должен быть в формате +996555667788'), (value) => {
+        if (!value) {
+          return false
+        }
+        const phoneNumberRegex = /^\+996\d{9}$/
+        return phoneNumberRegex.test(value)
+      }),
   })
 
-export const AddressItem: FC<Props> = ({ data, showEdit, onOpen, onClose, requestAddress, action, deleteAddress }) => {
+export const AddressItem: FC<Props> = ({ data, showEdit, onOpen, onClose, action, deleteAddress }) => {
   const { t } = useTranslation()
-  const dispatch = useAppDispatch()
   const [showDeleteBackdrop, setShowDeleteBackdrop] = useState(false)
 
   const formik = useFormik<FormValues>({
@@ -59,12 +57,12 @@ export const AddressItem: FC<Props> = ({ data, showEdit, onOpen, onClose, reques
       }
 
       try {
-        await requestAddress({ id: data.id, ...values })
-        await dispatch(fetchBranches())
+        // await requestAddress({ id: data.id, ...values })
+        // await dispatch(fetchBranches())
         onClose(data.id)
         resetForm()
       } catch (error) {
-        console.log(error)
+        throw new Error()
       }
     },
   })

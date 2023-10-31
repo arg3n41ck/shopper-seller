@@ -1,36 +1,27 @@
 import React, { FC, useRef } from 'react'
-import { ChevronLeft, ChevronRight, X } from 'react-feather'
+import { ChevronLeft, ChevronRight } from 'react-feather'
 import SwiperCore from 'swiper'
 import 'swiper/css'
 import { Navigation, Pagination } from 'swiper/modules'
 import { Swiper, SwiperSlide } from 'swiper/react'
 import styles from './styles.module.css'
 import cn from 'classnames'
+import { TypeImageFile } from '@/shared/lib/types/sellerTypes'
 
 SwiperCore.use([Navigation, Pagination])
 
 interface CarouselProps {
-  slides: any[]
+  slides: TypeImageFile[]
   hovering: boolean
-  handleShowBackdrop: () => void
 }
 
-const Carousel: FC<CarouselProps> = ({ slides, hovering, handleShowBackdrop }) => {
+const Carousel: FC<CarouselProps> = ({ slides, hovering }) => {
   const prevRef = useRef<HTMLDivElement>(null)
   const nextRef = useRef<HTMLDivElement>(null)
   const sortedSlides = slides.slice().sort((a, b) => (b.main_image ? 1 : 0) - (a.main_image ? 1 : 0))
 
   return (
     <div className="relative max-h-[280px] max-w-[252px]">
-      {hovering && (
-        <div
-          className="absolute right-[5px] top-[5px] z-[2] cursor-pointer text-neutral-400"
-          onClick={handleShowBackdrop}
-        >
-          <X />
-        </div>
-      )}
-
       <div className={cn('flex items-center justify-center', styles.SwiperCr)}>
         <Swiper
           spaceBetween={0}
@@ -41,9 +32,9 @@ const Carousel: FC<CarouselProps> = ({ slides, hovering, handleShowBackdrop }) =
           }}
           pagination={{ clickable: true }}
         >
-          {sortedSlides.map((item) => (
-            <SwiperSlide key={item.id}>
-              <img className="h-[280px] w-full object-cover" src={item.image_url} alt="asd" />
+          {sortedSlides.map((item, index: number) => (
+            <SwiperSlide key={index}>
+              <img className="h-[280px] w-full object-cover" src={item.image} alt="asd" />
             </SwiperSlide>
           ))}
         </Swiper>

@@ -1,6 +1,5 @@
-import React, { FC, useMemo, useState } from 'react'
+import React, { useMemo, useState } from 'react'
 import { SellerClient } from '@/shared/apis/sellerClient'
-import { useAppDispatch, useAppSelector } from '@/shared/lib/hooks/redux'
 import { PATH_LK_SELLER_CREATE_PRODUCT } from '@/shared/config'
 import Autocomplete from '@/shared/ui/inputs/autocomplete'
 import { Button } from 'src/shared/ui/buttons'
@@ -12,35 +11,35 @@ import { useFormik } from 'formik'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'react-i18next'
 import * as yup from 'yup'
-import { VariantsProduct } from '../../secondStep'
+import { VariantProduct } from '../../secondStep'
 import { ProductDetailsField } from '../productDetailsField'
+import { CreateVariantModal } from '../../secondStep/modals'
+import { BUTTON_STYLES } from '@/shared/lib/consts/styles'
+import { Edit, Plus } from 'react-feather'
+import { useMutation, useQuery } from '@tanstack/react-query'
+import { $apiProductsApi } from '@/shared/api'
+import { removeEmptyFields } from '@/shared/lib/helpers'
+import { ProductCreate } from '@/shared/api/gen/dist'
+import { TypeCategory, TypeImage, TypeProduct, TypeSizeQuantity, TypeVariant } from '@/shared/lib/types/sellerTypes'
 
 const sellerClient = new SellerClient()
 
-interface SpecificationInput {
-  value: string
-  placeholder: string
-}
-
-interface SpecificationGroup {
-  inputs: SpecificationInput[]
-}
-
-interface FormValues {
-  title: string
-  description: string
-  brand: string
-  gender: string
-  for_kids: boolean
-  price: string
-  discount: string
-  category_id: string
-  subcategory_id: string
-  country: string
-  tags: string[]
-  specifications: SpecificationGroup[]
-  publish_date: string
-}
+// interface FormValues {
+//   title: string
+//   description: string
+//   gender: string
+//   for_kids: boolean
+//   price_from: string
+//   discount: string
+//   parent_category: string
+//   category: string
+//   country?: string
+//   tags: string[]
+//   specifications: SpecificationInput[]
+//   publish_date: string
+//   recommendation: string
+//   variants: TypeVariants
+// }
 
 type GenderType = {
   id: string
@@ -48,20 +47,16 @@ type GenderType = {
   value: string
 }
 
-type SelectedOptionType = {
-  [key: string]: string
-}
-
 const gender: GenderType[] = [
   {
     id: '1',
     name: 'Мужчина',
-    value: 'male',
+    value: 'MALE',
   },
   {
     id: '2',
     name: 'Женщина',
-    value: 'female',
+    value: 'FEMALE',
   },
 ]
 
@@ -69,164 +64,20 @@ const validationSchema = (t: (key: string) => string) =>
   yup.object({
     title: yup.string().required(t('Введите название продукта')),
     description: yup.string().required(t('Введите описание продукта')),
-    brand: yup.string().required(t('Введите бренд продукта')),
     gender: yup.string().required(t('Выберите пол')),
     for_kids: yup.boolean(),
-    price: yup
+    price_from: yup
       .number()
       .typeError(t('Цена должна быть числом'))
       .positive(t('Цена должна быть больше или равна 0'))
       .required(t('Введите цену продукта')),
     discount: yup.number().min(0, t('Скидка должна быть не меньше 0')).max(100, t('Скидка должна быть не больше 100')),
-    category_id: yup.string().required(t('Выберите категорию продукта')),
-    subcategory_id: yup.string().required(t('Выберите подкатегорию продукта')),
-    specifications: yup
-      .array()
-      .of(
-        yup.object().shape({
-          inputs: yup
-            .array()
-            .of(
-              yup.object().shape({
-                value: yup.string().required(t('Введите значение')),
-              }),
-            )
-            .required(t('Добавьте хотя бы одно значение')),
-        }),
-      )
-      .required(t('Добавьте хотя бы одну группу значений')),
+    parent_category: yup.string().required(t('Выберите категорию продукта')),
+    category: yup.string().required(t('Выберите подкатегорию продукта')),
+    recommendation: yup.string().required(t('Введите рекомендации по уходу')),
     tags: yup.array(),
     publish_date: yup.string(),
   })
-
-const mockDataVariants = [
-  {
-    id: Date.now(),
-    product_images: [
-      {
-        id: Date.now(),
-        main_image: true,
-        image_url: '/images/mock/dog.jpg',
-      },
-      {
-        id: Date.now(),
-        main_image: false,
-        image_url: '/images/mock/dog2.jpg',
-      },
-    ],
-    color: 'red',
-    size: [
-      {
-        id: Date.now() + 1,
-        size: 'XL',
-      },
-      {
-        id: Date.now() + 2,
-        size: 'L',
-      },
-    ],
-    availableCount: 543,
-    price: '35 990',
-    description: 'Прекрасное описание товара для варианта 1',
-  },
-  {
-    id: Date.now() + 3,
-    product_images: [
-      {
-        id: Date.now() + 4,
-        main_image: true,
-        image_url: '/images/mock/child.png',
-      },
-      {
-        id: Date.now() + 5,
-        main_image: false,
-        image_url: '/images/mock/dog.jpg',
-      },
-    ],
-    color: 'blue',
-    size: [
-      {
-        id: Date.now() + 6,
-        size: 'M',
-      },
-      {
-        id: Date.now() + 7,
-        size: 'S',
-      },
-    ],
-    availableCount: 320,
-    price: '29 990',
-    description: 'Замечательное описание товара для варианта 2',
-  },
-  {
-    id: Date.now() + 8,
-    product_images: [
-      {
-        id: Date.now() + 9,
-        main_image: false,
-        image_url: '/images/mock/child.png',
-      },
-      {
-        id: Date.now() + 10,
-        main_image: true,
-        image_url: '/images/mock/fish.jpeg',
-      },
-    ],
-    color: 'green',
-    size: [
-      {
-        id: Date.now() + 11,
-        size: 'XXL',
-      },
-      {
-        id: Date.now() + 12,
-        size: 'XS',
-      },
-    ],
-    availableCount: 120,
-    price: '42 990',
-    description: 'Отличное описание товара для варианта 3',
-  },
-]
-
-const categoriesData = [
-  {
-    id: '1',
-    title: 'Одежда',
-    subcategories: [
-      {
-        id: '1-1',
-        title: 'Мужская одежда',
-      },
-      {
-        id: '1-2',
-        title: 'Женская одежда',
-      },
-      {
-        id: '1-3',
-        title: 'Детская одежда',
-      },
-    ],
-  },
-  {
-    id: '2',
-    title: 'Обувь',
-    subcategories: [
-      {
-        id: '2-1',
-        title: 'Мужская обувь',
-      },
-      {
-        id: '2-2',
-        title: 'Женская обувь',
-      },
-      {
-        id: '2-3',
-        title: 'Детская обувь',
-      },
-    ],
-  },
-]
 
 const countriesData = [
   {
@@ -245,86 +96,130 @@ const countriesData = [
 
 export const InfoAboutProduct = () => {
   const { t } = useTranslation()
-  // const router = useRouter()
-  // const dispatch = useAppDispatch()
-  // const id = (router.query?.id as string) || ''
-  // const {
-  // categories,
-  // productDetailsChoice,
-  // productDetailsMaterialChoice,
-  // productDetailsSizeChoice,
-  // product,
-  // } = useAppSelector((state) => state.seller)
+  const router = useRouter()
+  const [createVariantModal, setCreateVariantModal] = useState(false)
+  const [createVariantModalValues, setCreateVariantModalValues] = useState<TypeVariant>({
+    title: '',
+    images: [],
+    size_variants: [{ size: '', quantity: '' }],
+    description: '',
+  })
+  const { data: categories } = useQuery(['categories'], sellerClient.fetchCategories)
 
-  // const [selectedOption, setSelectedOption] = useState<SelectedOptionType>({
-  //   product_composition: '',
-  //   details: '',
-  //   size_and_selections: '',
-  // })
+  const createProduct = async (productData: ProductCreate) => {
+    const { data } = await $apiProductsApi.productsSellerProductsCreate(productData)
+    return data
+  }
 
-  const formik = useFormik<FormValues>({
+  const createProductVariant = async (product: number = 0, variantData: TypeVariant) => {
+    const sizeVariants = variantData.size_variants.map((sizeVariant: TypeSizeQuantity) => ({
+      ...sizeVariant,
+      quantity: Number(sizeVariant.quantity),
+    }))
+    const { data } = await $apiProductsApi.productsSellerProductVariantsCreate({
+      product,
+      ...variantData,
+      size_variants: sizeVariants,
+    })
+    return data
+  }
+
+  const uploadProductVariantImage = async (variant: number = 0, image: File) => {
+    const { data } = await $apiProductsApi.productsSellerVariantImagesCreate(variant, image)
+    return data
+  }
+
+  const mutationCreateProduct = useMutation(createProduct)
+
+  const formik = useFormik<TypeProduct>({
     initialValues: {
       title: '',
       description: '',
-      brand: '',
       gender: '',
       for_kids: false,
-      price: '',
+      price_from: '',
       discount: '',
-      category_id: '',
-      subcategory_id: '',
       country: '',
+      parent_category: '',
+      category: '',
       tags: [],
-      specifications: [
-        {
-          inputs: [
-            { value: '', placeholder: 'Состав товара' },
-            { value: '', placeholder: '40%' },
-          ],
-        },
-      ],
+      recommendation: '',
+      specifications: [{ title: '', value: '' }],
       publish_date: '',
+      variants: [],
     },
     validationSchema: validationSchema(t),
-    onSubmit: async (values) => {
+    onSubmit: async (values, { resetForm }) => {
       try {
-        await sellerClient.createProduct(values)
-        // router.push({
-        // 	pathname: PATH_LK_SELLER_CREATE_PRODUCT.step2,
-        // 	query: { id: data.id },
-        // })
-        // resetForm()
+        // eslint-disable-next-line
+        const { parent_category, variants, ...restValuesOfProduct } = values
+
+        const productData = removeEmptyFields({ ...restValuesOfProduct }, ['for_kids', 'category'])
+
+        // eslint-disable-next-line
+        //@ts-ignore
+        const responseProduct = await mutationCreateProduct.mutateAsync(productData)
+
+        if (Array.isArray(variants) && variants.length > 0) {
+          await Promise.all(
+            variants.map(async ({ images, ...restValuesOfVariant }) => {
+              // eslint-disable-next-line
+              //@ts-ignore
+              const responseVariant = await createProductVariant(responseProduct.id, restValuesOfVariant)
+
+              await Promise.all(
+                // eslint-disable-next-line
+                //@ts-ignore
+                images.map(async ({ image }: TypeImage) => {
+                  await uploadProductVariantImage(responseVariant?.id, image)
+                }),
+              )
+            }),
+          )
+        }
+
+        router.push({
+          pathname: `${PATH_LK_SELLER_CREATE_PRODUCT.previewProduct}/${responseProduct.slug}`,
+        })
+        resetForm()
       } catch (error) {
-        // console.log(error)
+        throw new Error()
       }
     },
   })
 
+  const handleShowCreateVariantModal = () => {
+    setCreateVariantModal((prev) => !prev)
+  }
+
   const handleFieldsValueChange = (fieldName: string, value: string) => formik.setFieldValue(fieldName, value)
 
-  // const subcategories = useMemo(() => {
-  //   return categories.find((category) => category.id === formik.values.category_id)?.subcategories || []
-  // }, [formik])
-  //
-  // const navigateToPreviewProduct = () =>
-  //   router.push({
-  //     pathname: PATH_LK_SELLER_CREATE_PRODUCT.previewProduct,
-  //   })
+  const subcategories = useMemo(() => {
+    // eslint-disable-next-line
+    //@ts-ignore
+    return categories?.find((category: TypeCategory) => category.id === formik.values.parent_category)?.children || []
+  }, [formik])
 
-  // useEffect(() => {
-  //   id && product && setSellerCreateProductFieldsInfo();
-  // }, [id, product]);
+  const addVariant = (value: TypeVariant) => {
+    formik.setFieldValue('variants', [...formik.values.variants, value])
+  }
 
-  // useEffect(() => {
-  //   dispatch(fetchCategories());
-  //   dispatch(fetchProductDetailsChoice());
-  //   dispatch(fetchProductDetailsMaterialChoice());
-  //   dispatch(fetchProductDetailsSizeChoice());
-  //   id && dispatch(fetchProduct(id));
-  // }, []);
+  const editVariant = (index: number | string, value: TypeVariant) => {
+    const updatedVariants = [...formik.values.variants]
+    updatedVariants[+index] = value
+    formik.setFieldValue('variants', updatedVariants)
+  }
+
+  const removeVariant = (variantIndexToRemove: number | string) => {
+    const updatedVariants = formik.values.variants.filter(
+      (_: TypeVariant, index: number) => index !== variantIndexToRemove,
+    )
+    formik.setFieldValue('variants', updatedVariants)
+    handleShowCreateVariantModal()
+  }
 
   return (
-    <div className="px-[24px] py-[20px]">
+    <>
       <div className="max-w-[528px]">
         <p className="text-[28px] font-[700] leading-[40px] text-neutral-900">Добавить новый товар</p>
 
@@ -336,23 +231,14 @@ export const InfoAboutProduct = () => {
           value={formik.values.title}
           onChange={formik.handleChange}
           placeholder={t('Название продукта')}
+          label={t('Название продукта')}
           className={'mt-5'}
           name="title"
-          // type={'date'}
-        />
-
-        <TextField
-          error={formik.touched.brand && Boolean(formik.errors.brand)}
-          errorMessage={formik.touched.brand ? formik.errors.brand : ''}
-          value={formik.values.brand}
-          onChange={formik.handleChange}
-          placeholder={t('Название Бренда')}
-          className={'mt-5'}
-          name="brand"
         />
 
         <CustomSelect
           placeholder={t('Пол')}
+          inputLabel={t('Пол')}
           value={formik.values.gender}
           error={formik.touched.gender && Boolean(formik.errors.gender)}
           errorMessage={formik.touched.gender ? formik.errors.gender : ''}
@@ -372,12 +258,13 @@ export const InfoAboutProduct = () => {
 
         <div className={'mt-5 flex w-[100%] gap-[24px]'}>
           <TextField
-            value={formik.values.price}
-            error={formik.touched.price && Boolean(formik.errors.price)}
-            errorMessage={formik.touched.price ? formik.errors.price : ''}
+            value={formik.values.price_from}
+            error={formik.touched.price_from && Boolean(formik.errors.price_from)}
+            errorMessage={formik.touched.price_from ? formik.errors.price_from : ''}
             onChange={formik.handleChange}
             placeholder={t('Цена')}
-            name="price"
+            label={t('Цена')}
+            name="price_from"
           />
 
           <TextField
@@ -386,6 +273,7 @@ export const InfoAboutProduct = () => {
             errorMessage={formik.touched.discount ? formik.errors.discount : ''}
             onChange={formik.handleChange}
             placeholder={t('Скидка')}
+            label={t('Скидка')}
             name="discount"
             helperText="не обязательно"
           />
@@ -394,14 +282,15 @@ export const InfoAboutProduct = () => {
         <div className={'mt-5 flex w-[100%] gap-[24px]'}>
           <Autocomplete
             placeholder={t('Основная категория')}
-            options={categoriesData}
+            inputLabel={t('Основная категория')}
+            options={categories || []}
             onChange={(value) => {
-              handleFieldsValueChange('category_id', value)
-              formik.setFieldValue('subcategory_id', '')
+              handleFieldsValueChange('parent_category', value)
+              formik.setFieldValue('category', '')
             }}
-            value={formik.values.category_id}
-            error={formik.touched.category_id && !!formik.errors.category_id}
-            errorMessage={formik.touched.category_id ? formik.errors.category_id : ''}
+            value={formik.values.parent_category}
+            error={formik.touched.parent_category && !!formik.errors.parent_category}
+            errorMessage={formik.touched.parent_category ? formik.errors.parent_category : ''}
             width="100%"
             fieldTitle="title"
             fieldValue="id"
@@ -409,11 +298,12 @@ export const InfoAboutProduct = () => {
 
           <Autocomplete
             placeholder={t('Подкатегория')}
-            options={categoriesData.find((category) => category.id === formik.values.category_id)?.subcategories || []}
-            onChange={(value) => handleFieldsValueChange('subcategory_id', value)}
-            error={formik.touched.subcategory_id && Boolean(formik.errors.subcategory_id)}
-            value={formik.values.subcategory_id}
-            errorMessage={formik.touched.subcategory_id ? formik.errors.subcategory_id : ''}
+            inputLabel={t('Подкатегория')}
+            options={subcategories || []}
+            onChange={(value) => handleFieldsValueChange('category', value)}
+            error={formik.touched.category && Boolean(formik.errors.category)}
+            value={formik.values.category}
+            errorMessage={formik.touched.category ? formik.errors.category : ''}
             width="100%"
             fieldTitle="title"
             fieldValue="id"
@@ -422,6 +312,7 @@ export const InfoAboutProduct = () => {
 
         <Autocomplete
           placeholder={t('Страна производителя ')}
+          inputLabel={t('Страна производителя ')}
           options={countriesData}
           onChange={(value) => handleFieldsValueChange('country', value)}
           error={formik.touched.country && Boolean(formik.errors.country)}
@@ -433,6 +324,7 @@ export const InfoAboutProduct = () => {
           className={'mt-5'}
           helperText="не обязательно"
         />
+
         <p className="mt-[30px] text-[18px] font-[500] leading-[28px] text-neutral-900">Дополнительная информация</p>
 
         <TextArea
@@ -441,29 +333,54 @@ export const InfoAboutProduct = () => {
           errorMessage={formik.touched.description ? formik.errors.description : ''}
           onChange={formik.handleChange}
           placeholder={t('Описание товара')}
+          label={t('Описание товара')}
           name="description"
           className={'mt-5'}
         />
-
-        <ProductDetailsField formik={formik} fieldName="specifications" className={'mt-5'} />
-
-        <TextArea
-          value={formik.values.discount}
-          error={formik.touched.discount && Boolean(formik.errors.discount)}
-          errorMessage={formik.touched.discount ? formik.errors.discount : ''}
-          onChange={formik.handleChange}
-          placeholder={t('Рекомендации по уходу')}
-          name="discount"
-          className={'mt-5'}
-        />
       </div>
+
+      <ProductDetailsField formik={formik} fieldName="specifications" className={'mt-5 max-w-[592px]'} />
+
+      <TextArea
+        value={formik.values.recommendation}
+        error={formik.touched.recommendation && Boolean(formik.errors.recommendation)}
+        errorMessage={formik.touched.recommendation ? formik.errors.recommendation : ''}
+        onChange={formik.handleChange}
+        placeholder={t('Рекомендации по уходу')}
+        label={t('Рекомендации по уходу')}
+        name="recommendation"
+        className={'mt-5 max-w-[528px]'}
+      />
+
       <p className="mt-[30px] text-[18px] font-[500] leading-[28px] text-neutral-900">Варианты</p>
 
-      <VariantsProduct data={mockDataVariants} />
+      <div className="flex w-full items-center gap-6">
+        <div className="relative flex max-w-[528px] items-start gap-6 overflow-x-scroll">
+          {!!formik.values.variants?.length &&
+            formik.values.variants.map((variant: TypeVariant, index: number) => (
+              <div key={index} className="group/edit relative overflow-hidden">
+                <VariantProduct data={variant} />
+                <Button
+                  onClick={() => {
+                    setCreateVariantModalValues({ ...formik.values.variants[index], index })
+                    setCreateVariantModal(true)
+                  }}
+                  variant={BUTTON_STYLES.primaryCtaIndigo}
+                  className="invisible absolute right-2 top-2 z-[1] h-[25px] max-w-[24px] px-1 py-2 !text-[12px] !font-normal opacity-50 group-hover/edit:visible"
+                >
+                  <Edit size={16} />
+                </Button>
+              </div>
+            ))}
+        </div>
+
+        <Button onClick={handleShowCreateVariantModal} variant={BUTTON_STYLES.primaryCta} className={'max-w-[48px]'}>
+          <Plus />
+        </Button>
+      </div>
 
       <div className="mt-[60px] flex justify-end">
         <Button
-          // onClick={navigateToPreviewProduct}
           onClick={() => formik.handleSubmit()}
           type="submit"
           className={'max-w-[252px]'}
@@ -472,6 +389,17 @@ export const InfoAboutProduct = () => {
           Продолжить
         </Button>
       </div>
-    </div>
+
+      {createVariantModal && (
+        <CreateVariantModal
+          open={createVariantModal}
+          handleClose={handleShowCreateVariantModal}
+          addVariant={addVariant}
+          editVariant={editVariant}
+          removeVariant={removeVariant}
+          defaultValues={createVariantModalValues}
+        />
+      )}
+    </>
   )
 }

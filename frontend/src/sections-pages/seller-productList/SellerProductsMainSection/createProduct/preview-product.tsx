@@ -1,12 +1,12 @@
-import { CreateProductLayout } from 'src/widgets/layouts'
-import { PreviewProduct } from '@/widgets/product'
+// import { PreviewProductPage } from '@/widgets/product'
+// import { CreateProductLayout } from 'src/widgets/layouts'
 
-export const PreviewProductSection = () => {
-  return (
-    <>
-      <CreateProductLayout>
-        <PreviewProduct />
-      </CreateProductLayout>
-    </>
-  )
-}
+// export const PreviewProductSection = () => {
+//   return (
+//     <>
+//       <CreateProductLayout>
+//         <PreviewProductPage />
+//       </CreateProductLayout>
+//     </>
+//   )
+// }

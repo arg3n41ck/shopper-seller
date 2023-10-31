@@ -45,16 +45,10 @@ type TypeLogOut = {
 }
 
 type TypeUser = {
-  id: string
+  id: number
   email: string
-  seller: {
-    shop_name: string
-  } | null
-  buyer: {
-    fist_name: string
-    last_name: string
-  } | null
-  user_type: string
+  phone_number: string
+  type: string
 }
 
 export type {
