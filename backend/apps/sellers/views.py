@@ -1,6 +1,6 @@
-from rest_framework import viewsets
+from rest_framework import viewsets, mixins
 
-from apps.sellers.permissions import IsSeller
+from apps.sellers.permissions import SellerPermission, SellerObjectPermission, ShopObjectPermission
 from apps.sellers.models import Shop, ShopBranch
 from apps.sellers.serializers import (
     ShopSerializer,
@@ -11,22 +11,32 @@ from apps.sellers.serializers import (
 from shared.mixins import DynamicSerializerMixin
 
 
-class SellerShopViewSet(DynamicSerializerMixin, viewsets.ModelViewSet):
-    queryset = Shop.objects.all().prefetch_related("branches")
+class SellerShopViewSet(DynamicSerializerMixin, mixins.RetrieveModelMixin,
+                        mixins.UpdateModelMixin, viewsets.GenericViewSet):
+    queryset = Shop.objects.all()
     serializer_class = ShopSerializer
+    permission_classes = (
+        SellerPermission,
+        SellerObjectPermission,
+    )
+    filterset_fields = ("seller",)
+    lookup_field = "slug"
     serializer_classes = {
         "partial_update": ShopUpdateSerializer,
     }
-    permission_classes = [IsSeller]
-    http_method_names = ["get", "put", "patch"]
-    filterset_fields = ["seller"]
-    lookup_field = "slug"
+
+    def get_queryset(self):
+        return super().get_queryset()\
+            .prefetch_related("branches")
 
 
 class SellerShopBranchViewSet(DynamicSerializerMixin, viewsets.ModelViewSet):
     queryset = ShopBranch.objects.all()
     serializer_class = ShopBranchSerializer
-    permission_classes = [IsSeller]
+    permission_classes = (
+        SellerPermission,
+        ShopObjectPermission,
+    )
     serializer_classes = {
         "create": ShopBranchCreateSerializer,
     }

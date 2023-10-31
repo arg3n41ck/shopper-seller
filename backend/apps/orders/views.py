@@ -11,7 +11,7 @@ from apps.orders.serializers import (
     CartItemUpdateSerializer,
 )
 from apps.orders.services.order_service import OrderCustomerService
-from apps.sellers.permissions import IsSeller
+from apps.sellers.permissions import SellerPermission, SellerObjectPermission
 from apps.customers.permissions import IsCustomer
 from shared.mixins import DynamicSerializerMixin
 
@@ -61,6 +61,9 @@ class CustomerOrderViewSet(DynamicSerializerMixin, viewsets.ModelViewSet):
 class SellerOrderViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Order.objects.all()
     serializer_class = OrderSerializer
-    permission_classes = [IsSeller]
-    filter_backends = [filters.OrderingFilter]
-    ordering_fields = ["created_at"]
+    permission_classes = (
+        SellerPermission,
+        SellerObjectPermission,
+    )
+    filter_backends = (filters.OrderingFilter,)
+    ordering_fields = ("created_at",)
