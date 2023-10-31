@@ -13,11 +13,11 @@ from apps.products.models import (
 )
 
 
-class ProductVariantImageTabularInline(admin.TabularInline):
+class ProductVariantImageInline(admin.StackedInline):
     model = ProductVariantImage
 
 
-class ProductVariantTabularInline(admin.TabularInline):
+class ProductVariantInline(admin.StackedInline):
     model = ProductVariant
 
 
@@ -37,7 +37,12 @@ class TagAdmin(admin.ModelAdmin):
 
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
-    inlines = [ProductVariantTabularInline]
+    inlines = [ProductVariantInline]
+
+
+@admin.register(ProductVariant)
+class ProductVariantAdmin(admin.ModelAdmin):
+    inlines = [ProductVariantImageInline]
 
 
 @admin.register(ProductFavourite)
