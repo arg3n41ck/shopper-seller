@@ -37,8 +37,6 @@ export const MyProductsMainSection: FC<MyProductsPageProps> = ({ products }) => 
       pathname: `${PATH_LK_SELLER.productsList}/product-detail/${slug}`,
     })
 
-  if (!products?.length) return null
-
   return (
     <>
       <div className="relative h-full bg-none">
@@ -143,7 +141,7 @@ export const MyProductsMainSection: FC<MyProductsPageProps> = ({ products }) => 
               )}
 
               {/* eslint-disable-next-line */}
-              {products.map((product: any) => (
+              {products?.map((product: any) => (
                 <tr className="border-b border-t border-neutral-300 bg-white" key={product.slug}>
                   {columns.map((column, columnIndex) => (
                     <td
