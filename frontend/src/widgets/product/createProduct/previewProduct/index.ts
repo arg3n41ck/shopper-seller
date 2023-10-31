@@ -1,0 +1,1 @@
+export { PreviewProductPage } from './ui'

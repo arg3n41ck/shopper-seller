@@ -1,0 +1,1 @@
+export { AboutShopMainSection } from './ui'

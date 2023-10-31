@@ -1,1 +1,49 @@
 $main-layout-bg: #f5f5f5;
+
+:root {
+  //COLORS
+  --black: #000000;
+  --white: #ffffff;
+  --secondWhite: #ececec;
+  --red: #b91c1c;
+  --gray: #676767;
+  --green: #47a938;
+  --purple: #4f46e5;
+  --orange: #ff5e00;
+
+  //=======ERROR=======
+  --error50: #fef2f2;
+  --error300: #fca5a5;
+  --error500: #ef4444;
+  --error700: #b91c1c;
+  --error900: #7f1d1d;
+  //====================
+
+  //=======PRIMARY=======
+  //main
+  --primaryMain300: #d4d4d8;
+  --primaryMain500: #71717a;
+  --primaryMain700: #3f3f46;
+  --primaryMain800: #27272a;
+  --primaryMain900: #18181b;
+
+  //dashboard
+  --primaryDash50: #eff6ff;
+  --primaryDash400: #818cf8;
+  --primaryDash600: #4f46e5;
+  --primaryDash800: #1e40af;
+  --primaryDash900: #1e3a8a;
+  //====================
+
+  //=======SUCCESS=======
+  --success50: #f0fdf4;
+  --success300: #86efac;
+  --success500: #22c55e;
+  --success700: #15803d;
+  --success900: #14532d;
+  //====================
+}
+
+.hideScrollbar::-webkit-scrollbar {
+  width: 0;
+}

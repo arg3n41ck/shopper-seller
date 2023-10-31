@@ -1,6 +1,0 @@
-export * from './aboutShop'
-export * from './archive'
-export * from './homePage'
-export * from './orderHistory'
-export * from './productsList'
-export * from './settings'

@@ -1,0 +1,7 @@
+.SwiperCr .swiper-pagination-bullet {
+  @apply bg-neutral-50 opacity-[0.6];
+}
+
+.SwiperCr .swiper-pagination-bullet-active {
+  @apply bg-neutral-50 opacity-[1];
+}

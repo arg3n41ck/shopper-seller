@@ -1,7 +1,12 @@
-import { SignUpPage } from '@/widgets/auth'
+import { SignUpMainSection } from '@/sections-pages/auth-signUp/SignUpMainSection/ui'
+import { AuthLayout } from 'src/widgets/layouts/authLayout'
 
 const SignUp = () => {
-	return <SignUpPage />
+  return (
+    <AuthLayout>
+      <SignUpMainSection />
+    </AuthLayout>
+  )
 }
 
 export default SignUp
