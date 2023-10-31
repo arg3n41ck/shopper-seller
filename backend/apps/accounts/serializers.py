@@ -39,6 +39,7 @@ class PasswordRetypeSerializer(serializers.Serializer):
 class UserBaseCreateSerializer(serializers.ModelSerializer):
     default_error_messages = {
         "email_or_phone_number": UserErrorMessage.EMAIL_OR_PHONE_NUMBER,
+        "password_mismatch": UserErrorMessage.PASSWORD_MISMATCH,
     }
 
     class Meta:
@@ -56,10 +57,14 @@ class UserBaseCreateSerializer(serializers.ModelSerializer):
 
         if not email and not phone_number:
             self.fail("email_or_phone_number")
+
+        if attrs["password"] != attrs.pop("re_password"):
+            self.fail("password_mismatch")
+
         return attrs
 
 
-class UserCustomerCreateSerializer(PasswordRetypeSerializer, UserBaseCreateSerializer):
+class UserCustomerCreateSerializer(UserBaseCreateSerializer):
     customer = CustomerCreateSerializer(required=True)
 
     class Meta(UserBaseCreateSerializer.Meta):
@@ -68,7 +73,7 @@ class UserCustomerCreateSerializer(PasswordRetypeSerializer, UserBaseCreateSeria
         )
 
 
-class UserSellerCreateSerializer(PasswordRetypeSerializer, UserBaseCreateSerializer):
+class UserSellerCreateSerializer(UserBaseCreateSerializer):
     shop = ShopCreateSerializer(required=True)
     seller_key = SellerKeySerializer(required=True)
 
