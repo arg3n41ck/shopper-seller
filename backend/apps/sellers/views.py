@@ -11,7 +11,7 @@ from apps.sellers.serializers import (
 from shared.mixins import DynamicSerializerMixin
 
 
-class SellerShopViewSet(DynamicSerializerMixin, mixins.RetrieveModelMixin,
+class SellerShopViewSet(DynamicSerializerMixin, mixins.ListModelMixin,
                         mixins.UpdateModelMixin, viewsets.GenericViewSet):
     queryset = Shop.objects.all()
     serializer_class = ShopSerializer
@@ -27,6 +27,7 @@ class SellerShopViewSet(DynamicSerializerMixin, mixins.RetrieveModelMixin,
 
     def get_queryset(self):
         return super().get_queryset()\
+            .filter(seller=self.request.user.seller)\
             .prefetch_related("branches")
 
 
