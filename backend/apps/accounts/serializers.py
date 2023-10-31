@@ -37,6 +37,8 @@ class PasswordRetypeSerializer(serializers.Serializer):
 
 
 class UserBaseCreateSerializer(serializers.ModelSerializer):
+    re_password = serializers.CharField(required=True)
+
     default_error_messages = {
         "email_or_phone_number": UserErrorMessage.EMAIL_OR_PHONE_NUMBER,
         "password_mismatch": UserErrorMessage.PASSWORD_MISMATCH,
