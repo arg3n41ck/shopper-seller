@@ -10,10 +10,11 @@ __pycache__/
 .Python
 build/
 develop-eggs/
-backend/dist/
+dist/
 downloads/
 eggs/
 .eggs/
+# added backend/ fr api-gen frontend
 backend/lib/
 lib64/
 parts/

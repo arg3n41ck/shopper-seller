@@ -1621,6 +1621,12 @@ export interface Shop {
     'title': string;
     /**
      * 
+     * @type {string}
+     * @memberof Shop
+     */
+    'description'?: string | null;
+    /**
+     * 
      * @type {number}
      * @memberof Shop
      */
@@ -6813,12 +6819,19 @@ export const ProductsApiAxiosParamCreator = function (configuration?: Configurat
         },
         /**
          * 
+         * @param {ProductsSellerProductsListGenderEnum} [gender] gender
+         * @param {string} [forKids] for_kids
+         * @param {string} [category] category
+         * @param {ProductsSellerProductsListStatusEnum} [status] status
+         * @param {string} [publishDate] publish_date
+         * @param {string} [search] A search term.
+         * @param {string} [ordering] Which field to use when ordering the results.
          * @param {number} [limit] Number of results to return per page.
          * @param {number} [offset] The initial index from which to return the results.
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        productsSellerProductsList: async (limit?: number, offset?: number, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+        productsSellerProductsList: async (gender?: ProductsSellerProductsListGenderEnum, forKids?: string, category?: string, status?: ProductsSellerProductsListStatusEnum, publishDate?: string, search?: string, ordering?: string, limit?: number, offset?: number, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
             const localVarPath = `/products/seller/products/`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -6834,6 +6847,34 @@ export const ProductsApiAxiosParamCreator = function (configuration?: Configurat
             // authentication Basic required
             // http basic authentication required
             setBasicAuthToObject(localVarRequestOptions, configuration)
+
+            if (gender !== undefined) {
+                localVarQueryParameter['gender'] = gender;
+            }
+
+            if (forKids !== undefined) {
+                localVarQueryParameter['for_kids'] = forKids;
+            }
+
+            if (category !== undefined) {
+                localVarQueryParameter['category'] = category;
+            }
+
+            if (status !== undefined) {
+                localVarQueryParameter['status'] = status;
+            }
+
+            if (publishDate !== undefined) {
+                localVarQueryParameter['publish_date'] = publishDate;
+            }
+
+            if (search !== undefined) {
+                localVarQueryParameter['search'] = search;
+            }
+
+            if (ordering !== undefined) {
+                localVarQueryParameter['ordering'] = ordering;
+            }
 
             if (limit !== undefined) {
                 localVarQueryParameter['limit'] = limit;
@@ -7295,6 +7336,45 @@ export const ProductsApiAxiosParamCreator = function (configuration?: Configurat
         },
         /**
          * 
+         * @param {Tag} data 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        productsTagsCreate: async (data: Tag, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'data' is not null or undefined
+            assertParamExists('productsTagsCreate', 'data', data)
+            const localVarPath = `/products/tags/`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication Basic required
+            // http basic authentication required
+            setBasicAuthToObject(localVarRequestOptions, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(data, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
          * @param {string} [search] A search term.
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -7497,13 +7577,20 @@ export const ProductsApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
+         * @param {ProductsSellerProductsListGenderEnum} [gender] gender
+         * @param {string} [forKids] for_kids
+         * @param {string} [category] category
+         * @param {ProductsSellerProductsListStatusEnum} [status] status
+         * @param {string} [publishDate] publish_date
+         * @param {string} [search] A search term.
+         * @param {string} [ordering] Which field to use when ordering the results.
          * @param {number} [limit] Number of results to return per page.
          * @param {number} [offset] The initial index from which to return the results.
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async productsSellerProductsList(limit?: number, offset?: number, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ProductsSellerProductsList200Response>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.productsSellerProductsList(limit, offset, options);
+        async productsSellerProductsList(gender?: ProductsSellerProductsListGenderEnum, forKids?: string, category?: string, status?: ProductsSellerProductsListStatusEnum, publishDate?: string, search?: string, ordering?: string, limit?: number, offset?: number, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ProductsSellerProductsList200Response>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.productsSellerProductsList(gender, forKids, category, status, publishDate, search, ordering, limit, offset, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
         /**
@@ -7612,6 +7699,16 @@ export const ProductsApiFp = function(configuration?: Configuration) {
          */
         async productsSpecificationsList(search?: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<Specification>>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.productsSpecificationsList(search, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
+         * @param {Tag} data 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async productsTagsCreate(data: Tag, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Tag>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.productsTagsCreate(data, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
         /**
@@ -7775,13 +7872,20 @@ export const ProductsApiFactory = function (configuration?: Configuration, baseP
         },
         /**
          * 
+         * @param {ProductsSellerProductsListGenderEnum} [gender] gender
+         * @param {string} [forKids] for_kids
+         * @param {string} [category] category
+         * @param {ProductsSellerProductsListStatusEnum} [status] status
+         * @param {string} [publishDate] publish_date
+         * @param {string} [search] A search term.
+         * @param {string} [ordering] Which field to use when ordering the results.
          * @param {number} [limit] Number of results to return per page.
          * @param {number} [offset] The initial index from which to return the results.
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        productsSellerProductsList(limit?: number, offset?: number, options?: any): AxiosPromise<ProductsSellerProductsList200Response> {
-            return localVarFp.productsSellerProductsList(limit, offset, options).then((request) => request(axios, basePath));
+        productsSellerProductsList(gender?: ProductsSellerProductsListGenderEnum, forKids?: string, category?: string, status?: ProductsSellerProductsListStatusEnum, publishDate?: string, search?: string, ordering?: string, limit?: number, offset?: number, options?: any): AxiosPromise<ProductsSellerProductsList200Response> {
+            return localVarFp.productsSellerProductsList(gender, forKids, category, status, publishDate, search, ordering, limit, offset, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -7880,6 +7984,15 @@ export const ProductsApiFactory = function (configuration?: Configuration, baseP
          */
         productsSpecificationsList(search?: string, options?: any): AxiosPromise<Array<Specification>> {
             return localVarFp.productsSpecificationsList(search, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {Tag} data 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        productsTagsCreate(data: Tag, options?: any): AxiosPromise<Tag> {
+            return localVarFp.productsTagsCreate(data, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -8040,13 +8153,20 @@ export interface ProductsApiInterface {
 
     /**
      * 
+     * @param {ProductsSellerProductsListGenderEnum} [gender] gender
+     * @param {string} [forKids] for_kids
+     * @param {string} [category] category
+     * @param {ProductsSellerProductsListStatusEnum} [status] status
+     * @param {string} [publishDate] publish_date
+     * @param {string} [search] A search term.
+     * @param {string} [ordering] Which field to use when ordering the results.
      * @param {number} [limit] Number of results to return per page.
      * @param {number} [offset] The initial index from which to return the results.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof ProductsApiInterface
      */
-    productsSellerProductsList(limit?: number, offset?: number, options?: AxiosRequestConfig): AxiosPromise<ProductsSellerProductsList200Response>;
+    productsSellerProductsList(gender?: ProductsSellerProductsListGenderEnum, forKids?: string, category?: string, status?: ProductsSellerProductsListStatusEnum, publishDate?: string, search?: string, ordering?: string, limit?: number, offset?: number, options?: AxiosRequestConfig): AxiosPromise<ProductsSellerProductsList200Response>;
 
     /**
      * 
@@ -8145,6 +8265,15 @@ export interface ProductsApiInterface {
      * @memberof ProductsApiInterface
      */
     productsSpecificationsList(search?: string, options?: AxiosRequestConfig): AxiosPromise<Array<Specification>>;
+
+    /**
+     * 
+     * @param {Tag} data 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof ProductsApiInterface
+     */
+    productsTagsCreate(data: Tag, options?: AxiosRequestConfig): AxiosPromise<Tag>;
 
     /**
      * 
@@ -8335,14 +8464,21 @@ export class ProductsApi extends BaseAPI implements ProductsApiInterface {
 
     /**
      * 
+     * @param {ProductsSellerProductsListGenderEnum} [gender] gender
+     * @param {string} [forKids] for_kids
+     * @param {string} [category] category
+     * @param {ProductsSellerProductsListStatusEnum} [status] status
+     * @param {string} [publishDate] publish_date
+     * @param {string} [search] A search term.
+     * @param {string} [ordering] Which field to use when ordering the results.
      * @param {number} [limit] Number of results to return per page.
      * @param {number} [offset] The initial index from which to return the results.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof ProductsApi
      */
-    public productsSellerProductsList(limit?: number, offset?: number, options?: AxiosRequestConfig) {
-        return ProductsApiFp(this.configuration).productsSellerProductsList(limit, offset, options).then((request) => request(this.axios, this.basePath));
+    public productsSellerProductsList(gender?: ProductsSellerProductsListGenderEnum, forKids?: string, category?: string, status?: ProductsSellerProductsListStatusEnum, publishDate?: string, search?: string, ordering?: string, limit?: number, offset?: number, options?: AxiosRequestConfig) {
+        return ProductsApiFp(this.configuration).productsSellerProductsList(gender, forKids, category, status, publishDate, search, ordering, limit, offset, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -8465,6 +8601,17 @@ export class ProductsApi extends BaseAPI implements ProductsApiInterface {
 
     /**
      * 
+     * @param {Tag} data 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof ProductsApi
+     */
+    public productsTagsCreate(data: Tag, options?: AxiosRequestConfig) {
+        return ProductsApiFp(this.configuration).productsTagsCreate(data, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
      * @param {string} [search] A search term.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -8475,6 +8622,25 @@ export class ProductsApi extends BaseAPI implements ProductsApiInterface {
     }
 }
 
+/**
+ * @export
+ */
+export const ProductsSellerProductsListGenderEnum = {
+    Male: 'MALE',
+    Female: 'FEMALE',
+    Unisex: 'UNISEX'
+} as const;
+export type ProductsSellerProductsListGenderEnum = typeof ProductsSellerProductsListGenderEnum[keyof typeof ProductsSellerProductsListGenderEnum];
+/**
+ * @export
+ */
+export const ProductsSellerProductsListStatusEnum = {
+    Draft: 'DRAFT',
+    Active: 'ACTIVE',
+    Inactive: 'INACTIVE',
+    Archive: 'ARCHIVE'
+} as const;
+export type ProductsSellerProductsListStatusEnum = typeof ProductsSellerProductsListStatusEnum[keyof typeof ProductsSellerProductsListStatusEnum];
 
 
 /**
@@ -8807,54 +8973,6 @@ export const SellersApiAxiosParamCreator = function (configuration?: Configurati
         },
         /**
          * 
-         * @param {string} [seller] seller
-         * @param {number} [limit] Number of results to return per page.
-         * @param {number} [offset] The initial index from which to return the results.
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        sellersSellerShopsList: async (seller?: string, limit?: number, offset?: number, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
-            const localVarPath = `/sellers/seller/shops/`;
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
-
-            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
-            const localVarHeaderParameter = {} as any;
-            const localVarQueryParameter = {} as any;
-
-            // authentication Basic required
-            // http basic authentication required
-            setBasicAuthToObject(localVarRequestOptions, configuration)
-
-            if (seller !== undefined) {
-                localVarQueryParameter['seller'] = seller;
-            }
-
-            if (limit !== undefined) {
-                localVarQueryParameter['limit'] = limit;
-            }
-
-            if (offset !== undefined) {
-                localVarQueryParameter['offset'] = offset;
-            }
-
-
-    
-            setSearchParams(localVarUrlObj, localVarQueryParameter);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-
-            return {
-                url: toPathString(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
-        /**
-         * 
          * @param {string} slug 
          * @param {ShopUpdate} data 
          * @param {*} [options] Override http request option.
@@ -9072,18 +9190,6 @@ export const SellersApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
-         * @param {string} [seller] seller
-         * @param {number} [limit] Number of results to return per page.
-         * @param {number} [offset] The initial index from which to return the results.
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        async sellersSellerShopsList(seller?: string, limit?: number, offset?: number, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<SellersCustomerShopsList200Response>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.sellersSellerShopsList(seller, limit, offset, options);
-            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
-        },
-        /**
-         * 
          * @param {string} slug 
          * @param {ShopUpdate} data 
          * @param {*} [options] Override http request option.
@@ -9202,17 +9308,6 @@ export const SellersApiFactory = function (configuration?: Configuration, basePa
         },
         /**
          * 
-         * @param {string} [seller] seller
-         * @param {number} [limit] Number of results to return per page.
-         * @param {number} [offset] The initial index from which to return the results.
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        sellersSellerShopsList(seller?: string, limit?: number, offset?: number, options?: any): AxiosPromise<SellersCustomerShopsList200Response> {
-            return localVarFp.sellersSellerShopsList(seller, limit, offset, options).then((request) => request(axios, basePath));
-        },
-        /**
-         * 
          * @param {string} slug 
          * @param {ShopUpdate} data 
          * @param {*} [options] Override http request option.
@@ -9324,17 +9419,6 @@ export interface SellersApiInterface {
      * @memberof SellersApiInterface
      */
     sellersSellerShopBranchesUpdate(id: number, data: ShopBranch, options?: AxiosRequestConfig): AxiosPromise<ShopBranch>;
-
-    /**
-     * 
-     * @param {string} [seller] seller
-     * @param {number} [limit] Number of results to return per page.
-     * @param {number} [offset] The initial index from which to return the results.
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof SellersApiInterface
-     */
-    sellersSellerShopsList(seller?: string, limit?: number, offset?: number, options?: AxiosRequestConfig): AxiosPromise<SellersCustomerShopsList200Response>;
 
     /**
      * 
@@ -9464,19 +9548,6 @@ export class SellersApi extends BaseAPI implements SellersApiInterface {
      */
     public sellersSellerShopBranchesUpdate(id: number, data: ShopBranch, options?: AxiosRequestConfig) {
         return SellersApiFp(this.configuration).sellersSellerShopBranchesUpdate(id, data, options).then((request) => request(this.axios, this.basePath));
-    }
-
-    /**
-     * 
-     * @param {string} [seller] seller
-     * @param {number} [limit] Number of results to return per page.
-     * @param {number} [offset] The initial index from which to return the results.
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof SellersApi
-     */
-    public sellersSellerShopsList(seller?: string, limit?: number, offset?: number, options?: AxiosRequestConfig) {
-        return SellersApiFp(this.configuration).sellersSellerShopsList(seller, limit, offset, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
