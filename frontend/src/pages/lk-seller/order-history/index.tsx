@@ -1,8 +1,8 @@
-import React, { FC } from 'react'
-import { OrderHistoryPage } from '@/widgets/lkSeller'
+import React from 'react'
+import { LKSellerLayout } from 'src/widgets/layouts/lkSellerLayout'
 
-const OrderHistory: FC = () => {
-	return <OrderHistoryPage />
+const OrderHistory = () => {
+  return <LKSellerLayout>Order History</LKSellerLayout>
 }
 
 export default OrderHistory

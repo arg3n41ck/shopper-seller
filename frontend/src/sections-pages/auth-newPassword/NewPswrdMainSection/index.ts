@@ -1,0 +1,1 @@
+export { NewPasswordMainSection } from './ui'

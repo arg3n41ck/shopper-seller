@@ -1,7 +1,12 @@
-import { InfoAboutProductPage } from '@/widgets/lkSeller'
+import { InfoAboutProductSection } from '@/sections-pages/seller-productList'
+import { LKSellerLayout } from 'src/widgets/layouts/lkSellerLayout'
 
 const CreateProduct = () => {
-	return <InfoAboutProductPage />
+  return (
+    <LKSellerLayout>
+      <InfoAboutProductSection />
+    </LKSellerLayout>
+  )
 }
 
 export default CreateProduct
