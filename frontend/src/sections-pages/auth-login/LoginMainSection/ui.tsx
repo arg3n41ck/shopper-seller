@@ -59,6 +59,7 @@ export const LoginMainSection = () => {
           query: {
             title: t('auth.logIn.welcome'),
             path: PATH_LK_SELLER.root,
+            buttonTitle: 'Перейти в личный кабинет',
           },
         })
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment

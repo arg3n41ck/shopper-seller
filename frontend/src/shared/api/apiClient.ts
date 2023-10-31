@@ -1,6 +1,12 @@
 import axios from 'axios'
-import { env } from '@/shared/config'
-import { setLocalStorageValues } from '@/shared/lib/hooks/useLocalStorage'
+import { PATH_AUTH, env } from '@/shared/config'
+import { removeFieldsFromLocalStorage, setLocalStorageValues } from '@/shared/lib/hooks/useLocalStorage'
+import { $apiAccountsApi } from '.'
+
+const refreshAuthToken = async (refresh: string) => {
+  const response = await $apiAccountsApi.accountsAuthTokenRefreshCreate({ refresh })
+  return response
+}
 
 // Create an Axios instance
 const ApiClient = axios.create({
@@ -35,28 +41,27 @@ ApiClient.interceptors.response.use(
       originalRequest._retry = true
 
       try {
-        const refreshToken = localStorage.getItem('refresh_token')
+        const refreshToken = localStorage.getItem('refresh_token') as string
         if (!refreshToken || refreshToken === 'undefined') {
-          window.location.href = '/auth'
+          window.location.href = PATH_AUTH.logIn
+          removeFieldsFromLocalStorage(['access_token', 'refresh_token'])
           // No refresh token available, reject the promise
           return Promise.reject(error)
         }
 
         // Send a request to refresh tokens
-        const response = await axios.post(`${env.apiUrl}/auth/refresh-token/`, {
-          token: refreshToken,
-        })
+        const response = await refreshAuthToken(refreshToken)
 
         if (response.status === 200) {
           // Update access_token and refresh_token in local storage
 
           setLocalStorageValues({
-            access_token: response.data.access_token,
-            refresh_token: response.data.refresh_token,
+            access_token: response.data.access,
+            refresh_token: response.data.refresh,
           })
 
           // Update the Authorization header with the new access token
-          originalRequest.headers['Authorization'] = 'Bearer ' + response.data.access_token
+          originalRequest.headers['Authorization'] = 'Bearer ' + response.data.access
 
           // Retry the original request with the updated access token
           return ApiClient(originalRequest)
