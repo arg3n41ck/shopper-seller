@@ -243,6 +243,7 @@ class ProductVariant(TimeStampedBaseModel):
     title = models.CharField(
         max_length=255,
         verbose_name=_("Title"),
+        help_text=_("Color title"),
     )
     description = models.TextField(
         verbose_name=_("Description"),

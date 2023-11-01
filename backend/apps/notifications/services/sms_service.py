@@ -24,7 +24,6 @@ class SMSProRepository:
         try:
             response = method(url, data=xml_data, headers=headers)
             response.raise_for_status()  # Raise HTTPError for non-2xx responses
-            print(response.content)
             return response.content
         except requests.exceptions.RequestException as e:
             # Handle HTTP request errors here (e.g., connection issues, timeouts)
@@ -36,7 +35,7 @@ class SMSProRepository:
 
 
 class SMSProService:
-    MESSAGES = {
+    SEND_SMS_MESSAGES = {
         0: _("Messages successfully accepted for sending"),
         1: _("Request format error"),
         2: _("Invalid authentication"),
@@ -56,22 +55,34 @@ class SMSProService:
             text=text,
             phone_numbers=phone_numbers
         )
-        xml_data = f"""
-        <?xml version="1.0" encoding="UTF-8"?>
+        xml_data = f"""<?xml version="1.0" encoding="UTF-8"?>
         <message>
             <login>{self.repository.login}</login>
             <pwd>{self.repository.password}</pwd>
             <id>{notification.id}</id>
-            <sender>SHOPPER</sender>
-            <text>{notification.text}</text>
+            <sender>SMSPRO.KG</sender>
+            <text>{self._replace_with_escape(text)}</text>
             <time>{notification.format_created_at}</time>
             <phones>
-                {"".join(f'<phone>{phone}</phone>' for phone in notification.phone_numbers)}
+                <phone>+996555901266</phone>
             </phones>
-            <test>1</test>
         </message>
-                """
-        # Remove <test>1<test> in production
+        """
+
+        # Prod data
+        # xml_data = f"""<?xml version="1.0" encoding="UTF-8"?>
+        # <message>
+        #     <login>{self.repository.login}</login>
+        #     <pwd>{self.repository.password}</pwd>
+        #     <id>{notification.id}</id>
+        #     <sender>SHOPPER</sender>
+        #     <text>{self._replace_with_escape(text)}</text>
+        #     <time>{notification.format_created_at}</time>
+        #     <phones>
+        #         {"".join(f'<phone>{phone}</phone>' for phone in notification.phone_numbers)}
+        #     </phones>
+        # </message>
+        # """
 
         response = self.repository.request_send_sms(xml_data=xml_data)
         root = self._parse_response_xml(response=response)
@@ -79,7 +90,7 @@ class SMSProService:
         # notification.response = {
         #     "id": root.find("id").text,
         #     "status": root.find("status").text,
-        #     "status_message": self.MESSAGES.get(int(root.find("status").text),
+        #     "status_message": self.SEND_SMS_MESSAGES.get(int(root.find("status").text),
         #                                         _("Unknown message")),
         #     "phones": root.find("phones").text,
         #     "smscnt": root.find("smscnt").text,
@@ -89,3 +100,16 @@ class SMSProService:
 
     def _parse_response_xml(self, response):
         return ElementTree.fromstring(response)
+
+    def _replace_with_escape(self, text):
+        escape_dict = {
+            "<": "&lt;",
+            ">": "&gt;",
+            "&": "&amp;",
+            '"': '&quot;',
+            "'": '&apos;'
+        }
+
+        for char, escape in escape_dict.items():
+            text = text.replace(char, escape)
+        return text

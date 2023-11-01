@@ -54,7 +54,8 @@ class UserService:
         try:
             user = self.user_model.objects.get(phone_number=phone_number)
             token, uid = self._generate_uid_token(user)
-            reset_url = f"https://{settings.DOMAIN}/user/reset-password/?uid={uid}&token={token}"
+            print(token, uid)
+            reset_url = f"https://{settings.DOMAIN}/user/reset-password/?uid={uid}&amp;token={token}"
             self.sms_service.send_sms(phone_numbers=[user.phone_number], text=reset_url)
         except self.user_model.DoesNotExist:
             pass
