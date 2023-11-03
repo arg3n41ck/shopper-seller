@@ -49,6 +49,8 @@ type TypeUser = {
   email: string
   phone_number: string
   type: string
+  first_name: string
+  last_name: string
 }
 
 export type {

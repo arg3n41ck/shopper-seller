@@ -10,7 +10,7 @@ import { useTranslation } from 'react-i18next'
 import { toast } from 'react-toastify'
 import * as yup from 'yup'
 import { $apiAccountsApi } from '@/shared/api'
-import { isAxiosError } from 'axios'
+import { useQueryClient } from '@tanstack/react-query'
 
 interface IFormValues {
   password: string
@@ -18,35 +18,10 @@ interface IFormValues {
   repeat_email: string
 }
 
-interface IFormErrors {
-  [key: string]: string
-}
-
 interface Props {
   open: boolean
   onClose: () => void
 }
-
-type ErrorMessages = {
-  email?: string
-  password?: string
-}
-
-const errorMessages = new Map<number, ErrorMessages>([
-  [
-    400,
-    {
-      email: 'Введенный электронный адрес уже зарегистрирован',
-      password: 'Неверно введённый пароль',
-    },
-  ],
-  [
-    422,
-    {
-      email: 'Введенный электронный адрес не является действительным',
-    },
-  ],
-])
 
 const validationSchema = (t: (key: string) => string) =>
   yup.object({
@@ -67,6 +42,7 @@ export const EditEmailModal: FC<Props> = ({ open, onClose }) => {
   const { t } = useTranslation()
   const [isLoading, setIsLoading] = useState(false)
   const [showPassword, setShowPassword] = useState(false)
+  const queryClient = useQueryClient()
 
   const formik = useFormik<IFormValues>({
     initialValues: {
@@ -84,46 +60,19 @@ export const EditEmailModal: FC<Props> = ({ open, onClose }) => {
           re_email: repeat_email,
         })
 
-        // setLocalStorageValues({
-        //   access_token: changeEmailResponse.access_token,
-        //   refresh_token: changeEmailResponse.refresh_token,
-        // })
+        queryClient.invalidateQueries(['me'])
 
-        // await dispatch(fetchMe())
+        toast.success('Ваша эл. почта изменена')
+
         setIsLoading(false)
         onClose()
         resetForm()
-      } catch (error: unknown) {
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+      } catch (error: AxiosError) {
         setIsLoading(false)
-        if (isAxiosError(error)) {
-          const response = error.response
-          const formErrors: IFormErrors = {}
-          const errorFields400 = errorMessages.get(400)
-          const errorFields422 = errorMessages.get(422)
-
-          switch (response?.status) {
-            case 400:
-              if (response.data.detail.includes('Email')) {
-                formErrors.email = 'Введеная Эл Почта уже зарегистрирована'
-                toast.error(errorFields400?.email)
-                return
-              }
-              formErrors.password = 'Неверно введённый пароль'
-              toast.error(errorFields400?.password)
-              break
-
-            case 422:
-              formErrors.email = t('auth.validation.email.invalid')
-              formErrors.repeat_email = t('auth.validation.email.invalid')
-              toast.error(errorFields422?.email)
-              break
-
-            default:
-              break
-          }
-
-          formik.setErrors(formErrors)
-        }
+        const keysName = Object.keys(error.response.data)
+        toast.error(error.response.data[keysName[0]][0])
       }
     },
   })

@@ -9,6 +9,8 @@ import { useFormik } from 'formik'
 import { useTranslation } from 'react-i18next'
 import * as yup from 'yup'
 import { $apiAccountsApi } from '@/shared/api'
+import { toast } from 'react-toastify'
+import { useQueryClient } from '@tanstack/react-query'
 
 interface IFormValues {
   password: string
@@ -40,6 +42,7 @@ export const EditPhoneNumberModal: FC<Props> = ({ open, onClose }) => {
   const { t } = useTranslation()
   const [isLoading, setIsLoading] = useState(false)
   const [showPassword, setShowPassword] = useState(false)
+  const queryClient = useQueryClient()
 
   const formik = useFormik<IFormValues>({
     initialValues: {
@@ -56,52 +59,21 @@ export const EditPhoneNumberModal: FC<Props> = ({ open, onClose }) => {
           phone_number,
           re_phone_number: repeat_phone_number,
         })
-        // const changePhoneNumberResponse = await authClient.changeEmail({
-        // 	phone_number,
-        // 	password,
-        // })
 
-        // setLocalStorageValues({
-        // 	access_token: changePhoneNumberResponse.access_token,
-        // 	refresh_token: changePhoneNumberResponse.refresh_token,
-        // })
+        queryClient.invalidateQueries(['me'])
 
-        // await dispatch(fetchMe())
+        toast.success('Ваш номер телефона изменен')
+
         setIsLoading(false)
         onClose()
         resetForm()
-      } catch (error) {
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+      } catch (error: AxiosError) {
         setIsLoading(false)
-        if (error) {
-          throw new Error()
-          // const response = error.response
-          // const formErrors: IFormErrors = {}
 
-          // switch (response.status) {
-          // 	case 400:
-          // 		const errorFields400 = errorMessages.get(400)
-          // 		if (response.data.detail.includes('Email')) {
-          // 			formErrors.email = 'Введеная Эл Почта уже зарегистрирована'
-          // 			toast.error(errorFields400?.email)
-          // 			return
-          // 		}
-          // 		formErrors.password = 'Неверно введённый пароль'
-          // 		toast.error(errorFields400?.password)
-          // 		break
-
-          // 	case 422:
-          // 		const errorFields422 = errorMessages.get(422)
-          // 		formErrors.email = t('auth.validation.email.invalid')
-          // 		formErrors.repeat_email = t('auth.validation.email.invalid')
-          // 		toast.error(errorFields422?.email)
-          // 		break
-
-          // 	Skeleton:
-          // 		break
-          // }
-
-          // formik.setErrors(formErrors)
-        }
+        const keysName = Object.keys(error.response.data)
+        toast.error(error.response.data[keysName[0]][0])
       }
     },
   })

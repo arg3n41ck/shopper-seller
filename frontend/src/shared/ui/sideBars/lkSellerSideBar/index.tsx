@@ -4,9 +4,10 @@ import { PATH_AUTH } from '@/shared/config'
 import { useRouter } from 'next/router'
 import { Clipboard, Folder, Home, List, LogOut, Menu, Settings, Users } from 'react-feather'
 import { motion } from 'framer-motion'
-import { $apiAccountsApi } from '@/shared/api'
 import cn from 'classnames'
 import LogOutBackdrop from './logOutModal'
+import { toast } from 'react-toastify'
+import { removeFieldsFromLocalStorage } from '@/shared/lib/hooks/useLocalStorage'
 
 interface Props {
   open: boolean
@@ -74,9 +75,16 @@ export const LKSellerSideBar: FC<Props> = ({ open, menuHandler }) => {
   )
 
   const handleLogOutClick = async () => {
-    await $apiAccountsApi.accountsAuthTokenLogoutCreate()
-    // dispatch(logOut())
-    await router.push({ pathname: PATH_AUTH.root })
+    try {
+      await removeFieldsFromLocalStorage(['access_token', 'refresh_token'])
+      await router.push({ pathname: PATH_AUTH.logIn })
+
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+    } catch (error: AxiosError) {
+      const keysName = Object.keys(error.response.data)
+      toast.error(error.response.data[keysName[0]][0])
+    }
   }
 
   return (

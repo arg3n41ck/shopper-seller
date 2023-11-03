@@ -7,20 +7,24 @@ import { Skeleton } from '@/shared/ui/loaders'
 const sellerClient = new SellerClient()
 
 export const LKSellerHeader: FC = () => {
-  const { data } = useQuery(['me'], sellerClient.fetchMe)
+  const { data: user } = useQuery(['me'], sellerClient.fetchMe)
+  const { data: shop } = useQuery(['shop'], sellerClient.fetchShop)
 
   return (
     <div className="flex w-full items-center justify-between gap-[20px]">
       <div className="flex w-full items-center justify-end gap-[20px]">
         <div className="flex flex-col gap-1">
-          <p className="text-18px font-[500] text-neutral-900">Nike Kyrgyzstan</p>
-          {/* {!user?.seller ? (
-						<Skeleton />
-					) : (
-						<ShopNameOfSeller>{user?.seller.shop_name}</ShopNameOfSeller>
-					)} */}
+          {!shop?.title ? (
+            <Skeleton className="h-[24px]" />
+          ) : (
+            <p className="text-18px font-[500] text-neutral-900">{shop.title}</p>
+          )}
 
-          {!data?.email ? <Skeleton /> : <p className="text-[13.33px] font-[400] text-neutral-500">{data?.email}</p>}
+          {!user?.email ? (
+            <Skeleton className="h-[24px]" />
+          ) : (
+            <p className="text-[13.33px] font-[400] text-neutral-500">{user?.email}</p>
+          )}
         </div>
         <div className="h-[43px] w-[43px] cursor-pointer">
           {/* <Skeleton height={'100%'} width={'100%'} border={'50%'} /> */}

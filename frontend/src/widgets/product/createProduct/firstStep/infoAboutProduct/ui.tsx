@@ -21,6 +21,7 @@ import { $apiProductsApi } from '@/shared/api'
 import { removeEmptyFields } from '@/shared/lib/helpers'
 import { ProductCreate } from '@/shared/api/gen'
 import { TypeCategory, TypeImage, TypeProduct, TypeSizeQuantity, TypeVariant } from '@/shared/lib/types/sellerTypes'
+import { toast } from 'react-toastify'
 
 const sellerClient = new SellerClient()
 
@@ -57,6 +58,11 @@ const gender: GenderType[] = [
     id: '2',
     name: 'Женщина',
     value: 'FEMALE',
+  },
+  {
+    id: '3',
+    name: 'Унисекс',
+    value: 'UNISEX',
   },
 ]
 
@@ -182,8 +188,11 @@ export const InfoAboutProduct = () => {
           pathname: `${PATH_LK_SELLER_CREATE_PRODUCT.previewProduct}/${responseProduct.slug}`,
         })
         resetForm()
-      } catch (error) {
-        throw new Error()
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+      } catch (error: AxiosError) {
+        const keysName = Object.keys(error.response.data)
+        toast.error(error.response.data[keysName[0]][0])
       }
     },
   })

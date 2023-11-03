@@ -16,6 +16,7 @@ import { Accordion } from '@/shared/ui/accordions'
 import { TypeProduct, TypeVariant } from '@/shared/lib/types/sellerTypes'
 import { ProductUpdate } from '@/shared/api/gen'
 import { PATH_LK_SELLER } from '@/shared/config'
+import { toast } from 'react-toastify'
 
 interface PreviewProductProps {
   product: TypeProduct | undefined
@@ -32,7 +33,7 @@ export const PreviewProductPage: FC<PreviewProductProps> = ({ product }) => {
   const router = useRouter()
   const slug = (router.query?.id as string) || ''
   const [selectedVariant, setSelectedVariant] = useState<TypeVariant | null>(null)
-  const isProduct = !product || !selectedVariant
+  const isProduct = !product
   const [publishByDate, setPublishByDate] = useState(false)
   const [publishOrDraft, setPublishOrDraft] = useState('DRAFT')
   const [chooseSize, setChooseSize] = useState('')
@@ -91,7 +92,7 @@ export const PreviewProductPage: FC<PreviewProductProps> = ({ product }) => {
           status: publishOrDraft,
         }
 
-        await // await sellerClient.editProduct({ slug, body })
+        // await sellerClient.editProduct({ slug, body })
 
         // eslint-disable-next-line
         // @ts-ignore
@@ -100,8 +101,11 @@ export const PreviewProductPage: FC<PreviewProductProps> = ({ product }) => {
         router.push({
           pathname: PATH_LK_SELLER.productsList,
         })
-      } catch (error) {
-        throw new Error()
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+      } catch (error: AxiosError) {
+        const keysName = Object.keys(error.response.data)
+        toast.error(error.response.data[keysName[0]][0])
       }
       // } else {
       //   // router.push({
@@ -128,7 +132,7 @@ export const PreviewProductPage: FC<PreviewProductProps> = ({ product }) => {
     <>
       <p className="mb-6 text-[28px] font-[600] text-neutral-900">Preview</p>
       <div className="flex w-full justify-between gap-[30px] border-b-[1px] border-t-[1px] border-gray py-[30px]">
-        <CarouselWithMainImage images={selectedVariant?.images} />
+        {!!selectedVariant?.images && <CarouselWithMainImage images={selectedVariant?.images} />}
 
         <div className="w-full max-w-[435px]">
           <p className="text-[27.65px] font-[600] leading-[33px] text-neutral-900">{product?.title}</p>
@@ -142,25 +146,31 @@ export const PreviewProductPage: FC<PreviewProductProps> = ({ product }) => {
             <p className="text-[24px] font-[500] text-error700">{Math.floor(+product?.price_from)} сом</p>
           </div>
 
-          <div className={'mt-8'}>
-            <ChooseColors
-              variants={product?.variants}
-              selectedVariant={selectedVariant}
-              onClick={handleSelectVariant}
-            />
-          </div>
+          {!!selectedVariant && (
+            <div className={'mt-8'}>
+              <ChooseColors
+                variants={product?.variants}
+                selectedVariant={selectedVariant}
+                onClick={handleSelectVariant}
+              />
+            </div>
+          )}
 
           <div className={'mb-5 mt-5 flex flex-col gap-[12px]'}>
-            <p className={'text-right text-[16px] font-[500] text-neutral-900'}>Таблица размеров</p>
-            <CustomSelect
-              placeholder={'Выберите размер'}
-              value={chooseSize}
-              options={selectedVariant.size_variants}
-              onChange={handleChooseSize}
-              fieldTitle="size"
-              fieldValue="size"
-              className={'w-[100%]'}
-            />
+            {!!selectedVariant?.size_variants && (
+              <>
+                <p className={'text-right text-[16px] font-[500] text-neutral-900'}>Таблица размеров</p>
+                <CustomSelect
+                  placeholder={'Выберите размер'}
+                  value={chooseSize}
+                  options={selectedVariant?.size_variants}
+                  onChange={handleChooseSize}
+                  fieldTitle="size"
+                  fieldValue="size"
+                  className={'w-[100%]'}
+                />
+              </>
+            )}
 
             <Button variant={BUTTON_STYLES.primaryCta}>
               <div className="flex items-center gap-[10px]">

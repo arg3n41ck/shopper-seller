@@ -2,7 +2,6 @@ import React, { ChangeEvent, FC, useState } from 'react'
 import { BUTTON_STYLES } from '@/shared/lib/consts/styles'
 import { useRouter } from 'next/router'
 import { ChevronDown, ChevronLeft, ChevronRight, PlusSquare, Search, X } from 'react-feather'
-import { Product } from '@/shared/api/gen'
 import { PATH_LK_SELLER, PATH_LK_SELLER_CREATE_PRODUCT } from '@/shared/config'
 import { Button } from '@/shared/ui/buttons'
 import TextField from '@/shared/ui/inputs/textField'
@@ -10,6 +9,10 @@ import { ProductTable } from '@/feautures/product'
 import Image from 'next/image'
 import CustomSelect from '@/shared/ui/selects/default'
 import cn from 'classnames'
+import { SellerClient } from '@/shared/apis/sellerClient'
+import { useQuery } from '@tanstack/react-query'
+import useDebounce from '@/shared/lib/hooks/useDebounce'
+import { TypeProductFilters } from '@/shared/lib/types/sellerTypes'
 
 const columns = [
   { title: 'Название товара', value: 'title' },
@@ -18,15 +21,68 @@ const columns = [
   { title: 'Статус', value: 'status' },
 ]
 
-interface MyProductsPageProps {
-  products: Product[] | undefined
-}
+const gender = [
+  { title: 'Мужской', value: 'MALE' },
+  { title: 'Женский', value: 'FEMALE' },
+  { title: 'Унисекс', value: 'UNISEX' },
+]
 
-export const MyProductsMainSection: FC<MyProductsPageProps> = ({ products }) => {
+const status = [
+  { title: 'Активный', value: 'ACTIVE' },
+  { title: 'Не активный', value: 'INACTIVE' },
+  { title: 'Архив', value: 'ARCHIVE' },
+  { title: 'Черновик', value: 'DRAFT' },
+]
+
+const sellerClient = new SellerClient()
+
+export const MyProductsMainSection: FC = () => {
   const router = useRouter()
   const [searchProduct, setSearchProduct] = useState('')
   const handleChange = (value: string) => setSearchProduct(value)
   const [isFilter, setIsFilter] = useState(false)
+  const debouncedSearchTerm = useDebounce(searchProduct, 500)
+  const [offset, setOffset] = useState(0)
+  const limit = 10
+
+  const [filters, setFilters] = useState<TypeProductFilters>({
+    category: '',
+    color: '',
+    size: '',
+    gender: '',
+    status: '',
+  })
+
+  const { data } = useQuery(['filteredProducts', filters, debouncedSearchTerm, offset], () =>
+    sellerClient.fetchProducts({
+      category: filters.category,
+      color: filters.color,
+      size: filters.size,
+      gender: filters.gender,
+      status: filters.status,
+      limit,
+      search: debouncedSearchTerm,
+      offset,
+    }),
+  )
+
+  const handleNextPage = () => {
+    const newOffset = offset + 10 // Рассчитываем новое значение offset
+    const maxOffset = Math.max(data?.count || 0 - 10, 0) // Рассчитываем максимальное значение offset
+    if (data?.results.length || 0 >= limit) {
+      // Проверяем, что на текущей странице есть хотя бы itemsPerPage товаров
+      setOffset(Math.min(newOffset, maxOffset)) // Устанавливаем новое значение offset, убедившись, что оно не превышает максимума
+    }
+  }
+
+  const handlePreviousPage = () => {
+    setOffset(Math.max(offset - 10, 0)) // Убедитесь, что offset не станет отрицательным
+  }
+
+  const handleFilterChange = (name: string, value: string) => {
+    const newFilters = { ...filters, [name]: value }
+    setFilters(newFilters)
+  }
 
   const handleShowFilter = () => setIsFilter((prev) => !prev)
 
@@ -90,9 +146,9 @@ export const MyProductsMainSection: FC<MyProductsPageProps> = ({ products }) => 
                 <div className="flex items-center gap-5 bg-white p-5">
                   <CustomSelect
                     placeholder={'Категория'}
-                    value={''}
+                    value={filters.category}
                     options={[]}
-                    onChange={() => {}}
+                    onChange={(value) => handleFilterChange('category', value)}
                     fieldTitle="size"
                     fieldValue="size"
                     className={'w-max bg-white'}
@@ -100,9 +156,9 @@ export const MyProductsMainSection: FC<MyProductsPageProps> = ({ products }) => 
 
                   <CustomSelect
                     placeholder={'Цвет'}
-                    value={''}
+                    value={filters.color}
                     options={[]}
-                    onChange={() => {}}
+                    onChange={(value) => handleFilterChange('color', value)}
                     fieldTitle="size"
                     fieldValue="size"
                     className={'w-max bg-white'}
@@ -110,9 +166,9 @@ export const MyProductsMainSection: FC<MyProductsPageProps> = ({ products }) => 
 
                   <CustomSelect
                     placeholder={'Размер'}
-                    value={''}
+                    value={filters.size}
                     options={[]}
-                    onChange={() => {}}
+                    onChange={(value) => handleFilterChange('size', value)}
                     fieldTitle="size"
                     fieldValue="size"
                     className={'w-max bg-white'}
@@ -120,28 +176,28 @@ export const MyProductsMainSection: FC<MyProductsPageProps> = ({ products }) => 
 
                   <CustomSelect
                     placeholder={'Пол'}
-                    value={''}
-                    options={[]}
-                    onChange={() => {}}
-                    fieldTitle="size"
-                    fieldValue="size"
+                    value={filters.gender}
+                    options={gender}
+                    onChange={(value) => handleFilterChange('gender', value)}
+                    fieldTitle="title"
+                    fieldValue="value"
                     className={'w-max bg-white'}
                   />
 
                   <CustomSelect
                     placeholder={'Статус'}
-                    value={''}
-                    options={[]}
-                    onChange={() => {}}
-                    fieldTitle="size"
-                    fieldValue="size"
+                    value={filters.status}
+                    options={status}
+                    onChange={(value) => handleFilterChange('status', value)}
+                    fieldTitle="title"
+                    fieldValue="value"
                     className={'w-max bg-white'}
                   />
                 </div>
               )}
 
               {/* eslint-disable-next-line */}
-              {products?.map((product: any) => (
+              {data?.results?.map((product: any) => (
                 <tr className="border-b border-t border-neutral-300 bg-white" key={product.slug}>
                   {columns.map((column, columnIndex) => (
                     <td
@@ -170,10 +226,12 @@ export const MyProductsMainSection: FC<MyProductsPageProps> = ({ products }) => 
           }
           tableFooter={
             <>
-              <p className="text-[12px] font-semibold uppercase text-[#171717]">1-10 из 276</p>
+              <p className="text-[12px] font-semibold uppercase text-[#171717]">
+                {data ? `${offset + 1}-${Math.min(offset + 10, data.count)} из ${data.count}` : ''}
+              </p>
               <div className="flex items-center gap-5">
-                <ChevronLeft cursor={'pointer'} />
-                <ChevronRight cursor={'pointer'} />
+                <ChevronLeft cursor={'pointer'} onClick={handlePreviousPage} />
+                <ChevronRight cursor={'pointer'} onClick={handleNextPage} />
               </div>
             </>
           }

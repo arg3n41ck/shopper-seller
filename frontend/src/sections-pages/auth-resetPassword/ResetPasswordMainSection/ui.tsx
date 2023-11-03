@@ -6,6 +6,7 @@ import { useFormik } from 'formik'
 import { Clock } from 'react-feather'
 import { Trans, useTranslation } from 'react-i18next'
 import { resetPasswordValidationSchema } from './schema'
+import { toast } from 'react-toastify'
 
 export const ResetPasswordMainSection = () => {
   const { t } = useTranslation()
@@ -34,8 +35,12 @@ export const ResetPasswordMainSection = () => {
         //     pathname: PATH_AUTH.newPassword,
         //     query: { phone_number },
         //   });
-      } catch (error) {
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+      } catch (error: AxiosError) {
         setIsLoading(false)
+        const keysName = Object.keys(error.response.data)
+        toast.error(error.response.data[keysName[0]][0])
       }
     },
   })

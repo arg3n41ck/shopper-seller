@@ -170,9 +170,23 @@ interface TypeCustomer {
   preferences: Preference[]
 }
 
-type Preference = 'MALE' | 'FEMALE' | 'BABY'
+type Preference = 'MALE' | 'FEMALE' | 'BABY' | ''
+type TypeGender = 'MALE' | 'FEMALE' | 'UNISEX' | ''
+type TypeStatus = 'ACTIVE' | 'INACTIVE' | 'ARCHIVE' | 'DRAFT' | ''
+
+interface TypeProductFilters {
+  category: string
+  color: string
+  size: string
+  gender: TypeGender
+  status: TypeStatus
+  limit?: number
+  search?: string
+  offset?: number
+}
 
 export type {
+  TypeProductFilters,
   TypeProductFromBack,
   TypeImageFile,
   TypeSpecification,

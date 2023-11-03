@@ -9,11 +9,8 @@ import { useFormik } from 'formik'
 import { useTranslation } from 'react-i18next'
 import * as yup from 'yup'
 import { $apiAccountsApi } from '@/shared/api'
-import { isAxiosError } from 'axios'
-
-interface IFormErrors {
-  [key: string]: string
-}
+import { toast } from 'react-toastify'
+import { useQueryClient } from '@tanstack/react-query'
 
 const validationSchema = (t: (key: string) => string) =>
   yup.object({
@@ -38,6 +35,7 @@ export const EditPasswordModal: FC<Props> = ({ open, onClose }) => {
     password: false,
     re_password: false,
   })
+  const queryClient = useQueryClient()
 
   const formik = useFormik({
     initialValues: {
@@ -50,25 +48,21 @@ export const EditPasswordModal: FC<Props> = ({ open, onClose }) => {
       setIsLoading(true)
       try {
         await $apiAccountsApi.accountsUsersSetNewPassword(values)
-        // await dispatch(fetchMe())
         setIsLoading(false)
         onClose()
         resetForm()
-      } catch (error) {
+
+        queryClient.invalidateQueries(['me'])
+
+        toast.success('Ваш пароль изменен')
+
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+      } catch (error: AxiosError) {
         setIsLoading(false)
 
-        if (isAxiosError(error)) {
-          if (error.response && error.response.status === 400) {
-            const { data } = error.response
-            const formErrors: IFormErrors = {}
-
-            if (data?.detail) {
-              formErrors.current_password = 'Неверно введённый пароль'
-            }
-
-            formik.setErrors(formErrors)
-          }
-        }
+        const keysName = Object.keys(error.response.data)
+        toast.error(error.response.data[keysName[0]][0])
       }
     },
   })

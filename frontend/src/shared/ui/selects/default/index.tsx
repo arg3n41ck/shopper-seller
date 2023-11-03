@@ -58,8 +58,8 @@ const CustomSelect = ({
 
       <div
         className={cn(
-          'flex h-[48px] w-full cursor-pointer items-center justify-between gap-[6px] border-[1px] border-neutral-300 px-[9px] py-[8px] text-[18px] text-neutral-400',
-          { ['border-neutral-900 text-neutral-900']: isActive, ['mt-2']: inputLabel, ['border-error500']: error },
+          'flex h-[48px] w-max cursor-pointer items-center justify-between gap-[6px] border-[1px] border-neutral-300 px-[9px] py-[8px] text-[18px] text-neutral-400',
+          { ['border-neutral-900 text-neutral-900']: isActive, ['mt-2']: inputLabel, ['!border-error500']: error },
         )}
         onClick={() => setIsOpen(!isOpen)}
       >

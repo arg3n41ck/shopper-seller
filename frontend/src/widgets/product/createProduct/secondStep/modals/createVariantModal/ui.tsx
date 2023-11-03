@@ -9,11 +9,12 @@ import { Modal } from '@/shared/ui/modals'
 import TextField from '@/shared/ui/inputs/textField'
 import { TextArea } from '@/shared/ui/inputs/textArea'
 import { Button } from '@/shared/ui/buttons'
-import Checkbox from '@/shared/ui/inputs/checkbox'
 import { Trash2 } from 'react-feather'
 import { DeleteVariantBackdrop } from '../deleteVariantBackboard'
 import { isNumber } from 'lodash'
 import { TypeImageFile, TypeSizeQuantity, TypeVariant } from '@/shared/lib/types/sellerTypes'
+import { toast } from 'react-toastify'
+import CustomSwitch from '@/shared/ui/inputs/switch'
 
 interface VariantProps {
   open: boolean
@@ -57,6 +58,11 @@ const CreateVariantModal: FC<VariantProps> = ({
   const { t } = useTranslation()
   const [isDeleteBackdrop, setIsDeleteBackdrop] = useState<boolean>(false)
   const idOfVariant = defaultValues?.index || (defaultValues?.slug as string | number)
+  const [isSwitchEnabled, setIsSwitchEnabled] = useState(false)
+
+  const handleSwitchChange = (checked: boolean) => {
+    setIsSwitchEnabled(checked)
+  }
 
   const handleShowDeleteBackDrop = () => setIsDeleteBackdrop((prev) => !prev)
 
@@ -74,8 +80,11 @@ const CreateVariantModal: FC<VariantProps> = ({
 
         resetForm()
         handleClose()
-      } catch (error) {
-        throw new Error()
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+      } catch (error: AxiosError) {
+        const keysName = Object.keys(error.response.data)
+        toast.error(error.response.data[keysName[0]][0])
       }
     },
   })
@@ -135,7 +144,7 @@ const CreateVariantModal: FC<VariantProps> = ({
           <div className="flex w-full max-w-[490px] justify-between gap-3">
             <p className="w-[430.52px] text-base font-medium text-neutral-900">Указать цену для каждого размера</p>
 
-            <Checkbox checked={true} onChange={() => {}} />
+            <CustomSwitch checked={isSwitchEnabled} onChange={handleSwitchChange} />
           </div>
 
           <div className="flex w-full max-w-[558px] flex-col gap-5">
@@ -144,7 +153,7 @@ const CreateVariantModal: FC<VariantProps> = ({
               onChange={onChangeFormik}
               touched={formik.touched.size_variants}
               error={formik.errors.size_variants}
-              addPriceField={true}
+              addPriceField={isSwitchEnabled}
               onDelete={handleDeleteFieldOfSizeAndQuantity}
             />
           </div>
