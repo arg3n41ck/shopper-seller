@@ -97,7 +97,6 @@ class Product(TimeStampedBaseModel):
     slug = models.SlugField(
         max_length=255,
         unique=True,
-        editable=False,
         verbose_name=_("Slug"),
     )
     sku = models.CharField(

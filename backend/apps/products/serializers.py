@@ -70,8 +70,15 @@ class ProductVariantImageCreateSerializer(serializers.ModelSerializer):
         )
 
 
+class SizeVariantSerializer(serializers.Serializer):
+    size = serializers.CharField()
+    quantity = serializers.IntegerField()
+    price = serializers.DecimalField(max_digits=10, decimal_places=2)
+
+
 class ProductVariantSerializer(serializers.ModelSerializer):
     images = ProductVariantImageSerializer(many=True, read_only=True)
+    size_variants = SizeVariantSerializer(many=True)
 
     class Meta:
         model = ProductVariant
@@ -141,10 +148,16 @@ class ProductReviewCreateSerializer(serializers.ModelSerializer):
         )
 
 
+class ProductSpecificationSerializer(serializers.Serializer):
+    title = serializers.CharField()
+    value = serializers.CharField()
+
+
 class ProductSerializer(serializers.ModelSerializer):
     category = CategorySerializer(read_only=True)
     tags = TagSerializer(many=True, read_only=True)
     shop = ShopSerializer(read_only=True)
+    specifications = ProductSpecificationSerializer(many=True)
     variants = ProductVariantSerializer(many=True, read_only=True)
     reviews = ProductReviewSerializer(many=True, read_only=True)
 
