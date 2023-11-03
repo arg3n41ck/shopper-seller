@@ -1,5 +1,5 @@
 import { $apiAccountsApi, $apiProductsApi, $apiSellersApi } from '../api'
-import { ShopUpdate } from '../api/gen/dist'
+import { ShopUpdate } from '../api/gen'
 import { TypeUser } from '../lib/types/authTypes'
 import { TypeProductFilters } from '../lib/types/sellerTypes'
 
