@@ -45,6 +45,10 @@ class ProductDocumentViewSet(DocumentViewSet):
         FacetedSearchFilterBackend,
         SuggesterFilterBackend,
     ]
+    """
+    fuzziness: Cofee -> Coffee
+    boost: priority search
+    """
     search_fields = {
         "title": {"fuzziness": "AUTO", "boost": 4},
         "category.title": {"fuzziness": "AUTO", "boost": 3},
