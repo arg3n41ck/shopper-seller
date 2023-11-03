@@ -10,7 +10,7 @@ from django_elasticsearch_dsl_drf.wrappers import dict_to_obj
 from apps.sellers.models import Shop
 from apps.customers.models import Customer
 from apps.products.constants import GenderChoice, ProductStatusChoice
-from apps.products.validators import validate_size_variants, validate_specifications, validate_values
+from apps.products.validators import validate_size_variants, validate_specifications
 from apps.products.managers import ProductVariantImageManager
 from shared.custom_slugify import generate_slug_from_field
 from shared.abstract_models import TimeStampedBaseModel

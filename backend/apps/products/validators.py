@@ -82,12 +82,3 @@ def validate_specifications(value: list) -> None:
 
         if not isinstance(specification["value"], str):
             raise ValidationError("Value must be a str")
-
-
-def validate_values(value: list) -> None:
-    if not isinstance(value, list):
-        raise ValidationError("Specification values must be a list of str.")
-
-    for v in value:
-        if not isinstance(v, str):
-            raise ValidationError("Specification value must be a str.")
