@@ -19,15 +19,15 @@ def validate_size(value: dict) -> None:
     if not isinstance(value["quantity"], int) or value["quantity"] <= 0:
         raise ValidationError("Quantity must be a positive integer.")
 
-    if "price" in value and value["price"] is not None:
-        price = Decimal(str(value["price"]))
-        decimal_validator = DecimalValidator(max_digits=10, decimal_places=2)
-        decimal_validator(price)
-
-    if "discount" in value and value["discount"] is not None:
-        discount = value["discount"]
-        if not isinstance(discount, int) or discount < 0 or discount > 100:
-            raise ValidationError("Discount must be an integer between 0 and 100.")
+    # if "price" in value and value["price"] is not None:
+    #     price = Decimal(str(value["price"]))
+    #     decimal_validator = DecimalValidator(max_digits=10, decimal_places=2)
+    #     decimal_validator(price)
+    #
+    # if "discount" in value and value["discount"] is not None:
+    #     discount = value["discount"]
+    #     if not isinstance(discount, int) or discount < 0 or discount > 100:
+    #         raise ValidationError("Discount must be an integer between 0 and 100.")
 
 
 def validate_size_variants(value: list) -> None:

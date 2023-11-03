@@ -41,9 +41,9 @@ class CartItem(TimeStampedBaseModel):
         related_name="carts",
         verbose_name=_("Product variant"),
     )
-    size = models.JSONField(
-        validators=[validate_size],
-        verbose_name=_("Size variant"),
+    size = models.CharField(
+        max_length=255,
+        verbose_name=_("Size"),
     )
     quantity = models.PositiveIntegerField(
         default=1,
@@ -56,7 +56,7 @@ class CartItem(TimeStampedBaseModel):
 
     @property
     def total(self):
-        return self.quantity * self.size["price"]
+        return self.quantity * self.product_variant.size_price(size=self.size)
 
 
 class Order(TimeStampedBaseModel):

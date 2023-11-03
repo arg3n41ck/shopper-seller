@@ -82,7 +82,10 @@ class ProductVariantSerializer(serializers.ModelSerializer):
             "title",
             "description",
             "size_variants",
+            "price_min",
+            "price_max",
             "images",
+            "image_main",
         )
 
 

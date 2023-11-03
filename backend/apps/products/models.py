@@ -266,6 +266,35 @@ class ProductVariant(TimeStampedBaseModel):
     def __str__(self):
         return self.title
 
+    def price_size(self, size: str):
+        return next(
+            (
+                variant["price"]
+                for variant in self.size_variants
+                if variant["size"] == size
+            ),
+            None,
+        )
+
+    @property
+    def price_min(self):
+        return min((variant["price"] for variant in self.size_variants), default=None)
+
+    @property
+    def price_max(self):
+        return max((variant["price"] for variant in self.size_variants), default=None)
+
+    @property
+    def image_main(self):
+        return next(
+            (
+                variant_image.image.url
+                for variant_image in self.images.all()
+                if variant_image.is_main
+            ),
+            None,
+        )
+
 
 class ProductVariantImage(models.Model):
     variant = models.ForeignKey(

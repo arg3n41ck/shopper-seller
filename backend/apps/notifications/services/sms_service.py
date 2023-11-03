@@ -7,6 +7,7 @@ from django.conf import settings
 from django.utils.translation import gettext_lazy as _
 
 from apps.notifications.models import NotificationSMSPro
+from apps.notifications.constants import NotificationSMSProStatus
 
 
 class SMSProRepository:
@@ -53,7 +54,7 @@ class SMSProService:
     def send_sms(self, phone_numbers: list[str], text: str) -> None:
         notification = self.notification_sms_model.objects.create(
             text=text,
-            phone_numbers=phone_numbers
+            phone_numbers=phone_numbers,
         )
         xml_data = f"""<?xml version="1.0" encoding="UTF-8"?>
         <message>
@@ -101,7 +102,7 @@ class SMSProService:
     def _parse_response_xml(self, response):
         return ElementTree.fromstring(response)
 
-    def _replace_with_escape(self, text):
+    def _replace_with_escape(self, text: str) -> str:
         escape_dict = {
             "<": "&lt;",
             ">": "&gt;",

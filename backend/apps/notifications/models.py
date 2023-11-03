@@ -3,6 +3,7 @@ from django.contrib.postgres.fields import ArrayField
 from django.utils.translation import gettext_lazy as _
 
 from shared.abstract_models import TimeStampedBaseModel
+from apps.notifications.constants import NotificationSMSProStatus
 
 
 class NotificationSMSPro(TimeStampedBaseModel):
@@ -16,10 +17,11 @@ class NotificationSMSPro(TimeStampedBaseModel):
         ),
         verbose_name=_("Phone numbers")
     )
-    response = models.JSONField(
-        verbose_name=_("Response"),
-        blank=True,
-        null=True,
+    status = models.CharField(
+        max_length=255,
+        default=NotificationSMSProStatus.PENDING,
+        choices=NotificationSMSProStatus.choices,
+        verbose_name=_("Status"),
     )
 
     class Meta:
