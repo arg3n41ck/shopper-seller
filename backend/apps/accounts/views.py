@@ -1,6 +1,6 @@
 from django.db import transaction
 from django.contrib.auth.tokens import default_token_generator
-from rest_framework import viewsets, status, views, generics
+from rest_framework import viewsets, status, generics
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
@@ -24,18 +24,6 @@ from apps.accounts.services.user_service import UserService
 from apps.accounts.constants import UserMessage
 from apps.customers.services.customer_services import UserCustomerService
 from apps.sellers.services.seller_service import UserSellerService
-
-
-# Need to do refactor and research
-class TokenDestroyView(views.APIView):
-    """Use this endpoint to logout user (remove user authentication token)."""
-
-    permission_classes = IsAuthenticated
-
-    def post(self, request):
-        from apps.accounts import utils
-        utils.logout_user(request)
-        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 class CreateUserApiViewMixin:

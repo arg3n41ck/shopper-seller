@@ -1420,101 +1420,47 @@ paths:
           description: ''
       tags:
       - api
-  /api/v1/sellers/seller/shops/{slug}/:
+  /api/v1/sellers/seller/shops/:
     get:
-      operationId: retrieveShop
+      operationId: listShops
       description: ''
       parameters:
-      - name: slug
-        in: path
-        required: true
-        description: ''
-        schema:
-          type: string
-      - name: seller
+      - name: limit
         required: false
         in: query
-        description: seller
+        description: Number of results to return per page.
         schema:
-          type: string
+          type: integer
+      - name: offset
+        required: false
+        in: query
+        description: The initial index from which to return the results.
+        schema:
+          type: integer
       responses:
         '200':
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Shop'
-          description: ''
-      tags:
-      - api
-    put:
-      operationId: updateShop
-      description: ''
-      parameters:
-      - name: slug
-        in: path
-        required: true
-        description: ''
-        schema:
-          type: string
-      - name: seller
-        required: false
-        in: query
-        description: seller
-        schema:
-          type: string
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/Shop'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/Shop'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/Shop'
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Shop'
-          description: ''
-      tags:
-      - api
-    patch:
-      operationId: partialUpdateShop
-      description: ''
-      parameters:
-      - name: slug
-        in: path
-        required: true
-        description: ''
-        schema:
-          type: string
-      - name: seller
-        required: false
-        in: query
-        description: seller
-        schema:
-          type: string
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/ShopUpdate'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/ShopUpdate'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/ShopUpdate'
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ShopUpdate'
+                type: object
+                properties:
+                  count:
+                    type: integer
+                    example: 123
+                  next:
+                    type: string
+                    nullable: true
+                    format: uri
+                    example: http://api.example.org/accounts/?offset=400&limit=100
+                  previous:
+                    type: string
+                    nullable: true
+                    format: uri
+                    example: http://api.example.org/accounts/?offset=200&limit=100
+                  results:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Shop'
           description: ''
       tags:
       - api
@@ -2489,27 +2435,6 @@ paths:
           description: ''
       tags:
       - api
-  /api/v1/accounts/auth/token/logout/:
-    post:
-      operationId: createTokenDestroy
-      description: Use this endpoint to logout user (remove user authentication token).
-      parameters: []
-      requestBody:
-        content:
-          application/json:
-            schema: {}
-          application/x-www-form-urlencoded:
-            schema: {}
-          multipart/form-data:
-            schema: {}
-      responses:
-        '201':
-          content:
-            application/json:
-              schema: {}
-          description: ''
-      tags:
-      - api
   /api/v1/accounts/users/change_email_confirm/:
     post:
       operationId: changeEmailConfirmUser
@@ -2710,6 +2635,67 @@ paths:
           description: ''
       tags:
       - api
+  /api/v1/sellers/seller/shops/{slug}/:
+    put:
+      operationId: updateShop
+      description: ''
+      parameters:
+      - name: slug
+        in: path
+        required: true
+        description: ''
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Shop'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Shop'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Shop'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Shop'
+          description: ''
+      tags:
+      - api
+    patch:
+      operationId: partialUpdateShop
+      description: ''
+      parameters:
+      - name: slug
+        in: path
+        required: true
+        description: ''
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ShopUpdate'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ShopUpdate'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ShopUpdate'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ShopUpdate'
+          description: ''
+      tags:
+      - api
 components:
   schemas:
     User:
@@ -2718,6 +2704,12 @@ components:
         id:
           type: integer
           readOnly: true
+        first_name:
+          type: string
+          maxLength: 150
+        last_name:
+          type: string
+          maxLength: 150
         email:
           type: string
           format: email
@@ -2797,7 +2789,7 @@ components:
           readOnly: true
         slug:
           type: string
-          readOnly: true
+          maxLength: 255
           pattern: ^[-a-zA-Z0-9_]+$
         sku:
           type: string
@@ -2881,7 +2873,17 @@ components:
             - title
           readOnly: true
         specifications:
-          type: object
+          type: array
+          items:
+            type: object
+            properties:
+              title:
+                type: string
+              value:
+                type: string
+            required:
+            - title
+            - value
         shop:
           type: object
           properties:
@@ -3000,11 +3002,35 @@ components:
                 type: integer
               title:
                 type: string
+                description: Color title
                 maxLength: 255
               description:
                 type: string
               size_variants:
-                type: object
+                type: array
+                items:
+                  type: object
+                  properties:
+                    size:
+                      type: string
+                    quantity:
+                      type: integer
+                    price:
+                      type: string
+                      format: decimal
+                      multipleOf: 0.01
+                      maximum: 100000000
+                      minimum: -100000000
+                  required:
+                  - size
+                  - quantity
+                  - price
+              price_min:
+                type: string
+                readOnly: true
+              price_max:
+                type: string
+                readOnly: true
               images:
                 type: array
                 items:
@@ -3021,6 +3047,9 @@ components:
                   required:
                   - variant
                   - image
+                readOnly: true
+              image_main:
+                type: string
                 readOnly: true
             required:
             - product
@@ -3077,6 +3106,7 @@ components:
           type: string
           readOnly: true
       required:
+      - slug
       - title
       - description
       - recommendation
@@ -3098,11 +3128,35 @@ components:
           type: integer
         title:
           type: string
+          description: Color title
           maxLength: 255
         description:
           type: string
         size_variants:
-          type: object
+          type: array
+          items:
+            type: object
+            properties:
+              size:
+                type: string
+              quantity:
+                type: integer
+              price:
+                type: string
+                format: decimal
+                multipleOf: 0.01
+                maximum: 100000000
+                minimum: -100000000
+            required:
+            - size
+            - quantity
+            - price
+        price_min:
+          type: string
+          readOnly: true
+        price_max:
+          type: string
+          readOnly: true
         images:
           type: array
           items:
@@ -3119,6 +3173,9 @@ components:
             required:
             - variant
             - image
+          readOnly: true
+        image_main:
+          type: string
           readOnly: true
       required:
       - product
@@ -3340,11 +3397,35 @@ components:
                     type: integer
                   title:
                     type: string
+                    description: Color title
                     maxLength: 255
                   description:
                     type: string
                   size_variants:
-                    type: object
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        size:
+                          type: string
+                        quantity:
+                          type: integer
+                        price:
+                          type: string
+                          format: decimal
+                          multipleOf: 0.01
+                          maximum: 100000000
+                          minimum: -100000000
+                      required:
+                      - size
+                      - quantity
+                      - price
+                  price_min:
+                    type: string
+                    readOnly: true
+                  price_max:
+                    type: string
+                    readOnly: true
                   images:
                     type: array
                     items:
@@ -3362,6 +3443,9 @@ components:
                       - variant
                       - image
                     readOnly: true
+                  image_main:
+                    type: string
+                    readOnly: true
                 required:
                 - product
                 - title
@@ -3369,7 +3453,8 @@ components:
                 - size_variants
                 readOnly: true
               size:
-                type: object
+                type: string
+                maxLength: 255
               quantity:
                 type: integer
                 maximum: 2147483647
@@ -3408,11 +3493,35 @@ components:
               type: integer
             title:
               type: string
+              description: Color title
               maxLength: 255
             description:
               type: string
             size_variants:
-              type: object
+              type: array
+              items:
+                type: object
+                properties:
+                  size:
+                    type: string
+                  quantity:
+                    type: integer
+                  price:
+                    type: string
+                    format: decimal
+                    multipleOf: 0.01
+                    maximum: 100000000
+                    minimum: -100000000
+                required:
+                - size
+                - quantity
+                - price
+            price_min:
+              type: string
+              readOnly: true
+            price_max:
+              type: string
+              readOnly: true
             images:
               type: array
               items:
@@ -3430,6 +3539,9 @@ components:
                 - variant
                 - image
               readOnly: true
+            image_main:
+              type: string
+              readOnly: true
           required:
           - product
           - title
@@ -3437,7 +3549,8 @@ components:
           - size_variants
           readOnly: true
         size:
-          type: object
+          type: string
+          maxLength: 255
         quantity:
           type: integer
           maximum: 2147483647
@@ -3547,6 +3660,7 @@ components:
           maxLength: 255
         password:
           type: string
+          maxLength: 128
         re_password:
           type: string
         customer:
@@ -3584,6 +3698,7 @@ components:
           maxLength: 255
         password:
           type: string
+          maxLength: 128
         re_password:
           type: string
         shop:
@@ -3733,7 +3848,7 @@ components:
           readOnly: true
         slug:
           type: string
-          readOnly: true
+          maxLength: 255
           pattern: ^[-a-zA-Z0-9_]+$
         sku:
           type: string
@@ -3782,6 +3897,7 @@ components:
           format: date-time
           nullable: true
       required:
+      - slug
       - title
       - description
       - recommendation
@@ -3800,6 +3916,7 @@ components:
           type: integer
         title:
           type: string
+          description: Color title
           maxLength: 255
         description:
           type: string
@@ -3831,7 +3948,8 @@ components:
         product_variant:
           type: integer
         size:
-          type: object
+          type: string
+          maxLength: 255
         quantity:
           type: integer
           maximum: 2147483647
@@ -3940,6 +4058,9 @@ components:
         title:
           type: string
           maxLength: 255
+        description:
+          type: string
+          nullable: true
         logo:
           type: string
           format: binary
