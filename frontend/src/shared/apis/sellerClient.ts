@@ -60,6 +60,8 @@ export class SellerClient {
       category,
       status || undefined,
       undefined,
+      undefined,
+      undefined,
       search,
       undefined,
       limit,

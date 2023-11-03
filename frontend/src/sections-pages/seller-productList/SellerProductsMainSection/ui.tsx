@@ -42,8 +42,8 @@ export const MyProductsMainSection: FC = () => {
   const handleChange = (value: string) => setSearchProduct(value)
   const [isFilter, setIsFilter] = useState(false)
   const debouncedSearchTerm = useDebounce(searchProduct, 500)
-  const [offset, setOffset] = useState(0)
-  const limit = 10
+  const [offset, setOffset] = useState<number>(0)
+  const limit: number = 10
 
   const [filters, setFilters] = useState<TypeProductFilters>({
     category: '',
@@ -67,16 +67,15 @@ export const MyProductsMainSection: FC = () => {
   )
 
   const handleNextPage = () => {
-    const newOffset = offset + 10 // Рассчитываем новое значение offset
-    const maxOffset = Math.max(data?.count || 0 - 10, 0) // Рассчитываем максимальное значение offset
+    const newOffset = offset + 10
+    const maxOffset = Math.max(data?.count || 0 - 10, 0)
     if (data?.results.length || 0 >= limit) {
-      // Проверяем, что на текущей странице есть хотя бы itemsPerPage товаров
-      setOffset(Math.min(newOffset, maxOffset)) // Устанавливаем новое значение offset, убедившись, что оно не превышает максимума
+      setOffset(Math.min(newOffset, maxOffset))
     }
   }
 
   const handlePreviousPage = () => {
-    setOffset(Math.max(offset - 10, 0)) // Убедитесь, что offset не станет отрицательным
+    setOffset(Math.max(offset - 10, 0))
   }
 
   const handleFilterChange = (name: string, value: string) => {
