@@ -74,6 +74,7 @@ class ShopUpdateSerializer(serializers.ModelSerializer):
         model = Shop
         fields = (
             "title",
+            "description",
             "logo",
             "site_link",
             "instagram_link",
