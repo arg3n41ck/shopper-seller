@@ -38,6 +38,7 @@ class TagAdmin(admin.ModelAdmin):
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
     inlines = [ProductVariantInline]
+    search_fields = ["title", "sku"]
 
 
 @admin.register(ProductVariant)

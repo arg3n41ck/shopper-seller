@@ -265,6 +265,9 @@ class ProductVariant(TimeStampedBaseModel):
     def __str__(self):
         return self.title
 
+    def title_sizes(self):
+        return [size["size"] for size in self.size_variants]
+
     def price_size(self, size: str):
         return next(
             (

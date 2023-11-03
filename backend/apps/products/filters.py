@@ -5,6 +5,11 @@ from apps.products.models import Product, Category
 
 class SellerProductFilter(django_filters.FilterSet):
     category = django_filters.CharFilter(method="category_filter")
+    color = django_filters.CharFilter(
+        field_name="variants__title",
+        lookup_expr="iexact",
+    )
+    size = django_filters.CharFilter(method="size_filter")
 
     class Meta:
         model = Product
@@ -14,7 +19,14 @@ class SellerProductFilter(django_filters.FilterSet):
             "category",
             "status",
             "publish_date",
+            "color",
         )
+
+    def size_filter(self, queryset, name, value):
+        queryset = queryset.filter(
+            variants__size_variants__contains=[{"size": value}]
+        )
+        return queryset
 
     def category_filter(self, queryset, name, value):
         if category := Category.objects.filter(slug=value).first():

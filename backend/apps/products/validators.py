@@ -34,6 +34,8 @@ def validate_size_variants(value: list) -> None:
     if not isinstance(value, list):
         raise ValidationError("Size variants must be a list.")
 
+    sizes = set()
+
     for variant in value:
         if not isinstance(variant, dict):
             raise ValidationError("Each variant must be a dictionary.")
@@ -46,6 +48,12 @@ def validate_size_variants(value: list) -> None:
 
         if not isinstance(variant["size"], str):
             raise ValidationError("Size must be a string.")
+
+        # Check for duplicate sizes
+        if variant["size"] in sizes:
+            raise ValidationError("Duplicate size found in size variants.")
+
+        sizes.add(variant["size"])  # Add the size to the set to track uniqueness
 
         if not isinstance(variant["quantity"], int) or variant["quantity"] <= 0:
             raise ValidationError("Quantity must be a positive integer.")
