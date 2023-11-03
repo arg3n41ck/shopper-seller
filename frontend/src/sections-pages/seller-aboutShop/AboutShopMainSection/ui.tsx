@@ -10,7 +10,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { SellerClient } from '@/shared/apis/sellerClient'
 import { Skeleton } from '@/shared/ui/loaders'
 import { useFormik } from 'formik'
-import { ShopUpdate } from '@/shared/api/gen/dist'
+import { ShopUpdate } from '@/shared/api/gen'
 import { toast } from 'react-toastify'
 
 const sellerClient = new SellerClient()
