@@ -4,20 +4,23 @@ from django.conf import settings
 from django.conf.urls.static import static
 
 
-v1 = [
+api_urlpatterns = [
     path("accounts/", include("apps.accounts.urls")),
     path("products/", include("apps.products.urls")),
-    path("shops/", include("apps.shops.urls")),
     path("customers/", include("apps.customers.urls")),
+    path("sellers/", include("apps.sellers.urls")),
+    path("orders/", include("apps.orders.urls")),
+    path("elastic/", include("apps.search_indexes.urls")),
 ]
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    path("api/v1/", include(v1))
+    path("api/v1/", include(api_urlpatterns))
 ]
 
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
 
 if settings.DEBUG:
     from drf_yasg import openapi

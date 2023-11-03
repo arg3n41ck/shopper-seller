@@ -34,18 +34,22 @@ class User(AbstractUser):
         choices=UserTypeChoice.choices,
         verbose_name=_("Type"),
     )
+    new_email_request = models.EmailField(
+        max_length=255,
+        verbose_name=_("New email request"),
+        blank=True,
+        null=True,
+    )
+    new_phone_request = PhoneNumberField(
+        max_length=255,
+        verbose_name=_("New phone request"),
+        blank=True,
+        null=True,
+    )
 
     class Meta:
         verbose_name = _("User")
         verbose_name_plural = _("Users")
 
     def __str__(self):
-        return self.email or self.phone_number
-
-    @property
-    def is_seller(self):
-        return self.type == UserTypeChoice.SELLER
-
-    @property
-    def is_customer(self):
-        return self.type == UserTypeChoice.CUSTOMER
+        return self.email

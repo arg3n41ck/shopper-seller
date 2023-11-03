@@ -1,0 +1,4106 @@
+openapi: 3.0.2
+info:
+  title: ''
+  version: ''
+paths:
+  /api/v1/accounts/users/:
+    get:
+      operationId: listUsers
+      description: ''
+      parameters:
+      - name: limit
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: offset
+        required: false
+        in: query
+        description: The initial index from which to return the results.
+        schema:
+          type: integer
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  count:
+                    type: integer
+                    example: 123
+                  next:
+                    type: string
+                    nullable: true
+                    format: uri
+                    example: http://api.example.org/accounts/?offset=400&limit=100
+                  previous:
+                    type: string
+                    nullable: true
+                    format: uri
+                    example: http://api.example.org/accounts/?offset=200&limit=100
+                  results:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/User'
+          description: ''
+      tags:
+      - api
+    post:
+      operationId: createUser
+      description: ''
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/User'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/User'
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+          description: ''
+      tags:
+      - api
+  /api/v1/accounts/users/me/:
+    get:
+      operationId: meUser
+      description: ''
+      parameters: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+          description: ''
+      tags:
+      - api
+    put:
+      operationId: meUser
+      description: ''
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/User'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/User'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+          description: ''
+      tags:
+      - api
+    patch:
+      operationId: meUser
+      description: ''
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/User'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/User'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+          description: ''
+      tags:
+      - api
+    delete:
+      operationId: meUser
+      description: ''
+      parameters: []
+      responses:
+        '204':
+          description: ''
+      tags:
+      - api
+  /api/v1/accounts/users/{id}/:
+    get:
+      operationId: retrieveUser
+      description: ''
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: "A unique integer value identifying this \u041F\u043E\u043B\u044C\
+          \u0437\u043E\u0432\u0430\u0442\u0435\u043B\u044C."
+        schema:
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+          description: ''
+      tags:
+      - api
+    put:
+      operationId: updateUser
+      description: ''
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: "A unique integer value identifying this \u041F\u043E\u043B\u044C\
+          \u0437\u043E\u0432\u0430\u0442\u0435\u043B\u044C."
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/User'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/User'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+          description: ''
+      tags:
+      - api
+    patch:
+      operationId: partialUpdateUser
+      description: ''
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: "A unique integer value identifying this \u041F\u043E\u043B\u044C\
+          \u0437\u043E\u0432\u0430\u0442\u0435\u043B\u044C."
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/User'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/User'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+          description: ''
+      tags:
+      - api
+    delete:
+      operationId: destroyUser
+      description: ''
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: "A unique integer value identifying this \u041F\u043E\u043B\u044C\
+          \u0437\u043E\u0432\u0430\u0442\u0435\u043B\u044C."
+        schema:
+          type: string
+      responses:
+        '204':
+          description: ''
+      tags:
+      - api
+  /api/v1/products/categories/:
+    get:
+      operationId: listCategorys
+      description: ''
+      parameters: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Category'
+          description: ''
+      tags:
+      - api
+  /api/v1/products/categories/{slug}/:
+    get:
+      operationId: retrieveCategory
+      description: ''
+      parameters:
+      - name: slug
+        in: path
+        required: true
+        description: ''
+        schema:
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Category'
+          description: ''
+      tags:
+      - api
+  /api/v1/products/tags/:
+    get:
+      operationId: listTags
+      description: ''
+      parameters:
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Tag'
+          description: ''
+      tags:
+      - api
+    post:
+      operationId: createTag
+      description: ''
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Tag'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Tag'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Tag'
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Tag'
+          description: ''
+      tags:
+      - api
+  /api/v1/products/specifications/:
+    get:
+      operationId: listSpecifications
+      description: ''
+      parameters:
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Specification'
+          description: ''
+      tags:
+      - api
+  /api/v1/products/seller/products/:
+    get:
+      operationId: listProducts
+      description: ''
+      parameters:
+      - name: limit
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: offset
+        required: false
+        in: query
+        description: The initial index from which to return the results.
+        schema:
+          type: integer
+      - name: gender
+        required: false
+        in: query
+        description: gender
+        schema:
+          type: string
+          enum:
+          - MALE
+          - FEMALE
+          - UNISEX
+      - name: for_kids
+        required: false
+        in: query
+        description: for_kids
+        schema:
+          type: string
+      - name: category
+        required: false
+        in: query
+        description: category
+        schema:
+          type: string
+      - name: status
+        required: false
+        in: query
+        description: status
+        schema:
+          type: string
+          enum:
+          - DRAFT
+          - ACTIVE
+          - INACTIVE
+          - ARCHIVE
+      - name: publish_date
+        required: false
+        in: query
+        description: publish_date
+        schema:
+          type: string
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  count:
+                    type: integer
+                    example: 123
+                  next:
+                    type: string
+                    nullable: true
+                    format: uri
+                    example: http://api.example.org/accounts/?offset=400&limit=100
+                  previous:
+                    type: string
+                    nullable: true
+                    format: uri
+                    example: http://api.example.org/accounts/?offset=200&limit=100
+                  results:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Product'
+          description: ''
+      tags:
+      - api
+    post:
+      operationId: createProduct
+      description: ''
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProductCreate'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ProductCreate'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ProductCreate'
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductCreate'
+          description: ''
+      tags:
+      - api
+  /api/v1/products/seller/products/{slug}/:
+    get:
+      operationId: retrieveProduct
+      description: ''
+      parameters:
+      - name: slug
+        in: path
+        required: true
+        description: ''
+        schema:
+          type: string
+      - name: gender
+        required: false
+        in: query
+        description: gender
+        schema:
+          type: string
+          enum:
+          - MALE
+          - FEMALE
+          - UNISEX
+      - name: for_kids
+        required: false
+        in: query
+        description: for_kids
+        schema:
+          type: string
+      - name: category
+        required: false
+        in: query
+        description: category
+        schema:
+          type: string
+      - name: status
+        required: false
+        in: query
+        description: status
+        schema:
+          type: string
+          enum:
+          - DRAFT
+          - ACTIVE
+          - INACTIVE
+          - ARCHIVE
+      - name: publish_date
+        required: false
+        in: query
+        description: publish_date
+        schema:
+          type: string
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+          description: ''
+      tags:
+      - api
+    put:
+      operationId: updateProduct
+      description: ''
+      parameters:
+      - name: slug
+        in: path
+        required: true
+        description: ''
+        schema:
+          type: string
+      - name: gender
+        required: false
+        in: query
+        description: gender
+        schema:
+          type: string
+          enum:
+          - MALE
+          - FEMALE
+          - UNISEX
+      - name: for_kids
+        required: false
+        in: query
+        description: for_kids
+        schema:
+          type: string
+      - name: category
+        required: false
+        in: query
+        description: category
+        schema:
+          type: string
+      - name: status
+        required: false
+        in: query
+        description: status
+        schema:
+          type: string
+          enum:
+          - DRAFT
+          - ACTIVE
+          - INACTIVE
+          - ARCHIVE
+      - name: publish_date
+        required: false
+        in: query
+        description: publish_date
+        schema:
+          type: string
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Product'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Product'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Product'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+          description: ''
+      tags:
+      - api
+    patch:
+      operationId: partialUpdateProduct
+      description: ''
+      parameters:
+      - name: slug
+        in: path
+        required: true
+        description: ''
+        schema:
+          type: string
+      - name: gender
+        required: false
+        in: query
+        description: gender
+        schema:
+          type: string
+          enum:
+          - MALE
+          - FEMALE
+          - UNISEX
+      - name: for_kids
+        required: false
+        in: query
+        description: for_kids
+        schema:
+          type: string
+      - name: category
+        required: false
+        in: query
+        description: category
+        schema:
+          type: string
+      - name: status
+        required: false
+        in: query
+        description: status
+        schema:
+          type: string
+          enum:
+          - DRAFT
+          - ACTIVE
+          - INACTIVE
+          - ARCHIVE
+      - name: publish_date
+        required: false
+        in: query
+        description: publish_date
+        schema:
+          type: string
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProductUpdate'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ProductUpdate'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ProductUpdate'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductUpdate'
+          description: ''
+      tags:
+      - api
+    delete:
+      operationId: destroyProduct
+      description: ''
+      parameters:
+      - name: slug
+        in: path
+        required: true
+        description: ''
+        schema:
+          type: string
+      - name: gender
+        required: false
+        in: query
+        description: gender
+        schema:
+          type: string
+          enum:
+          - MALE
+          - FEMALE
+          - UNISEX
+      - name: for_kids
+        required: false
+        in: query
+        description: for_kids
+        schema:
+          type: string
+      - name: category
+        required: false
+        in: query
+        description: category
+        schema:
+          type: string
+      - name: status
+        required: false
+        in: query
+        description: status
+        schema:
+          type: string
+          enum:
+          - DRAFT
+          - ACTIVE
+          - INACTIVE
+          - ARCHIVE
+      - name: publish_date
+        required: false
+        in: query
+        description: publish_date
+        schema:
+          type: string
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      responses:
+        '204':
+          description: ''
+      tags:
+      - api
+  /api/v1/products/seller/product_variants/:
+    get:
+      operationId: listProductVariants
+      description: ''
+      parameters:
+      - name: limit
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: offset
+        required: false
+        in: query
+        description: The initial index from which to return the results.
+        schema:
+          type: integer
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  count:
+                    type: integer
+                    example: 123
+                  next:
+                    type: string
+                    nullable: true
+                    format: uri
+                    example: http://api.example.org/accounts/?offset=400&limit=100
+                  previous:
+                    type: string
+                    nullable: true
+                    format: uri
+                    example: http://api.example.org/accounts/?offset=200&limit=100
+                  results:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ProductVariant'
+          description: ''
+      tags:
+      - api
+    post:
+      operationId: createProductVariant
+      description: ''
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProductVariantCreate'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ProductVariantCreate'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ProductVariantCreate'
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductVariantCreate'
+          description: ''
+      tags:
+      - api
+  /api/v1/products/seller/product_variants/{slug}/:
+    get:
+      operationId: retrieveProductVariant
+      description: ''
+      parameters:
+      - name: slug
+        in: path
+        required: true
+        description: ''
+        schema:
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductVariant'
+          description: ''
+      tags:
+      - api
+    put:
+      operationId: updateProductVariant
+      description: ''
+      parameters:
+      - name: slug
+        in: path
+        required: true
+        description: ''
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProductVariant'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ProductVariant'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ProductVariant'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductVariant'
+          description: ''
+      tags:
+      - api
+    patch:
+      operationId: partialUpdateProductVariant
+      description: ''
+      parameters:
+      - name: slug
+        in: path
+        required: true
+        description: ''
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProductVariant'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ProductVariant'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ProductVariant'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductVariant'
+          description: ''
+      tags:
+      - api
+    delete:
+      operationId: destroyProductVariant
+      description: ''
+      parameters:
+      - name: slug
+        in: path
+        required: true
+        description: ''
+        schema:
+          type: string
+      responses:
+        '204':
+          description: ''
+      tags:
+      - api
+  /api/v1/products/seller/variant_images/:
+    get:
+      operationId: listProductVariantImages
+      description: ''
+      parameters:
+      - name: limit
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: offset
+        required: false
+        in: query
+        description: The initial index from which to return the results.
+        schema:
+          type: integer
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  count:
+                    type: integer
+                    example: 123
+                  next:
+                    type: string
+                    nullable: true
+                    format: uri
+                    example: http://api.example.org/accounts/?offset=400&limit=100
+                  previous:
+                    type: string
+                    nullable: true
+                    format: uri
+                    example: http://api.example.org/accounts/?offset=200&limit=100
+                  results:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ProductVariantImage'
+          description: ''
+      tags:
+      - api
+    post:
+      operationId: createProductVariantImage
+      description: ''
+      parameters: []
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ProductVariantImage'
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductVariantImage'
+          description: ''
+      tags:
+      - api
+  /api/v1/products/seller/variant_images/{id}/:
+    get:
+      operationId: retrieveProductVariantImage
+      description: ''
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: A unique integer value identifying this Product image.
+        schema:
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductVariantImage'
+          description: ''
+      tags:
+      - api
+    put:
+      operationId: updateProductVariantImage
+      description: ''
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: A unique integer value identifying this Product image.
+        schema:
+          type: string
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ProductVariantImage'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductVariantImage'
+          description: ''
+      tags:
+      - api
+    patch:
+      operationId: partialUpdateProductVariantImage
+      description: ''
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: A unique integer value identifying this Product image.
+        schema:
+          type: string
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ProductVariantImage'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductVariantImage'
+          description: ''
+      tags:
+      - api
+    delete:
+      operationId: destroyProductVariantImage
+      description: ''
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: A unique integer value identifying this Product image.
+        schema:
+          type: string
+      responses:
+        '204':
+          description: ''
+      tags:
+      - api
+  /api/v1/products/customer/products/{slug}/:
+    get:
+      operationId: retrieveProduct
+      description: ''
+      parameters:
+      - name: slug
+        in: path
+        required: true
+        description: ''
+        schema:
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+          description: ''
+      tags:
+      - api
+  /api/v1/products/customer/favourites/:
+    get:
+      operationId: listProductFavourites
+      description: ''
+      parameters:
+      - name: limit
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: offset
+        required: false
+        in: query
+        description: The initial index from which to return the results.
+        schema:
+          type: integer
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  count:
+                    type: integer
+                    example: 123
+                  next:
+                    type: string
+                    nullable: true
+                    format: uri
+                    example: http://api.example.org/accounts/?offset=400&limit=100
+                  previous:
+                    type: string
+                    nullable: true
+                    format: uri
+                    example: http://api.example.org/accounts/?offset=200&limit=100
+                  results:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ProductFavourite'
+          description: ''
+      tags:
+      - api
+    post:
+      operationId: createProductFavourite
+      description: ''
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProductFavourite'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ProductFavourite'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ProductFavourite'
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductFavourite'
+          description: ''
+      tags:
+      - api
+  /api/v1/products/customer/reviews/:
+    get:
+      operationId: listProductReviews
+      description: ''
+      parameters:
+      - name: limit
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: offset
+        required: false
+        in: query
+        description: The initial index from which to return the results.
+        schema:
+          type: integer
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  count:
+                    type: integer
+                    example: 123
+                  next:
+                    type: string
+                    nullable: true
+                    format: uri
+                    example: http://api.example.org/accounts/?offset=400&limit=100
+                  previous:
+                    type: string
+                    nullable: true
+                    format: uri
+                    example: http://api.example.org/accounts/?offset=200&limit=100
+                  results:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ProductReview'
+          description: ''
+      tags:
+      - api
+    post:
+      operationId: createProductReview
+      description: ''
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProductReview'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ProductReview'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ProductReview'
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductReview'
+          description: ''
+      tags:
+      - api
+  /api/v1/customers/customers/:
+    get:
+      operationId: listCustomers
+      description: ''
+      parameters:
+      - name: limit
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: offset
+        required: false
+        in: query
+        description: The initial index from which to return the results.
+        schema:
+          type: integer
+      - name: user
+        required: false
+        in: query
+        description: user
+        schema:
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  count:
+                    type: integer
+                    example: 123
+                  next:
+                    type: string
+                    nullable: true
+                    format: uri
+                    example: http://api.example.org/accounts/?offset=400&limit=100
+                  previous:
+                    type: string
+                    nullable: true
+                    format: uri
+                    example: http://api.example.org/accounts/?offset=200&limit=100
+                  results:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Customer'
+          description: ''
+      tags:
+      - api
+    post:
+      operationId: createCustomer
+      description: ''
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Customer'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Customer'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Customer'
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Customer'
+          description: ''
+      tags:
+      - api
+  /api/v1/customers/customers/{id}/:
+    get:
+      operationId: retrieveCustomer
+      description: ''
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: A unique integer value identifying this Customer.
+        schema:
+          type: string
+      - name: user
+        required: false
+        in: query
+        description: user
+        schema:
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Customer'
+          description: ''
+      tags:
+      - api
+    put:
+      operationId: updateCustomer
+      description: ''
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: A unique integer value identifying this Customer.
+        schema:
+          type: string
+      - name: user
+        required: false
+        in: query
+        description: user
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Customer'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Customer'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Customer'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Customer'
+          description: ''
+      tags:
+      - api
+    patch:
+      operationId: partialUpdateCustomer
+      description: ''
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: A unique integer value identifying this Customer.
+        schema:
+          type: string
+      - name: user
+        required: false
+        in: query
+        description: user
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Customer'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Customer'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Customer'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Customer'
+          description: ''
+      tags:
+      - api
+    delete:
+      operationId: destroyCustomer
+      description: ''
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: A unique integer value identifying this Customer.
+        schema:
+          type: string
+      - name: user
+        required: false
+        in: query
+        description: user
+        schema:
+          type: string
+      responses:
+        '204':
+          description: ''
+      tags:
+      - api
+  /api/v1/sellers/seller/shops/:
+    get:
+      operationId: listShops
+      description: ''
+      parameters:
+      - name: limit
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: offset
+        required: false
+        in: query
+        description: The initial index from which to return the results.
+        schema:
+          type: integer
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  count:
+                    type: integer
+                    example: 123
+                  next:
+                    type: string
+                    nullable: true
+                    format: uri
+                    example: http://api.example.org/accounts/?offset=400&limit=100
+                  previous:
+                    type: string
+                    nullable: true
+                    format: uri
+                    example: http://api.example.org/accounts/?offset=200&limit=100
+                  results:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Shop'
+          description: ''
+      tags:
+      - api
+  /api/v1/sellers/seller/shop_branches/:
+    get:
+      operationId: listShopBranchs
+      description: ''
+      parameters:
+      - name: limit
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: offset
+        required: false
+        in: query
+        description: The initial index from which to return the results.
+        schema:
+          type: integer
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  count:
+                    type: integer
+                    example: 123
+                  next:
+                    type: string
+                    nullable: true
+                    format: uri
+                    example: http://api.example.org/accounts/?offset=400&limit=100
+                  previous:
+                    type: string
+                    nullable: true
+                    format: uri
+                    example: http://api.example.org/accounts/?offset=200&limit=100
+                  results:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ShopBranch'
+          description: ''
+      tags:
+      - api
+    post:
+      operationId: createShopBranch
+      description: ''
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ShopBranchCreate'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ShopBranchCreate'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ShopBranchCreate'
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ShopBranchCreate'
+          description: ''
+      tags:
+      - api
+  /api/v1/sellers/seller/shop_branches/{id}/:
+    get:
+      operationId: retrieveShopBranch
+      description: ''
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: A unique integer value identifying this Branch address.
+        schema:
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ShopBranch'
+          description: ''
+      tags:
+      - api
+    put:
+      operationId: updateShopBranch
+      description: ''
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: A unique integer value identifying this Branch address.
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ShopBranch'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ShopBranch'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ShopBranch'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ShopBranch'
+          description: ''
+      tags:
+      - api
+    patch:
+      operationId: partialUpdateShopBranch
+      description: ''
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: A unique integer value identifying this Branch address.
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ShopBranch'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ShopBranch'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ShopBranch'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ShopBranch'
+          description: ''
+      tags:
+      - api
+    delete:
+      operationId: destroyShopBranch
+      description: ''
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: A unique integer value identifying this Branch address.
+        schema:
+          type: string
+      responses:
+        '204':
+          description: ''
+      tags:
+      - api
+  /api/v1/sellers/customer/shops/:
+    get:
+      operationId: listShops
+      description: ''
+      parameters:
+      - name: limit
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: offset
+        required: false
+        in: query
+        description: The initial index from which to return the results.
+        schema:
+          type: integer
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  count:
+                    type: integer
+                    example: 123
+                  next:
+                    type: string
+                    nullable: true
+                    format: uri
+                    example: http://api.example.org/accounts/?offset=400&limit=100
+                  previous:
+                    type: string
+                    nullable: true
+                    format: uri
+                    example: http://api.example.org/accounts/?offset=200&limit=100
+                  results:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Shop'
+          description: ''
+      tags:
+      - api
+  /api/v1/sellers/customer/shops/{slug}/:
+    get:
+      operationId: retrieveShop
+      description: ''
+      parameters:
+      - name: slug
+        in: path
+        required: true
+        description: ''
+        schema:
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Shop'
+          description: ''
+      tags:
+      - api
+  /api/v1/orders/customer/carts/:
+    get:
+      operationId: listCarts
+      description: ''
+      parameters:
+      - name: limit
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: offset
+        required: false
+        in: query
+        description: The initial index from which to return the results.
+        schema:
+          type: integer
+      - name: customer
+        required: false
+        in: query
+        description: customer
+        schema:
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  count:
+                    type: integer
+                    example: 123
+                  next:
+                    type: string
+                    nullable: true
+                    format: uri
+                    example: http://api.example.org/accounts/?offset=400&limit=100
+                  previous:
+                    type: string
+                    nullable: true
+                    format: uri
+                    example: http://api.example.org/accounts/?offset=200&limit=100
+                  results:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Cart'
+          description: ''
+      tags:
+      - api
+  /api/v1/orders/customer/carts/{id}/:
+    get:
+      operationId: retrieveCart
+      description: ''
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: A unique integer value identifying this Cart.
+        schema:
+          type: string
+      - name: customer
+        required: false
+        in: query
+        description: customer
+        schema:
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Cart'
+          description: ''
+      tags:
+      - api
+  /api/v1/orders/customer/cart_items/:
+    get:
+      operationId: listCartItems
+      description: ''
+      parameters:
+      - name: limit
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: offset
+        required: false
+        in: query
+        description: The initial index from which to return the results.
+        schema:
+          type: integer
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  count:
+                    type: integer
+                    example: 123
+                  next:
+                    type: string
+                    nullable: true
+                    format: uri
+                    example: http://api.example.org/accounts/?offset=400&limit=100
+                  previous:
+                    type: string
+                    nullable: true
+                    format: uri
+                    example: http://api.example.org/accounts/?offset=200&limit=100
+                  results:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/CartItem'
+          description: ''
+      tags:
+      - api
+    post:
+      operationId: createCartItem
+      description: ''
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CartItemCreate'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/CartItemCreate'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/CartItemCreate'
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CartItemCreate'
+          description: ''
+      tags:
+      - api
+  /api/v1/orders/customer/cart_items/{id}/:
+    get:
+      operationId: retrieveCartItem
+      description: ''
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: A unique integer value identifying this Cart item.
+        schema:
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CartItem'
+          description: ''
+      tags:
+      - api
+    put:
+      operationId: updateCartItem
+      description: ''
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: A unique integer value identifying this Cart item.
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CartItem'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/CartItem'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/CartItem'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CartItem'
+          description: ''
+      tags:
+      - api
+    patch:
+      operationId: partialUpdateCartItem
+      description: ''
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: A unique integer value identifying this Cart item.
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CartItemUpdate'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/CartItemUpdate'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/CartItemUpdate'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CartItemUpdate'
+          description: ''
+      tags:
+      - api
+    delete:
+      operationId: destroyCartItem
+      description: ''
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: A unique integer value identifying this Cart item.
+        schema:
+          type: string
+      responses:
+        '204':
+          description: ''
+      tags:
+      - api
+  /api/v1/orders/customer/orders/:
+    get:
+      operationId: listOrders
+      description: ''
+      parameters:
+      - name: limit
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: offset
+        required: false
+        in: query
+        description: The initial index from which to return the results.
+        schema:
+          type: integer
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  count:
+                    type: integer
+                    example: 123
+                  next:
+                    type: string
+                    nullable: true
+                    format: uri
+                    example: http://api.example.org/accounts/?offset=400&limit=100
+                  previous:
+                    type: string
+                    nullable: true
+                    format: uri
+                    example: http://api.example.org/accounts/?offset=200&limit=100
+                  results:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Order'
+          description: ''
+      tags:
+      - api
+    post:
+      operationId: createOrder
+      description: ''
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OrderCreate'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/OrderCreate'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/OrderCreate'
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrderCreate'
+          description: ''
+      tags:
+      - api
+  /api/v1/orders/customer/orders/{id}/:
+    get:
+      operationId: retrieveOrder
+      description: ''
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: "A unique integer value identifying this \u041F\u043E\u0440\u044F\
+          \u0434\u043E\u043A."
+        schema:
+          type: string
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Order'
+          description: ''
+      tags:
+      - api
+    put:
+      operationId: updateOrder
+      description: ''
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: "A unique integer value identifying this \u041F\u043E\u0440\u044F\
+          \u0434\u043E\u043A."
+        schema:
+          type: string
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Order'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Order'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Order'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Order'
+          description: ''
+      tags:
+      - api
+    patch:
+      operationId: partialUpdateOrder
+      description: ''
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: "A unique integer value identifying this \u041F\u043E\u0440\u044F\
+          \u0434\u043E\u043A."
+        schema:
+          type: string
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Order'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Order'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Order'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Order'
+          description: ''
+      tags:
+      - api
+    delete:
+      operationId: destroyOrder
+      description: ''
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: "A unique integer value identifying this \u041F\u043E\u0440\u044F\
+          \u0434\u043E\u043A."
+        schema:
+          type: string
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      responses:
+        '204':
+          description: ''
+      tags:
+      - api
+  /api/v1/orders/seller/orders/:
+    get:
+      operationId: listOrders
+      description: ''
+      parameters:
+      - name: limit
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: offset
+        required: false
+        in: query
+        description: The initial index from which to return the results.
+        schema:
+          type: integer
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  count:
+                    type: integer
+                    example: 123
+                  next:
+                    type: string
+                    nullable: true
+                    format: uri
+                    example: http://api.example.org/accounts/?offset=400&limit=100
+                  previous:
+                    type: string
+                    nullable: true
+                    format: uri
+                    example: http://api.example.org/accounts/?offset=200&limit=100
+                  results:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Order'
+          description: ''
+      tags:
+      - api
+  /api/v1/orders/seller/orders/{id}/:
+    get:
+      operationId: retrieveOrder
+      description: ''
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: "A unique integer value identifying this \u041F\u043E\u0440\u044F\
+          \u0434\u043E\u043A."
+        schema:
+          type: string
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Order'
+          description: ''
+      tags:
+      - api
+  /api/v1/elastic/products/:
+    get:
+      operationId: listProductDocuments
+      description: ''
+      parameters:
+      - name: limit
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: offset
+        required: false
+        in: query
+        description: The initial index from which to return the results.
+        schema:
+          type: integer
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  count:
+                    type: integer
+                    example: 123
+                  next:
+                    type: string
+                    nullable: true
+                    format: uri
+                    example: http://api.example.org/accounts/?offset=400&limit=100
+                  previous:
+                    type: string
+                    nullable: true
+                    format: uri
+                    example: http://api.example.org/accounts/?offset=200&limit=100
+                  results:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ProductDocument'
+          description: ''
+      tags:
+      - api
+  /api/v1/elastic/products/functional_suggest/:
+    get:
+      operationId: functionalSuggestProductDocument
+      description: 'Functional suggest functionality.
+
+
+        :param request:
+
+        :return:'
+      parameters: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductDocument'
+          description: ''
+      tags:
+      - api
+  /api/v1/elastic/products/suggest/:
+    get:
+      operationId: suggestProductDocument
+      description: Suggest functionality.
+      parameters: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductDocument'
+          description: ''
+      tags:
+      - api
+  /api/v1/elastic/products/{slug}/:
+    get:
+      operationId: retrieveProductDocument
+      description: ''
+      parameters:
+      - name: slug
+        in: path
+        required: true
+        description: ''
+        schema:
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductDocument'
+          description: ''
+      tags:
+      - api
+  /api/v1/accounts/users/create_customer/:
+    post:
+      operationId: createUserCustomerCreate
+      description: ''
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserCustomerCreate'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/UserCustomerCreate'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/UserCustomerCreate'
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserCustomerCreate'
+          description: ''
+      tags:
+      - api
+  /api/v1/accounts/users/create_seller/:
+    post:
+      operationId: createUserSellerCreate
+      description: ''
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserSellerCreate'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/UserSellerCreate'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/UserSellerCreate'
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserSellerCreate'
+          description: ''
+      tags:
+      - api
+  /api/v1/accounts/auth/token/:
+    post:
+      operationId: createTokenObtainPair
+      description: 'Takes a set of user credentials and returns an access and refresh
+        JSON web
+
+        token pair to prove the authentication of those credentials.'
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TokenObtainPair'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/TokenObtainPair'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/TokenObtainPair'
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenObtainPair'
+          description: ''
+      tags:
+      - api
+  /api/v1/accounts/auth/token/refresh/:
+    post:
+      operationId: createTokenRefresh
+      description: 'Takes a refresh type JSON web token and returns an access type
+        JSON web
+
+        token if the refresh token is valid.'
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TokenRefresh'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/TokenRefresh'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/TokenRefresh'
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenRefresh'
+          description: ''
+      tags:
+      - api
+  /api/v1/accounts/auth/token/verify/:
+    post:
+      operationId: createTokenVerify
+      description: 'Takes a token and indicates if it is valid.  This view provides
+        no
+
+        information about a token''s fitness for a particular use.'
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TokenVerify'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/TokenVerify'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/TokenVerify'
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenVerify'
+          description: ''
+      tags:
+      - api
+  /api/v1/accounts/users/change_email_confirm/:
+    post:
+      operationId: changeEmailConfirmUser
+      description: ''
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ResetEmailConfirm'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ResetEmailConfirm'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ResetEmailConfirm'
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResetEmailConfirm'
+          description: ''
+      tags:
+      - api
+  /api/v1/accounts/users/change_email_request/:
+    post:
+      operationId: changeEmailRequestUser
+      description: ''
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ResetEmail'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ResetEmail'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ResetEmail'
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResetEmail'
+          description: ''
+      tags:
+      - api
+  /api/v1/accounts/users/change_phone_number_confirm/:
+    post:
+      operationId: changePhoneNumberConfirmUser
+      description: ''
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ResetPhoneNumberConfirm'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ResetPhoneNumberConfirm'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ResetPhoneNumberConfirm'
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResetPhoneNumberConfirm'
+          description: ''
+      tags:
+      - api
+  /api/v1/accounts/users/change_phone_number_request/:
+    post:
+      operationId: changePhoneNumberRequestUser
+      description: ''
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ResetPhoneNumber'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ResetPhoneNumber'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ResetPhoneNumber'
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResetPhoneNumber'
+          description: ''
+      tags:
+      - api
+  /api/v1/accounts/users/reset_password_confirm/:
+    post:
+      operationId: resetPasswordConfirmUser
+      description: ''
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ResetPasswordConfirm'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ResetPasswordConfirm'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ResetPasswordConfirm'
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResetPasswordConfirm'
+          description: ''
+      tags:
+      - api
+  /api/v1/accounts/users/reset_password_request_email/:
+    post:
+      operationId: resetPasswordRequestEmailUser
+      description: ''
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ResetPasswordSendEmail'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ResetPasswordSendEmail'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ResetPasswordSendEmail'
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResetPasswordSendEmail'
+          description: ''
+      tags:
+      - api
+  /api/v1/accounts/users/reset_password_request_phone_number/:
+    post:
+      operationId: resetPasswordRequestPhoneNumberUser
+      description: ''
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ResetPasswordSendSMS'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ResetPasswordSendSMS'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ResetPasswordSendSMS'
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResetPasswordSendSMS'
+          description: ''
+      tags:
+      - api
+  /api/v1/accounts/users/set_new_password/:
+    post:
+      operationId: setNewPasswordUser
+      description: ''
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SetNewPassword'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/SetNewPassword'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/SetNewPassword'
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SetNewPassword'
+          description: ''
+      tags:
+      - api
+  /api/v1/sellers/seller/shops/{slug}/:
+    put:
+      operationId: updateShop
+      description: ''
+      parameters:
+      - name: slug
+        in: path
+        required: true
+        description: ''
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Shop'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Shop'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Shop'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Shop'
+          description: ''
+      tags:
+      - api
+    patch:
+      operationId: partialUpdateShop
+      description: ''
+      parameters:
+      - name: slug
+        in: path
+        required: true
+        description: ''
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ShopUpdate'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ShopUpdate'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ShopUpdate'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ShopUpdate'
+          description: ''
+      tags:
+      - api
+components:
+  schemas:
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        first_name:
+          type: string
+          maxLength: 150
+        last_name:
+          type: string
+          maxLength: 150
+        email:
+          type: string
+          format: email
+          nullable: true
+          maxLength: 255
+        phone_number:
+          type: string
+          nullable: true
+          maxLength: 255
+        type:
+          enum:
+          - SELLER
+          - CUSTOMER
+          type: string
+      required:
+      - type
+    Category:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        slug:
+          type: string
+          readOnly: true
+          pattern: ^[-a-zA-Z0-9_]+$
+        title:
+          type: string
+          maxLength: 255
+        image:
+          type: string
+          format: binary
+          nullable: true
+        parent:
+          type: integer
+          nullable: true
+        children:
+          type: string
+      required:
+      - title
+      - children
+    Tag:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        slug:
+          type: string
+          readOnly: true
+          pattern: ^[-a-zA-Z0-9_]+$
+        title:
+          type: string
+          maxLength: 255
+      required:
+      - title
+    Specification:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        slug:
+          type: string
+          readOnly: true
+          pattern: ^[-a-zA-Z0-9_]+$
+        title:
+          type: string
+          maxLength: 255
+      required:
+      - title
+    Product:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        slug:
+          type: string
+          maxLength: 255
+          pattern: ^[-a-zA-Z0-9_]+$
+        sku:
+          type: string
+          nullable: true
+          maxLength: 255
+        title:
+          type: string
+          maxLength: 255
+        description:
+          type: string
+        recommendation:
+          type: string
+        gender:
+          enum:
+          - MALE
+          - FEMALE
+          - UNISEX
+          type: string
+        for_kids:
+          type: boolean
+        price_from:
+          type: string
+          format: decimal
+          multipleOf: 0.01
+          maximum: 100000000
+          minimum: -100000000
+        discount:
+          type: integer
+          maximum: 100
+          nullable: true
+          minimum: 0
+        discounted_price:
+          type: string
+          readOnly: true
+        category:
+          type: object
+          properties:
+            id:
+              type: integer
+              readOnly: true
+            slug:
+              type: string
+              readOnly: true
+              pattern: ^[-a-zA-Z0-9_]+$
+            title:
+              type: string
+              maxLength: 255
+            image:
+              type: string
+              format: binary
+              nullable: true
+            parent:
+              type: integer
+              nullable: true
+            children:
+              type: string
+          required:
+          - title
+          - children
+          readOnly: true
+        country:
+          type: string
+          nullable: true
+          maxLength: 255
+        tags:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: integer
+                readOnly: true
+              slug:
+                type: string
+                readOnly: true
+                pattern: ^[-a-zA-Z0-9_]+$
+              title:
+                type: string
+                maxLength: 255
+            required:
+            - title
+          readOnly: true
+        specifications:
+          type: array
+          items:
+            type: object
+            properties:
+              title:
+                type: string
+              value:
+                type: string
+            required:
+            - title
+            - value
+        shop:
+          type: object
+          properties:
+            id:
+              type: integer
+              readOnly: true
+            slug:
+              type: string
+              maxLength: 255
+              pattern: ^[-a-zA-Z0-9_]+$
+            logo:
+              type: string
+              format: binary
+              nullable: true
+            title:
+              type: string
+              maxLength: 255
+            description:
+              type: string
+              nullable: true
+            seller:
+              type: integer
+            status:
+              enum:
+              - MODERATION
+              - ACTIVE
+              type: string
+            site_link:
+              type: string
+              format: uri
+              nullable: true
+              maxLength: 200
+              pattern: "^(?:[a-z0-9.+-]*)://(?:[^\\s:@/]+(?::[^\\s:@/]*)?@)?(?:(?:0|25[0-5]|2[0-4][0-9]|1[0-9]?[0-9]?|[1-9][0-9]?)(?:\\\
+                .(?:0|25[0-5]|2[0-4][0-9]|1[0-9]?[0-9]?|[1-9][0-9]?)){3}|\\[[0-9a-f:.]+\\\
+                ]|([a-z\xA1-\uFFFF0-9](?:[a-z\xA1-\uFFFF0-9-]{0,61}[a-z\xA1-\uFFFF\
+                0-9])?(?:\\.(?!-)[a-z\xA1-\uFFFF0-9-]{1,63}(?<!-))*\\.(?!-)(?:[a-z\xA1\
+                -\uFFFF-]{2,63}|xn--[a-z0-9]{1,59})(?<!-)\\.?|localhost))(?::[0-9]{1,5})?(?:[/?#][^\\\
+                s]*)?\\z"
+            instagram_link:
+              type: string
+              format: uri
+              nullable: true
+              maxLength: 200
+              pattern: "^(?:[a-z0-9.+-]*)://(?:[^\\s:@/]+(?::[^\\s:@/]*)?@)?(?:(?:0|25[0-5]|2[0-4][0-9]|1[0-9]?[0-9]?|[1-9][0-9]?)(?:\\\
+                .(?:0|25[0-5]|2[0-4][0-9]|1[0-9]?[0-9]?|[1-9][0-9]?)){3}|\\[[0-9a-f:.]+\\\
+                ]|([a-z\xA1-\uFFFF0-9](?:[a-z\xA1-\uFFFF0-9-]{0,61}[a-z\xA1-\uFFFF\
+                0-9])?(?:\\.(?!-)[a-z\xA1-\uFFFF0-9-]{1,63}(?<!-))*\\.(?!-)(?:[a-z\xA1\
+                -\uFFFF-]{2,63}|xn--[a-z0-9]{1,59})(?<!-)\\.?|localhost))(?::[0-9]{1,5})?(?:[/?#][^\\\
+                s]*)?\\z"
+            whats_app_link:
+              type: string
+              format: uri
+              nullable: true
+              maxLength: 200
+              pattern: "^(?:[a-z0-9.+-]*)://(?:[^\\s:@/]+(?::[^\\s:@/]*)?@)?(?:(?:0|25[0-5]|2[0-4][0-9]|1[0-9]?[0-9]?|[1-9][0-9]?)(?:\\\
+                .(?:0|25[0-5]|2[0-4][0-9]|1[0-9]?[0-9]?|[1-9][0-9]?)){3}|\\[[0-9a-f:.]+\\\
+                ]|([a-z\xA1-\uFFFF0-9](?:[a-z\xA1-\uFFFF0-9-]{0,61}[a-z\xA1-\uFFFF\
+                0-9])?(?:\\.(?!-)[a-z\xA1-\uFFFF0-9-]{1,63}(?<!-))*\\.(?!-)(?:[a-z\xA1\
+                -\uFFFF-]{2,63}|xn--[a-z0-9]{1,59})(?<!-)\\.?|localhost))(?::[0-9]{1,5})?(?:[/?#][^\\\
+                s]*)?\\z"
+            branches:
+              type: array
+              items:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    readOnly: true
+                  address:
+                    type: string
+                    maxLength: 255
+                  phone_number:
+                    type: string
+                    maxLength: 255
+                required:
+                - address
+                - phone_number
+              readOnly: true
+          required:
+          - slug
+          - title
+          - seller
+          readOnly: true
+        publish_date:
+          type: string
+          format: date-time
+          nullable: true
+        status:
+          enum:
+          - DRAFT
+          - ACTIVE
+          - INACTIVE
+          - ARCHIVE
+          type: string
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+        variants:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: integer
+                readOnly: true
+              slug:
+                type: string
+                readOnly: true
+                pattern: ^[-a-zA-Z0-9_]+$
+              product:
+                type: integer
+              title:
+                type: string
+                description: Color title
+                maxLength: 255
+              description:
+                type: string
+              size_variants:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    size:
+                      type: string
+                    quantity:
+                      type: integer
+                    price:
+                      type: string
+                      format: decimal
+                      multipleOf: 0.01
+                      maximum: 100000000
+                      minimum: -100000000
+                  required:
+                  - size
+                  - quantity
+                  - price
+              price_min:
+                type: string
+                readOnly: true
+              price_max:
+                type: string
+                readOnly: true
+              images:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                      readOnly: true
+                    variant:
+                      type: integer
+                    image:
+                      type: string
+                      format: binary
+                  required:
+                  - variant
+                  - image
+                readOnly: true
+              image_main:
+                type: string
+                readOnly: true
+            required:
+            - product
+            - title
+            - description
+            - size_variants
+          readOnly: true
+        reviews:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: integer
+                readOnly: true
+              product:
+                type: integer
+              star:
+                type: number
+                maximum: 5.0
+                minimum: 0.0
+              review:
+                type: string
+              customer:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    readOnly: true
+                  user:
+                    type: integer
+                  date_of_birth:
+                    type: string
+                    format: date
+                    nullable: true
+                  preferences:
+                    type: array
+                    items:
+                      enum:
+                      - MALE
+                      - FEMALE
+                      - BABY
+                      type: string
+                required:
+                - user
+                - preferences
+                readOnly: true
+            required:
+            - product
+            - star
+            - review
+          readOnly: true
+        rating:
+          type: string
+          readOnly: true
+      required:
+      - slug
+      - title
+      - description
+      - recommendation
+      - gender
+      - for_kids
+      - price_from
+      - specifications
+    ProductVariant:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        slug:
+          type: string
+          readOnly: true
+          pattern: ^[-a-zA-Z0-9_]+$
+        product:
+          type: integer
+        title:
+          type: string
+          description: Color title
+          maxLength: 255
+        description:
+          type: string
+        size_variants:
+          type: array
+          items:
+            type: object
+            properties:
+              size:
+                type: string
+              quantity:
+                type: integer
+              price:
+                type: string
+                format: decimal
+                multipleOf: 0.01
+                maximum: 100000000
+                minimum: -100000000
+            required:
+            - size
+            - quantity
+            - price
+        price_min:
+          type: string
+          readOnly: true
+        price_max:
+          type: string
+          readOnly: true
+        images:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: integer
+                readOnly: true
+              variant:
+                type: integer
+              image:
+                type: string
+                format: binary
+            required:
+            - variant
+            - image
+          readOnly: true
+        image_main:
+          type: string
+          readOnly: true
+      required:
+      - product
+      - title
+      - description
+      - size_variants
+    ProductVariantImage:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        variant:
+          type: integer
+        image:
+          type: string
+          format: binary
+      required:
+      - variant
+      - image
+    ProductFavourite:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        product:
+          type: integer
+      required:
+      - product
+    ProductReview:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        product:
+          type: integer
+        star:
+          type: number
+          maximum: 5.0
+          minimum: 0.0
+        review:
+          type: string
+        customer:
+          type: object
+          properties:
+            id:
+              type: integer
+              readOnly: true
+            user:
+              type: integer
+            date_of_birth:
+              type: string
+              format: date
+              nullable: true
+            preferences:
+              type: array
+              items:
+                enum:
+                - MALE
+                - FEMALE
+                - BABY
+                type: string
+          required:
+          - user
+          - preferences
+          readOnly: true
+      required:
+      - product
+      - star
+      - review
+    Customer:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        user:
+          type: integer
+        date_of_birth:
+          type: string
+          format: date
+          nullable: true
+        preferences:
+          type: array
+          items:
+            enum:
+            - MALE
+            - FEMALE
+            - BABY
+            type: string
+      required:
+      - user
+      - preferences
+    Shop:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        slug:
+          type: string
+          maxLength: 255
+          pattern: ^[-a-zA-Z0-9_]+$
+        logo:
+          type: string
+          format: binary
+          nullable: true
+        title:
+          type: string
+          maxLength: 255
+        description:
+          type: string
+          nullable: true
+        seller:
+          type: integer
+        status:
+          enum:
+          - MODERATION
+          - ACTIVE
+          type: string
+        site_link:
+          type: string
+          format: uri
+          nullable: true
+          maxLength: 200
+          pattern: "^(?:[a-z0-9.+-]*)://(?:[^\\s:@/]+(?::[^\\s:@/]*)?@)?(?:(?:0|25[0-5]|2[0-4][0-9]|1[0-9]?[0-9]?|[1-9][0-9]?)(?:\\\
+            .(?:0|25[0-5]|2[0-4][0-9]|1[0-9]?[0-9]?|[1-9][0-9]?)){3}|\\[[0-9a-f:.]+\\\
+            ]|([a-z\xA1-\uFFFF0-9](?:[a-z\xA1-\uFFFF0-9-]{0,61}[a-z\xA1-\uFFFF0-9])?(?:\\\
+            .(?!-)[a-z\xA1-\uFFFF0-9-]{1,63}(?<!-))*\\.(?!-)(?:[a-z\xA1-\uFFFF-]{2,63}|xn--[a-z0-9]{1,59})(?<!-)\\\
+            .?|localhost))(?::[0-9]{1,5})?(?:[/?#][^\\s]*)?\\z"
+        instagram_link:
+          type: string
+          format: uri
+          nullable: true
+          maxLength: 200
+          pattern: "^(?:[a-z0-9.+-]*)://(?:[^\\s:@/]+(?::[^\\s:@/]*)?@)?(?:(?:0|25[0-5]|2[0-4][0-9]|1[0-9]?[0-9]?|[1-9][0-9]?)(?:\\\
+            .(?:0|25[0-5]|2[0-4][0-9]|1[0-9]?[0-9]?|[1-9][0-9]?)){3}|\\[[0-9a-f:.]+\\\
+            ]|([a-z\xA1-\uFFFF0-9](?:[a-z\xA1-\uFFFF0-9-]{0,61}[a-z\xA1-\uFFFF0-9])?(?:\\\
+            .(?!-)[a-z\xA1-\uFFFF0-9-]{1,63}(?<!-))*\\.(?!-)(?:[a-z\xA1-\uFFFF-]{2,63}|xn--[a-z0-9]{1,59})(?<!-)\\\
+            .?|localhost))(?::[0-9]{1,5})?(?:[/?#][^\\s]*)?\\z"
+        whats_app_link:
+          type: string
+          format: uri
+          nullable: true
+          maxLength: 200
+          pattern: "^(?:[a-z0-9.+-]*)://(?:[^\\s:@/]+(?::[^\\s:@/]*)?@)?(?:(?:0|25[0-5]|2[0-4][0-9]|1[0-9]?[0-9]?|[1-9][0-9]?)(?:\\\
+            .(?:0|25[0-5]|2[0-4][0-9]|1[0-9]?[0-9]?|[1-9][0-9]?)){3}|\\[[0-9a-f:.]+\\\
+            ]|([a-z\xA1-\uFFFF0-9](?:[a-z\xA1-\uFFFF0-9-]{0,61}[a-z\xA1-\uFFFF0-9])?(?:\\\
+            .(?!-)[a-z\xA1-\uFFFF0-9-]{1,63}(?<!-))*\\.(?!-)(?:[a-z\xA1-\uFFFF-]{2,63}|xn--[a-z0-9]{1,59})(?<!-)\\\
+            .?|localhost))(?::[0-9]{1,5})?(?:[/?#][^\\s]*)?\\z"
+        branches:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: integer
+                readOnly: true
+              address:
+                type: string
+                maxLength: 255
+              phone_number:
+                type: string
+                maxLength: 255
+            required:
+            - address
+            - phone_number
+          readOnly: true
+      required:
+      - slug
+      - title
+      - seller
+    ShopBranch:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        address:
+          type: string
+          maxLength: 255
+        phone_number:
+          type: string
+          maxLength: 255
+      required:
+      - address
+      - phone_number
+    Cart:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        customer:
+          type: integer
+        items:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: integer
+                readOnly: true
+              cart:
+                type: integer
+              product_variant:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    readOnly: true
+                  slug:
+                    type: string
+                    readOnly: true
+                    pattern: ^[-a-zA-Z0-9_]+$
+                  product:
+                    type: integer
+                  title:
+                    type: string
+                    description: Color title
+                    maxLength: 255
+                  description:
+                    type: string
+                  size_variants:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        size:
+                          type: string
+                        quantity:
+                          type: integer
+                        price:
+                          type: string
+                          format: decimal
+                          multipleOf: 0.01
+                          maximum: 100000000
+                          minimum: -100000000
+                      required:
+                      - size
+                      - quantity
+                      - price
+                  price_min:
+                    type: string
+                    readOnly: true
+                  price_max:
+                    type: string
+                    readOnly: true
+                  images:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                          readOnly: true
+                        variant:
+                          type: integer
+                        image:
+                          type: string
+                          format: binary
+                      required:
+                      - variant
+                      - image
+                    readOnly: true
+                  image_main:
+                    type: string
+                    readOnly: true
+                required:
+                - product
+                - title
+                - description
+                - size_variants
+                readOnly: true
+              size:
+                type: string
+                maxLength: 255
+              quantity:
+                type: integer
+                maximum: 2147483647
+                minimum: 0
+              total:
+                type: string
+                readOnly: true
+            required:
+            - cart
+            - size
+          readOnly: true
+        total:
+          type: string
+          readOnly: true
+      required:
+      - customer
+    CartItem:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        cart:
+          type: integer
+        product_variant:
+          type: object
+          properties:
+            id:
+              type: integer
+              readOnly: true
+            slug:
+              type: string
+              readOnly: true
+              pattern: ^[-a-zA-Z0-9_]+$
+            product:
+              type: integer
+            title:
+              type: string
+              description: Color title
+              maxLength: 255
+            description:
+              type: string
+            size_variants:
+              type: array
+              items:
+                type: object
+                properties:
+                  size:
+                    type: string
+                  quantity:
+                    type: integer
+                  price:
+                    type: string
+                    format: decimal
+                    multipleOf: 0.01
+                    maximum: 100000000
+                    minimum: -100000000
+                required:
+                - size
+                - quantity
+                - price
+            price_min:
+              type: string
+              readOnly: true
+            price_max:
+              type: string
+              readOnly: true
+            images:
+              type: array
+              items:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    readOnly: true
+                  variant:
+                    type: integer
+                  image:
+                    type: string
+                    format: binary
+                required:
+                - variant
+                - image
+              readOnly: true
+            image_main:
+              type: string
+              readOnly: true
+          required:
+          - product
+          - title
+          - description
+          - size_variants
+          readOnly: true
+        size:
+          type: string
+          maxLength: 255
+        quantity:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+        total:
+          type: string
+          readOnly: true
+      required:
+      - cart
+      - size
+    Order:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        order_id:
+          type: string
+          nullable: true
+          maxLength: 255
+        customer:
+          type: integer
+          nullable: true
+        address:
+          type: string
+          maxLength: 255
+        city:
+          type: string
+          maxLength: 255
+        region:
+          type: string
+          maxLength: 255
+        phone_number:
+          type: string
+          maxLength: 128
+        payment_type:
+          enum:
+          - CARD
+          type: string
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+        total:
+          type: string
+          readOnly: true
+      required:
+      - address
+      - city
+      - region
+      - phone_number
+    ProductDocument:
+      type: object
+      properties:
+        slug:
+          type: string
+        sku:
+          type: string
+        title:
+          type: string
+        gender:
+          type: string
+        for_kids:
+          type: string
+        price_from:
+          type: number
+        category:
+          type: string
+        tags:
+          type: string
+        specifications:
+          type: string
+        shop:
+          type: string
+        variants:
+          type: string
+        status:
+          type: string
+      required:
+      - slug
+      - sku
+      - title
+      - gender
+      - for_kids
+      - price_from
+      - category
+      - tags
+      - specifications
+      - shop
+      - variants
+      - status
+    UserCustomerCreate:
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+          nullable: true
+          maxLength: 255
+        phone_number:
+          type: string
+          nullable: true
+          maxLength: 255
+        password:
+          type: string
+          maxLength: 128
+        re_password:
+          type: string
+        customer:
+          type: object
+          properties:
+            date_of_birth:
+              type: string
+              format: date
+              nullable: true
+            preferences:
+              type: array
+              items:
+                enum:
+                - MALE
+                - FEMALE
+                - BABY
+                type: string
+          required:
+          - preferences
+      required:
+      - password
+      - re_password
+      - customer
+    UserSellerCreate:
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+          nullable: true
+          maxLength: 255
+        phone_number:
+          type: string
+          nullable: true
+          maxLength: 255
+        password:
+          type: string
+          maxLength: 128
+        re_password:
+          type: string
+        shop:
+          type: object
+          properties:
+            title:
+              type: string
+              maxLength: 255
+          required:
+          - title
+        seller_key:
+          type: object
+          properties:
+            key:
+              type: string
+              maxLength: 10
+          required:
+          - key
+      required:
+      - password
+      - re_password
+      - shop
+      - seller_key
+    TokenObtainPair:
+      type: object
+      properties:
+        username:
+          type: string
+        password:
+          type: string
+          writeOnly: true
+      required:
+      - username
+      - password
+    TokenRefresh:
+      type: object
+      properties:
+        refresh:
+          type: string
+        access:
+          type: string
+          readOnly: true
+      required:
+      - refresh
+    TokenVerify:
+      type: object
+      properties:
+        token:
+          type: string
+      required:
+      - token
+    ResetEmailConfirm:
+      type: object
+      properties:
+        uid:
+          type: string
+        token:
+          type: string
+      required:
+      - uid
+      - token
+    ResetEmail:
+      type: object
+      properties:
+        current_password:
+          type: string
+        email:
+          type: string
+        re_email:
+          type: string
+      required:
+      - current_password
+      - email
+      - re_email
+    ResetPhoneNumberConfirm:
+      type: object
+      properties:
+        uid:
+          type: string
+        token:
+          type: string
+      required:
+      - uid
+      - token
+    ResetPhoneNumber:
+      type: object
+      properties:
+        current_password:
+          type: string
+        phone_number:
+          type: string
+        re_phone_number:
+          type: string
+      required:
+      - current_password
+      - phone_number
+      - re_phone_number
+    ResetPasswordConfirm:
+      type: object
+      properties:
+        uid:
+          type: string
+        token:
+          type: string
+        password:
+          type: string
+        re_password:
+          type: string
+      required:
+      - uid
+      - token
+      - password
+      - re_password
+    ResetPasswordSendEmail:
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+      required:
+      - email
+    ResetPasswordSendSMS:
+      type: object
+      properties:
+        phone_number:
+          type: string
+      required:
+      - phone_number
+    SetNewPassword:
+      type: object
+      properties:
+        password:
+          type: string
+        re_password:
+          type: string
+        current_password:
+          type: string
+      required:
+      - password
+      - re_password
+      - current_password
+    ProductCreate:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        slug:
+          type: string
+          maxLength: 255
+          pattern: ^[-a-zA-Z0-9_]+$
+        sku:
+          type: string
+          nullable: true
+          maxLength: 255
+        title:
+          type: string
+          maxLength: 255
+        description:
+          type: string
+        recommendation:
+          type: string
+        gender:
+          enum:
+          - MALE
+          - FEMALE
+          - UNISEX
+          type: string
+        for_kids:
+          type: boolean
+        price_from:
+          type: string
+          format: decimal
+          multipleOf: 0.01
+          maximum: 100000000
+          minimum: -100000000
+        discount:
+          type: integer
+          maximum: 100
+          nullable: true
+          minimum: 0
+        category:
+          type: integer
+        country:
+          type: string
+          nullable: true
+          maxLength: 255
+        tags:
+          type: array
+          items:
+            type: integer
+        specifications:
+          type: object
+        publish_date:
+          type: string
+          format: date-time
+          nullable: true
+      required:
+      - slug
+      - title
+      - description
+      - recommendation
+      - gender
+      - for_kids
+      - price_from
+      - category
+      - specifications
+    ProductVariantCreate:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        product:
+          type: integer
+        title:
+          type: string
+          description: Color title
+          maxLength: 255
+        description:
+          type: string
+        size_variants:
+          type: object
+      required:
+      - product
+      - title
+      - description
+      - size_variants
+    ShopBranchCreate:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        address:
+          type: string
+          maxLength: 255
+        phone_number:
+          type: string
+          maxLength: 255
+      required:
+      - address
+      - phone_number
+    CartItemCreate:
+      type: object
+      properties:
+        product_variant:
+          type: integer
+        size:
+          type: string
+          maxLength: 255
+        quantity:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+      required:
+      - product_variant
+      - size
+    OrderCreate:
+      type: object
+      properties:
+        address:
+          type: string
+          maxLength: 255
+        city:
+          type: string
+          maxLength: 255
+        region:
+          type: string
+          maxLength: 255
+        phone_number:
+          type: string
+          maxLength: 128
+        payment_type:
+          enum:
+          - CARD
+          type: string
+        items:
+          type: array
+          items:
+            type: object
+            properties:
+              product_variant:
+                type: integer
+              order:
+                type: integer
+              size:
+                type: object
+              quantity:
+                type: integer
+                maximum: 2147483647
+                minimum: 0
+            required:
+            - product_variant
+            - order
+            - size
+            - quantity
+      required:
+      - address
+      - city
+      - region
+      - phone_number
+      - items
+    ProductUpdate:
+      type: object
+      properties:
+        title:
+          type: string
+          maxLength: 255
+        description:
+          type: string
+        recommendation:
+          type: string
+        gender:
+          enum:
+          - MALE
+          - FEMALE
+          - UNISEX
+          type: string
+        for_kids:
+          type: boolean
+        price_from:
+          type: string
+          format: decimal
+          multipleOf: 0.01
+          maximum: 100000000
+          minimum: -100000000
+        discount:
+          type: integer
+          maximum: 100
+          nullable: true
+          minimum: 0
+        category:
+          type: integer
+        country:
+          type: string
+          nullable: true
+          maxLength: 255
+        tags:
+          type: array
+          items:
+            type: integer
+        specifications:
+          type: object
+      required:
+      - title
+      - description
+      - recommendation
+      - gender
+      - for_kids
+      - price_from
+      - category
+      - specifications
+    ShopUpdate:
+      type: object
+      properties:
+        title:
+          type: string
+          maxLength: 255
+        description:
+          type: string
+          nullable: true
+        logo:
+          type: string
+          format: binary
+          nullable: true
+        site_link:
+          type: string
+          format: uri
+          nullable: true
+          maxLength: 200
+          pattern: "^(?:[a-z0-9.+-]*)://(?:[^\\s:@/]+(?::[^\\s:@/]*)?@)?(?:(?:0|25[0-5]|2[0-4][0-9]|1[0-9]?[0-9]?|[1-9][0-9]?)(?:\\\
+            .(?:0|25[0-5]|2[0-4][0-9]|1[0-9]?[0-9]?|[1-9][0-9]?)){3}|\\[[0-9a-f:.]+\\\
+            ]|([a-z\xA1-\uFFFF0-9](?:[a-z\xA1-\uFFFF0-9-]{0,61}[a-z\xA1-\uFFFF0-9])?(?:\\\
+            .(?!-)[a-z\xA1-\uFFFF0-9-]{1,63}(?<!-))*\\.(?!-)(?:[a-z\xA1-\uFFFF-]{2,63}|xn--[a-z0-9]{1,59})(?<!-)\\\
+            .?|localhost))(?::[0-9]{1,5})?(?:[/?#][^\\s]*)?\\z"
+        instagram_link:
+          type: string
+          format: uri
+          nullable: true
+          maxLength: 200
+          pattern: "^(?:[a-z0-9.+-]*)://(?:[^\\s:@/]+(?::[^\\s:@/]*)?@)?(?:(?:0|25[0-5]|2[0-4][0-9]|1[0-9]?[0-9]?|[1-9][0-9]?)(?:\\\
+            .(?:0|25[0-5]|2[0-4][0-9]|1[0-9]?[0-9]?|[1-9][0-9]?)){3}|\\[[0-9a-f:.]+\\\
+            ]|([a-z\xA1-\uFFFF0-9](?:[a-z\xA1-\uFFFF0-9-]{0,61}[a-z\xA1-\uFFFF0-9])?(?:\\\
+            .(?!-)[a-z\xA1-\uFFFF0-9-]{1,63}(?<!-))*\\.(?!-)(?:[a-z\xA1-\uFFFF-]{2,63}|xn--[a-z0-9]{1,59})(?<!-)\\\
+            .?|localhost))(?::[0-9]{1,5})?(?:[/?#][^\\s]*)?\\z"
+        whats_app_link:
+          type: string
+          format: uri
+          nullable: true
+          maxLength: 200
+          pattern: "^(?:[a-z0-9.+-]*)://(?:[^\\s:@/]+(?::[^\\s:@/]*)?@)?(?:(?:0|25[0-5]|2[0-4][0-9]|1[0-9]?[0-9]?|[1-9][0-9]?)(?:\\\
+            .(?:0|25[0-5]|2[0-4][0-9]|1[0-9]?[0-9]?|[1-9][0-9]?)){3}|\\[[0-9a-f:.]+\\\
+            ]|([a-z\xA1-\uFFFF0-9](?:[a-z\xA1-\uFFFF0-9-]{0,61}[a-z\xA1-\uFFFF0-9])?(?:\\\
+            .(?!-)[a-z\xA1-\uFFFF0-9-]{1,63}(?<!-))*\\.(?!-)(?:[a-z\xA1-\uFFFF-]{2,63}|xn--[a-z0-9]{1,59})(?<!-)\\\
+            .?|localhost))(?::[0-9]{1,5})?(?:[/?#][^\\s]*)?\\z"
+      required:
+      - title
+    CartItemUpdate:
+      type: object
+      properties:
+        quantity:
+          type: integer
+          maximum: 2147483647
+          minimum: 0

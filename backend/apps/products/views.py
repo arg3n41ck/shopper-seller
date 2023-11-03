@@ -1,116 +1,156 @@
-from django.db import transaction
-from rest_framework import viewsets
-from rest_framework.filters import SearchFilter
-from rest_framework.permissions import IsAuthenticated
-from rest_framework.parsers import MultiPartParser
 from django_filters.rest_framework import DjangoFilterBackend
-
-
-from apps.products.services import ProductSellerService
+from rest_framework import viewsets, mixins, filters
+from rest_framework.filters import SearchFilter
+from rest_framework.parsers import MultiPartParser
 
 from apps.products.models import (
     Category,
     Tag,
+    Specification,
     Product,
     ProductVariant,
     ProductVariantImage,
-    Specification,
     ProductFavourite,
     ProductReview,
 )
 from apps.products.serializers import (
     CategorySerializer,
     TagSerializer,
-    ProductSerializer,
-    ProductVariantSerializer,
-    ProductVariantImageSerializer,
-    ProductCreateSerializer,
-    ProductVariantCreateSerializer,
     SpecificationSerializer,
+    ProductSerializer,
+    ProductCreateSerializer,
+    ProductUpdateSerializer,
+    ProductVariantSerializer,
+    ProductVariantCreateSerializer,
+    ProductVariantImageSerializer,
     ProductFavouriteSerializer,
     ProductReviewSerializer,
 )
-from apps.products.filters import ProductFilter
-from apps.accounts.permissions import IsSeller, IsCustomer
-from apps.products.services import ProductVariantSellerService
+from apps.products.filters import SellerProductFilter
+from apps.sellers.permissions import SellerPermission, ShopObjectPermission
+from apps.customers.permissions import IsCustomer
+from shared.mixins import DynamicSerializerMixin
 
 
 class CategoryViewSet(viewsets.ReadOnlyModelViewSet):
-    queryset = Category.objects.root_nodes()
     serializer_class = CategorySerializer
     pagination_class = None
     lookup_field = "slug"
 
+    def get_queryset(self):
+        """Retrieve optimization root nodes"""
+        return (
+            Category.objects.all()
+            if self.kwargs.get(self.lookup_field)
+            else Category.objects.root_nodes()
+        )
 
-class TagViewSet(viewsets.ModelViewSet):
+
+class TagViewSet(mixins.CreateModelMixin, mixins.ListModelMixin,
+                 viewsets.GenericViewSet):
     queryset = Tag.objects.all()
     serializer_class = TagSerializer
-    filter_backends = [SearchFilter]
+    filter_backends = (SearchFilter,)
     search_fields = ["title"]
     pagination_class = None
     lookup_field = "slug"
 
 
-class SpecificationViewSet(viewsets.ReadOnlyModelViewSet):
+class SpecificationViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
     queryset = Specification.objects.all()
     serializer_class = SpecificationSerializer
-    filter_backends = [SearchFilter]
-    search_fields = ["title"]
+    filter_backends = (
+        SearchFilter,
+        DjangoFilterBackend,
+    )
+    search_fields = ("title",)
+    filterset_fields = ("title",)
     pagination_class = None
     lookup_field = "slug"
 
 
-class ProductCustomerViewSet(viewsets.ReadOnlyModelViewSet):
-    queryset = Product.objects.all()\
-        .prefetch_related("variants", "reviews")
+class SellerProductViewSet(DynamicSerializerMixin, viewsets.ModelViewSet):
+    queryset = Product.objects.all()
     serializer_class = ProductSerializer
-    filter_backends = [DjangoFilterBackend, SearchFilter]
-    filterset_class = ProductFilter
+    serializer_classes = {
+        "create": ProductCreateSerializer,
+        "partial_update": ProductUpdateSerializer,
+    }
+    filter_backends = (
+        DjangoFilterBackend,
+        filters.SearchFilter,
+        filters.OrderingFilter,
+    )
+    filterset_class = SellerProductFilter
+    search_fields = (
+        "sku",
+        "title",
+    )
+    permission_classes = (
+        SellerPermission,
+        ShopObjectPermission,
+    )
     lookup_field = "slug"
 
+    def get_queryset(self):
+        """
+        DB query optimization
+        and
+        Filter query by shop
+        """
+        return super().get_queryset()\
+            .filter(shop=self.request.user.seller.shop)\
+            .select_related("category",
+                            "shop")\
+            .prefetch_related("variants",
+                              "reviews",
+                              "tags")
 
-class ProductSellerViewSet(viewsets.ModelViewSet):
-    queryset = Product.objects.all()\
-        .prefetch_related("variants", "reviews")
-    serializer_class = ProductSerializer
-    permission_classes = [IsAuthenticated, IsSeller]
-    filterset_class = ProductFilter
-    lookup_field = "slug"
-    service = ProductSellerService()
 
-    def get_serializer_class(self):
-        if self.action == "create":
-            return ProductCreateSerializer
-        return self.serializer_class
-
-
-class ProductVariantSellerViewSet(viewsets.ModelViewSet):
-    queryset = ProductVariant.objects.all()\
-        .prefetch_related("images")
+class SellerProductVariantViewSet(DynamicSerializerMixin, viewsets.ModelViewSet):
+    queryset = ProductVariant.objects.all()
     serializer_class = ProductVariantSerializer
-    permission_classes = [IsAuthenticated, IsSeller]
+    serializer_classes = {
+        "create": ProductVariantCreateSerializer,
+    }
+    permission_classes = (SellerPermission,)
     lookup_field = "slug"
 
-    def get_serializer_class(self):
-        if self.action == "create":
-            return ProductVariantCreateSerializer
-        return self.serializer_class
+    def get_queryset(self):
+        """DB query optimization"""
+        return super().get_queryset()\
+            .prefetch_related("images")
 
 
-class ProductVariantImageSellerViewSet(viewsets.ModelViewSet):
+class SellerProductVariantImageViewSet(viewsets.ModelViewSet):
     queryset = ProductVariantImage.objects.all()
     serializer_class = ProductVariantImageSerializer
-    permission_classes = [IsAuthenticated, IsSeller]
-    parser_classes = [MultiPartParser]
+    permission_classes = (SellerPermission,)
+    parser_classes = (MultiPartParser,)
 
 
-class ProductFavouriteViewSet(viewsets.ModelViewSet):
+class CustomerProductViewSet(mixins.RetrieveModelMixin, viewsets.GenericViewSet):
+    queryset = Product.objects.all()
+    serializer_class = ProductSerializer
+    lookup_field = "slug"
+
+    def get_queryset(self):
+        """DB query optimization"""
+        return super().get_queryset()\
+            .select_related("shop")\
+            .prefetch_related("variants",
+                              "reviews")
+
+
+class CustomerProductFavouriteViewSet(mixins.ListModelMixin, mixins.CreateModelMixin,
+                                      viewsets.GenericViewSet):
     queryset = ProductFavourite.objects.all()
     serializer_class = ProductFavouriteSerializer
-    permission_classes = [IsAuthenticated, IsCustomer]
+    permission_classes = [IsCustomer]
 
 
-class ProductReviewViewSet(viewsets.ModelViewSet):
+class CustomerProductReviewViewSet(mixins.ListModelMixin, mixins.CreateModelMixin,
+                                   viewsets.GenericViewSet):
     queryset = ProductReview.objects.all()
     serializer_class = ProductReviewSerializer
-    permission_classes = [IsAuthenticated, IsCustomer]
+    permission_classes = [IsCustomer]

@@ -11,12 +11,11 @@ from apps.products.models import (
     ProductFavourite,
     ProductReview,
 )
-from apps.shops.serializers import ShopDefault, ShopSerializer
-from apps.customers.serializers import CustomerDefault
-from apps.customers.serializers import CustomerSerializer
+from apps.sellers.serializers import ShopDefault, ShopSerializer
+from apps.customers.serializers import CustomerDefault, CustomerSerializer
 
 
-class CategorySerializer(serializers.HyperlinkedModelSerializer):
+class CategorySerializer(serializers.ModelSerializer):
     children = RecursiveField(many=True)
 
     class Meta:
@@ -26,6 +25,7 @@ class CategorySerializer(serializers.HyperlinkedModelSerializer):
             "slug",
             "title",
             "image",
+            "parent",
             "children",
         )
 
@@ -47,6 +47,7 @@ class SpecificationSerializer(serializers.ModelSerializer):
             "id",
             "slug",
             "title",
+            "values",
         )
 
 
@@ -70,8 +71,15 @@ class ProductVariantImageCreateSerializer(serializers.ModelSerializer):
         )
 
 
+class SizeVariantSerializer(serializers.Serializer):
+    size = serializers.CharField()
+    quantity = serializers.IntegerField()
+    price = serializers.DecimalField(max_digits=10, decimal_places=2)
+
+
 class ProductVariantSerializer(serializers.ModelSerializer):
     images = ProductVariantImageSerializer(many=True, read_only=True)
+    size_variants = SizeVariantSerializer(many=True)
 
     class Meta:
         model = ProductVariant
@@ -82,7 +90,10 @@ class ProductVariantSerializer(serializers.ModelSerializer):
             "title",
             "description",
             "size_variants",
+            "price_min",
+            "price_max",
             "images",
+            "image_main",
         )
 
 
@@ -138,10 +149,16 @@ class ProductReviewCreateSerializer(serializers.ModelSerializer):
         )
 
 
+class ProductSpecificationSerializer(serializers.Serializer):
+    title = serializers.CharField()
+    value = serializers.CharField()
+
+
 class ProductSerializer(serializers.ModelSerializer):
     category = CategorySerializer(read_only=True)
     tags = TagSerializer(many=True, read_only=True)
     shop = ShopSerializer(read_only=True)
+    specifications = ProductSpecificationSerializer(many=True)
     variants = ProductVariantSerializer(many=True, read_only=True)
     reviews = ProductReviewSerializer(many=True, read_only=True)
 
@@ -153,6 +170,7 @@ class ProductSerializer(serializers.ModelSerializer):
             "sku",
             "title",
             "description",
+            "recommendation",
             "gender",
             "for_kids",
             "price_from",
@@ -165,6 +183,8 @@ class ProductSerializer(serializers.ModelSerializer):
             "shop",
             "publish_date",
             "status",
+            "created_at",
+            "updated_at",
             "variants",
             "reviews",
             "rating",
@@ -193,4 +213,22 @@ class ProductCreateSerializer(serializers.ModelSerializer):
             "specifications",
             "shop",
             "publish_date",
+        )
+
+
+class ProductUpdateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Product
+        fields = (
+            "title",
+            "description",
+            "recommendation",
+            "gender",
+            "for_kids",
+            "price_from",
+            "discount",
+            "category",
+            "country",
+            "tags",
+            "specifications",
         )

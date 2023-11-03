@@ -1,6 +1,32 @@
 version: '3.7'
 
 services:
+    elasticsearch:
+      build:
+        context: .
+        dockerfile: ./docker/elasticsearch/Dockerfile
+      volumes:
+      - ./data:/usr/share/elasticsearch/data
+      ports:
+        - "9200:9200"
+        - "9300:9300"
+      environment:
+        - discovery.type=single-node
+        - ELASTIC_PASSWORD=your_password_here
+      networks:
+        - my-network
+    
+    redis:
+      build:
+        context: .
+        dockerfile: ./docker/redis/Dockerfile
+      volumes:
+        - redis_data:/data
+      networks:
+        - my-network
+      env_file:
+        - ./backend/.env
+
     db:
       image: postgres:12.0-alpine
       volumes:
@@ -22,6 +48,8 @@ services:
         - my-network
       depends_on:
         - db
+        - redis
+        - elasticsearch
       env_file:
         -  ./backend/.env
 
@@ -62,6 +90,9 @@ volumes:
   static_volume:
   media_volume:
   postgres_data:
+  redis_data:
 
 networks:
   my-network:
+  elastic:
+    driver: bridge

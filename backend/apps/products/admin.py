@@ -1,8 +1,11 @@
 from django.contrib import admin
 
+from mptt.admin import DraggableMPTTAdmin
+
 from apps.products.models import (
     Category,
     Tag,
+    Specification,
     Product,
     ProductVariant,
     ProductVariantImage,
@@ -11,17 +14,21 @@ from apps.products.models import (
 )
 
 
-class ProductVariantImageTabularInline(admin.TabularInline):
+class ProductVariantImageInline(admin.StackedInline):
     model = ProductVariantImage
 
 
-class ProductVariantTabularInline(admin.TabularInline):
+class ProductVariantInline(admin.StackedInline):
     model = ProductVariant
 
 
 @admin.register(Category)
-class CategoryAdmin(admin.ModelAdmin):
-    pass
+class CategoryAdmin(DraggableMPTTAdmin):
+    list_display = ["tree_actions", "indented_title"]
+    list_display_links = ["indented_title"]
+    list_filter = ["parent"]
+    search_fields = ["title", "description"]
+    readonly_fields = ["slug"]
 
 
 @admin.register(Tag)
@@ -29,9 +36,20 @@ class TagAdmin(admin.ModelAdmin):
     pass
 
 
+@admin.register(Specification)
+class SpecificationAdmin(admin.ModelAdmin):
+    pass
+
+
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
-    inlines = [ProductVariantTabularInline]
+    inlines = [ProductVariantInline]
+    search_fields = ["title", "sku"]
+
+
+@admin.register(ProductVariant)
+class ProductVariantAdmin(admin.ModelAdmin):
+    inlines = [ProductVariantImageInline]
 
 
 @admin.register(ProductFavourite)
