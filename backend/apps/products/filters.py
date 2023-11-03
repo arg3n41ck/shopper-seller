@@ -1,15 +1,14 @@
 import django_filters
 
+from django.db.models import Q
+
 from apps.products.models import Product, Category
 
 
 class SellerProductFilter(django_filters.FilterSet):
     category = django_filters.CharFilter(method="category_filter")
-    color = django_filters.CharFilter(
-        field_name="variants__title",
-        lookup_expr="iexact",
-    )
-    size = django_filters.CharFilter(method="size_filter")
+    colors = django_filters.CharFilter(method="colors_filter")
+    sizes = django_filters.CharFilter(method="sizes_filter")
 
     class Meta:
         model = Product
@@ -19,14 +18,29 @@ class SellerProductFilter(django_filters.FilterSet):
             "category",
             "status",
             "publish_date",
-            "color",
+            "colors",
+            "sizes",
         )
 
-    def size_filter(self, queryset, name, value):
-        queryset = queryset.filter(
-            variants__size_variants__contains=[{"size": value}]
-        )
-        return queryset
+    def sizes_filter(self, queryset, name, value):
+        sizes = self._split_params(value=value)
+
+        query = Q()
+
+        for size in sizes:
+            query |= Q(variants__size_variants__contains=[{"size": size}])
+
+        return queryset.filter(query).distinct()
+
+    def colors_filter(self, queryset, name, value):
+        colors = self._split_params(value=value)
+
+        query = Q()
+
+        for color in colors:
+            query |= Q(variants__title=color)
+
+        return queryset.filter(query).distinct()
 
     def category_filter(self, queryset, name, value):
         if category := Category.objects.filter(slug=value).first():
@@ -44,4 +58,6 @@ class SellerProductFilter(django_filters.FilterSet):
                 self._collect_categories(child, category_slug_lst)
         return category_slug_lst
 
+    def _split_params(self, value: str) -> list[str]:
+        return value.split(";")
 
