@@ -6,7 +6,7 @@ from django.core.validators import DecimalValidator
 
 def validate_size(value: dict) -> None:
     if not isinstance(value, dict):
-        raise ValidationError("Size must be a dictionary.")
+        raise ValidationError("Size must be a dict.")
 
     required_keys = {"size", "quantity", "price", "discount"}
 
@@ -14,10 +14,10 @@ def validate_size(value: dict) -> None:
         raise ValidationError("Each size variant must have 'size', 'quantity', 'price', and 'discount' keys.")
 
     if not isinstance(value["size"], str):
-        raise ValidationError("Size must be a string.")
+        raise ValidationError("Size must be a str.")
 
     if not isinstance(value["quantity"], int) or value["quantity"] <= 0:
-        raise ValidationError("Quantity must be a positive integer.")
+        raise ValidationError("Quantity must be a positive int.")
 
     # if "price" in value and value["price"] is not None:
     #     price = Decimal(str(value["price"]))
@@ -38,7 +38,7 @@ def validate_size_variants(value: list) -> None:
 
     for variant in value:
         if not isinstance(variant, dict):
-            raise ValidationError("Each variant must be a dictionary.")
+            raise ValidationError("Each variant must be a dict.")
 
         # Price can be removed
         required_keys = {"size", "quantity", "price"}
@@ -47,7 +47,7 @@ def validate_size_variants(value: list) -> None:
             raise ValidationError("Each size variant must have 'size', 'quantity' and 'price' keys.")
 
         if not isinstance(variant["size"], str):
-            raise ValidationError("Size must be a string.")
+            raise ValidationError("Size must be a str.")
 
         # Check for duplicate sizes
         if variant["size"] in sizes:
@@ -56,7 +56,7 @@ def validate_size_variants(value: list) -> None:
         sizes.add(variant["size"])  # Add the size to the set to track uniqueness
 
         if not isinstance(variant["quantity"], int) or variant["quantity"] <= 0:
-            raise ValidationError("Quantity must be a positive integer.")
+            raise ValidationError("Quantity must be a positive int.")
 
         if "price" in variant and variant["price"] is not None:
             price = Decimal(str(variant["price"]))
@@ -66,11 +66,11 @@ def validate_size_variants(value: list) -> None:
 
 def validate_specifications(value: list) -> None:
     if not isinstance(value, list):
-        raise ValidationError("Size variants must be a list of dictionaries.")
+        raise ValidationError("Size variants must be a list of dict.")
 
     for specification in value:
         if not isinstance(specification, dict):
-            raise ValidationError("Each specification must be a dictionary.")
+            raise ValidationError("Each specification must be a dict.")
 
         required_keys = {"title", "value"}
 
@@ -78,7 +78,16 @@ def validate_specifications(value: list) -> None:
             raise ValidationError("Each size variant must have 'title' and 'value' keys.")
 
         if not isinstance(specification["title"], str):
-            raise ValidationError("Title must be a string.")
+            raise ValidationError("Title must be a str.")
 
         if not isinstance(specification["value"], str):
-            raise ValidationError("Value must be a string")
+            raise ValidationError("Value must be a str")
+
+
+def validate_values(value: list) -> None:
+    if not isinstance(value, list):
+        raise ValidationError("Specification values must be a list of str.")
+
+    for v in value:
+        if not isinstance(v, str):
+            raise ValidationError("Specification value must be a str.")

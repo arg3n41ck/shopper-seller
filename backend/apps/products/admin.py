@@ -5,6 +5,7 @@ from mptt.admin import DraggableMPTTAdmin
 from apps.products.models import (
     Category,
     Tag,
+    Specification,
     Product,
     ProductVariant,
     ProductVariantImage,
@@ -32,6 +33,11 @@ class CategoryAdmin(DraggableMPTTAdmin):
 
 @admin.register(Tag)
 class TagAdmin(admin.ModelAdmin):
+    pass
+
+
+@admin.register(Specification)
+class SpecificationAdmin(admin.ModelAdmin):
     pass
 
 

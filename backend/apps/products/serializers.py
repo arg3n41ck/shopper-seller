@@ -47,6 +47,7 @@ class SpecificationSerializer(serializers.ModelSerializer):
             "id",
             "slug",
             "title",
+            "values",
         )
 
 

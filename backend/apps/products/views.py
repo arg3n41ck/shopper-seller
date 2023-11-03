@@ -38,6 +38,7 @@ class CategoryViewSet(viewsets.ReadOnlyModelViewSet):
     lookup_field = "slug"
 
     def get_queryset(self):
+        """Retrieve optimization root nodes"""
         return (
             Category.objects.all()
             if self.kwargs.get(self.lookup_field)
@@ -58,8 +59,12 @@ class TagViewSet(mixins.CreateModelMixin, mixins.ListModelMixin,
 class SpecificationViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
     queryset = Specification.objects.all()
     serializer_class = SpecificationSerializer
-    filter_backends = (SearchFilter,)
-    search_fields = ["title"]
+    filter_backends = (
+        SearchFilter,
+        DjangoFilterBackend,
+    )
+    search_fields = ("title",)
+    filterset_fields = ("title",)
     pagination_class = None
     lookup_field = "slug"
 
@@ -67,6 +72,10 @@ class SpecificationViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
 class SellerProductViewSet(DynamicSerializerMixin, viewsets.ModelViewSet):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
+    serializer_classes = {
+        "create": ProductCreateSerializer,
+        "partial_update": ProductUpdateSerializer,
+    }
     filter_backends = (
         DjangoFilterBackend,
         filters.SearchFilter,
@@ -82,14 +91,12 @@ class SellerProductViewSet(DynamicSerializerMixin, viewsets.ModelViewSet):
         ShopObjectPermission,
     )
     lookup_field = "slug"
-    serializer_classes = {
-        "create": ProductCreateSerializer,
-        "partial_update": ProductUpdateSerializer,
-    }
 
     def get_queryset(self):
         """
         DB query optimization
+        and
+        Filter query by shop
         """
         return super().get_queryset()\
             .filter(shop=self.request.user.seller.shop)\
@@ -101,13 +108,18 @@ class SellerProductViewSet(DynamicSerializerMixin, viewsets.ModelViewSet):
 
 
 class SellerProductVariantViewSet(DynamicSerializerMixin, viewsets.ModelViewSet):
-    queryset = ProductVariant.objects.all().prefetch_related("images")
+    queryset = ProductVariant.objects.all()
     serializer_class = ProductVariantSerializer
     serializer_classes = {
         "create": ProductVariantCreateSerializer,
     }
     permission_classes = (SellerPermission,)
     lookup_field = "slug"
+
+    def get_queryset(self):
+        """DB query optimization"""
+        return super().get_queryset()\
+            .prefetch_related("images")
 
 
 class SellerProductVariantImageViewSet(viewsets.ModelViewSet):
@@ -123,6 +135,7 @@ class CustomerProductViewSet(mixins.RetrieveModelMixin, viewsets.GenericViewSet)
     lookup_field = "slug"
 
     def get_queryset(self):
+        """DB query optimization"""
         return super().get_queryset()\
             .select_related("shop")\
             .prefetch_related("variants",

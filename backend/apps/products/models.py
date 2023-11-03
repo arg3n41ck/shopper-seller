@@ -1,6 +1,7 @@
 from django.db import models
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.utils.translation import gettext_lazy as _
+from django.contrib.postgres.fields import ArrayField
 
 from mptt.fields import TreeForeignKey
 from mptt.models import MPTTModel
@@ -9,7 +10,7 @@ from django_elasticsearch_dsl_drf.wrappers import dict_to_obj
 from apps.sellers.models import Shop
 from apps.customers.models import Customer
 from apps.products.constants import GenderChoice, ProductStatusChoice
-from apps.products.validators import validate_size_variants, validate_specifications
+from apps.products.validators import validate_size_variants, validate_specifications, validate_values
 from apps.products.managers import ProductVariantImageManager
 from shared.custom_slugify import generate_slug_from_field
 from shared.abstract_models import TimeStampedBaseModel
@@ -82,6 +83,20 @@ class Specification(models.Model):
         max_length=255,
         unique=True,
         verbose_name=_("Title"),
+    )
+    """
+    Example values: [
+        "Red",
+        "Green",
+        ...
+    ]
+    """
+    values = ArrayField(
+        models.CharField(
+            max_length=255,
+            verbose_name=_("Value"),
+        ),
+        verbose_name=_("Values")
     )
 
     class Meta:
@@ -190,6 +205,7 @@ class Product(TimeStampedBaseModel):
 
     @property
     def discounted_price(self):
+        """Calculation price by discount"""
         if self.discount is not None:
             discount_amount = (self.discount / 100) * self.price
             return self.price - discount_amount
@@ -197,10 +213,12 @@ class Product(TimeStampedBaseModel):
 
     @property
     def rating(self):
+        """Aggregation rating"""
         return self.reviews.aggregate(models.Avg("star"))["star__avg"] or 0
 
     @property
     def shop_indexing(self):
+        """Elastic index"""
         return dict_to_obj({
             "id": self.shop.id,
             "title": self.shop.title,
@@ -208,6 +226,7 @@ class Product(TimeStampedBaseModel):
 
     @property
     def category_indexing(self):
+        """Elastic index"""
         return dict_to_obj({
             "id": self.category.id,
             "title": self.category.title
@@ -215,10 +234,12 @@ class Product(TimeStampedBaseModel):
 
     @property
     def tags_indexing(self):
+        """Elastic index"""
         return [tag.title for tag in self.tags.all()]
 
     @property
     def variants_indexing(self):
+        """Elastic index"""
         return [{
             "title": variant.title,
             "image": variant.images.first()
@@ -266,9 +287,11 @@ class ProductVariant(TimeStampedBaseModel):
         return self.title
 
     def title_sizes(self):
+        """Sizes included"""
         return [size["size"] for size in self.size_variants]
 
     def price_size(self, size: str):
+        """Price finder in size variants"""
         return next(
             (
                 variant["price"]
@@ -280,14 +303,23 @@ class ProductVariant(TimeStampedBaseModel):
 
     @property
     def price_min(self):
+        """
+        Calculation min price from size variants
+        - can be used in filter
+        """
         return min((variant["price"] for variant in self.size_variants), default=None)
 
     @property
     def price_max(self):
+        """
+        Calculation max price from size variants
+        - can be used in filter
+        """
         return max((variant["price"] for variant in self.size_variants), default=None)
 
     @property
     def image_main(self):
+        """Main image"""
         return next(
             (
                 variant_image.image.url
