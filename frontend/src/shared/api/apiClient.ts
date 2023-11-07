@@ -1,12 +1,6 @@
 import axios from 'axios'
 import { PATH_AUTH, env } from '@/shared/config'
 import { removeFieldsFromLocalStorage, setLocalStorageValues } from '@/shared/lib/hooks/useLocalStorage'
-import { $apiAccountsApi } from '.'
-
-const refreshAuthToken = async (refresh: string) => {
-  const response = await $apiAccountsApi.accountsAuthTokenRefreshCreate({ refresh })
-  return response
-}
 
 // Create an Axios instance
 const ApiClient = axios.create({
@@ -37,20 +31,21 @@ ApiClient.interceptors.response.use(
   },
   async (error) => {
     const originalRequest = error.config
-    if (error.response && error.response.status === 401 && !originalRequest._retry) {
-      originalRequest._retry = true
-
+    if (error.response && error.response.status === 401) {
       try {
         const refreshToken = localStorage.getItem('refresh_token') as string
+
         if (!refreshToken || refreshToken === 'undefined') {
-          window.location.href = PATH_AUTH.logIn
           removeFieldsFromLocalStorage(['access_token', 'refresh_token'])
+          window.location.href = PATH_AUTH.logIn
           // No refresh token available, reject the promise
           return Promise.reject(error)
         }
 
         // Send a request to refresh tokens
-        const response = await refreshAuthToken(refreshToken)
+        const response = await axios.post(`${env.apiUrl}/accounts/auth/token/refresh/`, {
+          refresh: refreshToken,
+        })
 
         if (response.status === 200) {
           // Update access_token and refresh_token in local storage

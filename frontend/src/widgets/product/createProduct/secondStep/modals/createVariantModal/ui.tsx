@@ -27,7 +27,7 @@ interface VariantProps {
 
 const sizeQuantitySchema = yup.object({
   size: yup.string().required('Введите размер'),
-  price: yup.string().required('Введите цену'),
+  price: yup.string(),
   quantity: yup
     .number()
     .typeError('Количество должно быть числом')

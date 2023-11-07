@@ -139,7 +139,7 @@ interface TypeImage {
   id?: number
   variant?: number
   image: File
-  main_image?: boolean
+  main_image: boolean
 }
 
 interface TypeImageFile {

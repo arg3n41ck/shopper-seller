@@ -232,6 +232,24 @@ export interface Customer {
      * @type {string}
      * @memberof Customer
      */
+    'email': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof Customer
+     */
+    'phone_number': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof Customer
+     */
+    'full_name': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof Customer
+     */
     'date_of_birth'?: string | null;
     /**
      * 
@@ -748,6 +766,7 @@ export const ProductGenderEnum = {
 export type ProductGenderEnum = typeof ProductGenderEnum[keyof typeof ProductGenderEnum];
 export const ProductStatusEnum = {
     Draft: 'DRAFT',
+    Scheduled: 'SCHEDULED',
     Active: 'ACTIVE',
     Inactive: 'INACTIVE',
     Archive: 'ARCHIVE'
@@ -1225,6 +1244,12 @@ export interface ProductVariantImage {
      * @memberof ProductVariantImage
      */
     'image'?: string;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof ProductVariantImage
+     */
+    'is_main': boolean | null;
 }
 /**
  * 
@@ -1916,6 +1941,25 @@ export interface TokenObtainPair {
 /**
  * 
  * @export
+ * @interface TokenObtainPairResponse
+ */
+export interface TokenObtainPairResponse {
+    /**
+     * 
+     * @type {string}
+     * @memberof TokenObtainPairResponse
+     */
+    'access': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof TokenObtainPairResponse
+     */
+    'refresh': string;
+}
+/**
+ * 
+ * @export
  * @interface TokenRefresh
  */
 export interface TokenRefresh {
@@ -1931,6 +1975,25 @@ export interface TokenRefresh {
      * @memberof TokenRefresh
      */
     'access'?: string;
+}
+/**
+ * 
+ * @export
+ * @interface TokenRefreshResponse
+ */
+export interface TokenRefreshResponse {
+    /**
+     * 
+     * @type {string}
+     * @memberof TokenRefreshResponse
+     */
+    'access': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof TokenRefreshResponse
+     */
+    'refresh': string;
 }
 /**
  * 
@@ -2084,7 +2147,7 @@ export interface UserSellerCreate {
 export const AccountsApiAxiosParamCreator = function (configuration?: Configuration) {
     return {
         /**
-         * Takes a set of user credentials and returns an access and refresh JSON web token pair to prove the authentication of those credentials.
+         * 
          * @param {TokenObtainPair} data 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -2123,7 +2186,7 @@ export const AccountsApiAxiosParamCreator = function (configuration?: Configurat
             };
         },
         /**
-         * Takes a refresh type JSON web token and returns an access type JSON web token if the refresh token is valid.
+         * 
          * @param {TokenRefresh} data 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -2162,7 +2225,7 @@ export const AccountsApiAxiosParamCreator = function (configuration?: Configurat
             };
         },
         /**
-         * Takes a token and indicates if it is valid.  This view provides no information about a token\'s fitness for a particular use.
+         * 
          * @param {TokenVerify} data 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -2997,32 +3060,32 @@ export const AccountsApiFp = function(configuration?: Configuration) {
     const localVarAxiosParamCreator = AccountsApiAxiosParamCreator(configuration)
     return {
         /**
-         * Takes a set of user credentials and returns an access and refresh JSON web token pair to prove the authentication of those credentials.
+         * 
          * @param {TokenObtainPair} data 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async accountsAuthTokenCreate(data: TokenObtainPair, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<TokenObtainPair>> {
+        async accountsAuthTokenCreate(data: TokenObtainPair, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<TokenObtainPairResponse>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.accountsAuthTokenCreate(data, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
         /**
-         * Takes a refresh type JSON web token and returns an access type JSON web token if the refresh token is valid.
+         * 
          * @param {TokenRefresh} data 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async accountsAuthTokenRefreshCreate(data: TokenRefresh, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<TokenRefresh>> {
+        async accountsAuthTokenRefreshCreate(data: TokenRefresh, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<TokenRefreshResponse>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.accountsAuthTokenRefreshCreate(data, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
         /**
-         * Takes a token and indicates if it is valid.  This view provides no information about a token\'s fitness for a particular use.
+         * 
          * @param {TokenVerify} data 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async accountsAuthTokenVerifyCreate(data: TokenVerify, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<TokenVerify>> {
+        async accountsAuthTokenVerifyCreate(data: TokenVerify, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.accountsAuthTokenVerifyCreate(data, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
@@ -3240,30 +3303,30 @@ export const AccountsApiFactory = function (configuration?: Configuration, baseP
     const localVarFp = AccountsApiFp(configuration)
     return {
         /**
-         * Takes a set of user credentials and returns an access and refresh JSON web token pair to prove the authentication of those credentials.
+         * 
          * @param {TokenObtainPair} data 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        accountsAuthTokenCreate(data: TokenObtainPair, options?: any): AxiosPromise<TokenObtainPair> {
+        accountsAuthTokenCreate(data: TokenObtainPair, options?: any): AxiosPromise<TokenObtainPairResponse> {
             return localVarFp.accountsAuthTokenCreate(data, options).then((request) => request(axios, basePath));
         },
         /**
-         * Takes a refresh type JSON web token and returns an access type JSON web token if the refresh token is valid.
+         * 
          * @param {TokenRefresh} data 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        accountsAuthTokenRefreshCreate(data: TokenRefresh, options?: any): AxiosPromise<TokenRefresh> {
+        accountsAuthTokenRefreshCreate(data: TokenRefresh, options?: any): AxiosPromise<TokenRefreshResponse> {
             return localVarFp.accountsAuthTokenRefreshCreate(data, options).then((request) => request(axios, basePath));
         },
         /**
-         * Takes a token and indicates if it is valid.  This view provides no information about a token\'s fitness for a particular use.
+         * 
          * @param {TokenVerify} data 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        accountsAuthTokenVerifyCreate(data: TokenVerify, options?: any): AxiosPromise<TokenVerify> {
+        accountsAuthTokenVerifyCreate(data: TokenVerify, options?: any): AxiosPromise<object> {
             return localVarFp.accountsAuthTokenVerifyCreate(data, options).then((request) => request(axios, basePath));
         },
         /**
@@ -3459,31 +3522,31 @@ export const AccountsApiFactory = function (configuration?: Configuration, baseP
  */
 export interface AccountsApiInterface {
     /**
-     * Takes a set of user credentials and returns an access and refresh JSON web token pair to prove the authentication of those credentials.
+     * 
      * @param {TokenObtainPair} data 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof AccountsApiInterface
      */
-    accountsAuthTokenCreate(data: TokenObtainPair, options?: AxiosRequestConfig): AxiosPromise<TokenObtainPair>;
+    accountsAuthTokenCreate(data: TokenObtainPair, options?: AxiosRequestConfig): AxiosPromise<TokenObtainPairResponse>;
 
     /**
-     * Takes a refresh type JSON web token and returns an access type JSON web token if the refresh token is valid.
+     * 
      * @param {TokenRefresh} data 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof AccountsApiInterface
      */
-    accountsAuthTokenRefreshCreate(data: TokenRefresh, options?: AxiosRequestConfig): AxiosPromise<TokenRefresh>;
+    accountsAuthTokenRefreshCreate(data: TokenRefresh, options?: AxiosRequestConfig): AxiosPromise<TokenRefreshResponse>;
 
     /**
-     * Takes a token and indicates if it is valid.  This view provides no information about a token\'s fitness for a particular use.
+     * 
      * @param {TokenVerify} data 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof AccountsApiInterface
      */
-    accountsAuthTokenVerifyCreate(data: TokenVerify, options?: AxiosRequestConfig): AxiosPromise<TokenVerify>;
+    accountsAuthTokenVerifyCreate(data: TokenVerify, options?: AxiosRequestConfig): AxiosPromise<object>;
 
     /**
      * 
@@ -3678,7 +3741,7 @@ export interface AccountsApiInterface {
  */
 export class AccountsApi extends BaseAPI implements AccountsApiInterface {
     /**
-     * Takes a set of user credentials and returns an access and refresh JSON web token pair to prove the authentication of those credentials.
+     * 
      * @param {TokenObtainPair} data 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -3689,7 +3752,7 @@ export class AccountsApi extends BaseAPI implements AccountsApiInterface {
     }
 
     /**
-     * Takes a refresh type JSON web token and returns an access type JSON web token if the refresh token is valid.
+     * 
      * @param {TokenRefresh} data 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -3700,7 +3763,7 @@ export class AccountsApi extends BaseAPI implements AccountsApiInterface {
     }
 
     /**
-     * Takes a token and indicates if it is valid.  This view provides no information about a token\'s fitness for a particular use.
+     * 
      * @param {TokenVerify} data 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -6357,12 +6420,13 @@ export const ProductsApiAxiosParamCreator = function (configuration?: Configurat
         },
         /**
          * 
+         * @param {string} [product] product
          * @param {number} [limit] Number of results to return per page.
          * @param {number} [offset] The initial index from which to return the results.
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        productsCustomerFavouritesList: async (limit?: number, offset?: number, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+        productsCustomerFavouritesList: async (product?: string, limit?: number, offset?: number, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
             const localVarPath = `/products/customer/favourites/`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -6378,6 +6442,10 @@ export const ProductsApiAxiosParamCreator = function (configuration?: Configurat
             // authentication Basic required
             // http basic authentication required
             setBasicAuthToObject(localVarRequestOptions, configuration)
+
+            if (product !== undefined) {
+                localVarQueryParameter['product'] = product;
+            }
 
             if (limit !== undefined) {
                 localVarQueryParameter['limit'] = limit;
@@ -6476,12 +6544,13 @@ export const ProductsApiAxiosParamCreator = function (configuration?: Configurat
         },
         /**
          * 
+         * @param {string} [product] product
          * @param {number} [limit] Number of results to return per page.
          * @param {number} [offset] The initial index from which to return the results.
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        productsCustomerReviewsList: async (limit?: number, offset?: number, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+        productsCustomerReviewsList: async (product?: string, limit?: number, offset?: number, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
             const localVarPath = `/products/customer/reviews/`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -6497,6 +6566,10 @@ export const ProductsApiAxiosParamCreator = function (configuration?: Configurat
             // authentication Basic required
             // http basic authentication required
             setBasicAuthToObject(localVarRequestOptions, configuration)
+
+            if (product !== undefined) {
+                localVarQueryParameter['product'] = product;
+            }
 
             if (limit !== undefined) {
                 localVarQueryParameter['limit'] = limit;
@@ -7050,14 +7123,17 @@ export const ProductsApiAxiosParamCreator = function (configuration?: Configurat
          * 
          * @param {number} variant 
          * @param {File} image 
+         * @param {boolean | null} isMain 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        productsSellerVariantImagesCreate: async (variant: number, image: File, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+        productsSellerVariantImagesCreate: async (variant: number, image: File, isMain: boolean | null, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'variant' is not null or undefined
             assertParamExists('productsSellerVariantImagesCreate', 'variant', variant)
             // verify required parameter 'image' is not null or undefined
             assertParamExists('productsSellerVariantImagesCreate', 'image', image)
+            // verify required parameter 'isMain' is not null or undefined
+            assertParamExists('productsSellerVariantImagesCreate', 'isMain', isMain)
             const localVarPath = `/products/seller/variant_images/`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -7082,6 +7158,10 @@ export const ProductsApiAxiosParamCreator = function (configuration?: Configurat
     
             if (image !== undefined) { 
                 localVarFormParams.append('image', image as any);
+            }
+    
+            if (isMain !== undefined) { 
+                localVarFormParams.append('is_main', isMain as any);
             }
     
     
@@ -7182,16 +7262,19 @@ export const ProductsApiAxiosParamCreator = function (configuration?: Configurat
          * @param {number} id A unique integer value identifying this Product image.
          * @param {number} variant 
          * @param {File} image 
+         * @param {boolean | null} isMain 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        productsSellerVariantImagesPartialUpdate: async (id: number, variant: number, image: File, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+        productsSellerVariantImagesPartialUpdate: async (id: number, variant: number, image: File, isMain: boolean | null, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'id' is not null or undefined
             assertParamExists('productsSellerVariantImagesPartialUpdate', 'id', id)
             // verify required parameter 'variant' is not null or undefined
             assertParamExists('productsSellerVariantImagesPartialUpdate', 'variant', variant)
             // verify required parameter 'image' is not null or undefined
             assertParamExists('productsSellerVariantImagesPartialUpdate', 'image', image)
+            // verify required parameter 'isMain' is not null or undefined
+            assertParamExists('productsSellerVariantImagesPartialUpdate', 'isMain', isMain)
             const localVarPath = `/products/seller/variant_images/{id}/`
                 .replace(`{${"id"}}`, encodeURIComponent(String(id)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -7217,6 +7300,10 @@ export const ProductsApiAxiosParamCreator = function (configuration?: Configurat
     
             if (image !== undefined) { 
                 localVarFormParams.append('image', image as any);
+            }
+    
+            if (isMain !== undefined) { 
+                localVarFormParams.append('is_main', isMain as any);
             }
     
     
@@ -7274,16 +7361,19 @@ export const ProductsApiAxiosParamCreator = function (configuration?: Configurat
          * @param {number} id A unique integer value identifying this Product image.
          * @param {number} variant 
          * @param {File} image 
+         * @param {boolean | null} isMain 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        productsSellerVariantImagesUpdate: async (id: number, variant: number, image: File, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+        productsSellerVariantImagesUpdate: async (id: number, variant: number, image: File, isMain: boolean | null, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'id' is not null or undefined
             assertParamExists('productsSellerVariantImagesUpdate', 'id', id)
             // verify required parameter 'variant' is not null or undefined
             assertParamExists('productsSellerVariantImagesUpdate', 'variant', variant)
             // verify required parameter 'image' is not null or undefined
             assertParamExists('productsSellerVariantImagesUpdate', 'image', image)
+            // verify required parameter 'isMain' is not null or undefined
+            assertParamExists('productsSellerVariantImagesUpdate', 'isMain', isMain)
             const localVarPath = `/products/seller/variant_images/{id}/`
                 .replace(`{${"id"}}`, encodeURIComponent(String(id)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -7309,6 +7399,10 @@ export const ProductsApiAxiosParamCreator = function (configuration?: Configurat
     
             if (image !== undefined) { 
                 localVarFormParams.append('image', image as any);
+            }
+    
+            if (isMain !== undefined) { 
+                localVarFormParams.append('is_main', isMain as any);
             }
     
     
@@ -7485,13 +7579,14 @@ export const ProductsApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
+         * @param {string} [product] product
          * @param {number} [limit] Number of results to return per page.
          * @param {number} [offset] The initial index from which to return the results.
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async productsCustomerFavouritesList(limit?: number, offset?: number, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ProductsCustomerFavouritesList200Response>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.productsCustomerFavouritesList(limit, offset, options);
+        async productsCustomerFavouritesList(product?: string, limit?: number, offset?: number, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ProductsCustomerFavouritesList200Response>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.productsCustomerFavouritesList(product, limit, offset, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
         /**
@@ -7516,13 +7611,14 @@ export const ProductsApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
+         * @param {string} [product] product
          * @param {number} [limit] Number of results to return per page.
          * @param {number} [offset] The initial index from which to return the results.
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async productsCustomerReviewsList(limit?: number, offset?: number, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ProductsCustomerReviewsList200Response>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.productsCustomerReviewsList(limit, offset, options);
+        async productsCustomerReviewsList(product?: string, limit?: number, offset?: number, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ProductsCustomerReviewsList200Response>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.productsCustomerReviewsList(product, limit, offset, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
         /**
@@ -7664,11 +7760,12 @@ export const ProductsApiFp = function(configuration?: Configuration) {
          * 
          * @param {number} variant 
          * @param {File} image 
+         * @param {boolean | null} isMain 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async productsSellerVariantImagesCreate(variant: number, image: File, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ProductVariantImage>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.productsSellerVariantImagesCreate(variant, image, options);
+        async productsSellerVariantImagesCreate(variant: number, image: File, isMain: boolean | null, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ProductVariantImage>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.productsSellerVariantImagesCreate(variant, image, isMain, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
         /**
@@ -7697,11 +7794,12 @@ export const ProductsApiFp = function(configuration?: Configuration) {
          * @param {number} id A unique integer value identifying this Product image.
          * @param {number} variant 
          * @param {File} image 
+         * @param {boolean | null} isMain 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async productsSellerVariantImagesPartialUpdate(id: number, variant: number, image: File, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ProductVariantImage>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.productsSellerVariantImagesPartialUpdate(id, variant, image, options);
+        async productsSellerVariantImagesPartialUpdate(id: number, variant: number, image: File, isMain: boolean | null, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ProductVariantImage>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.productsSellerVariantImagesPartialUpdate(id, variant, image, isMain, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
         /**
@@ -7719,11 +7817,12 @@ export const ProductsApiFp = function(configuration?: Configuration) {
          * @param {number} id A unique integer value identifying this Product image.
          * @param {number} variant 
          * @param {File} image 
+         * @param {boolean | null} isMain 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async productsSellerVariantImagesUpdate(id: number, variant: number, image: File, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ProductVariantImage>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.productsSellerVariantImagesUpdate(id, variant, image, options);
+        async productsSellerVariantImagesUpdate(id: number, variant: number, image: File, isMain: boolean | null, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ProductVariantImage>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.productsSellerVariantImagesUpdate(id, variant, image, isMain, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
         /**
@@ -7795,13 +7894,14 @@ export const ProductsApiFactory = function (configuration?: Configuration, baseP
         },
         /**
          * 
+         * @param {string} [product] product
          * @param {number} [limit] Number of results to return per page.
          * @param {number} [offset] The initial index from which to return the results.
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        productsCustomerFavouritesList(limit?: number, offset?: number, options?: any): AxiosPromise<ProductsCustomerFavouritesList200Response> {
-            return localVarFp.productsCustomerFavouritesList(limit, offset, options).then((request) => request(axios, basePath));
+        productsCustomerFavouritesList(product?: string, limit?: number, offset?: number, options?: any): AxiosPromise<ProductsCustomerFavouritesList200Response> {
+            return localVarFp.productsCustomerFavouritesList(product, limit, offset, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -7823,13 +7923,14 @@ export const ProductsApiFactory = function (configuration?: Configuration, baseP
         },
         /**
          * 
+         * @param {string} [product] product
          * @param {number} [limit] Number of results to return per page.
          * @param {number} [offset] The initial index from which to return the results.
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        productsCustomerReviewsList(limit?: number, offset?: number, options?: any): AxiosPromise<ProductsCustomerReviewsList200Response> {
-            return localVarFp.productsCustomerReviewsList(limit, offset, options).then((request) => request(axios, basePath));
+        productsCustomerReviewsList(product?: string, limit?: number, offset?: number, options?: any): AxiosPromise<ProductsCustomerReviewsList200Response> {
+            return localVarFp.productsCustomerReviewsList(product, limit, offset, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -7958,11 +8059,12 @@ export const ProductsApiFactory = function (configuration?: Configuration, baseP
          * 
          * @param {number} variant 
          * @param {File} image 
+         * @param {boolean | null} isMain 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        productsSellerVariantImagesCreate(variant: number, image: File, options?: any): AxiosPromise<ProductVariantImage> {
-            return localVarFp.productsSellerVariantImagesCreate(variant, image, options).then((request) => request(axios, basePath));
+        productsSellerVariantImagesCreate(variant: number, image: File, isMain: boolean | null, options?: any): AxiosPromise<ProductVariantImage> {
+            return localVarFp.productsSellerVariantImagesCreate(variant, image, isMain, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -7988,11 +8090,12 @@ export const ProductsApiFactory = function (configuration?: Configuration, baseP
          * @param {number} id A unique integer value identifying this Product image.
          * @param {number} variant 
          * @param {File} image 
+         * @param {boolean | null} isMain 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        productsSellerVariantImagesPartialUpdate(id: number, variant: number, image: File, options?: any): AxiosPromise<ProductVariantImage> {
-            return localVarFp.productsSellerVariantImagesPartialUpdate(id, variant, image, options).then((request) => request(axios, basePath));
+        productsSellerVariantImagesPartialUpdate(id: number, variant: number, image: File, isMain: boolean | null, options?: any): AxiosPromise<ProductVariantImage> {
+            return localVarFp.productsSellerVariantImagesPartialUpdate(id, variant, image, isMain, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -8008,11 +8111,12 @@ export const ProductsApiFactory = function (configuration?: Configuration, baseP
          * @param {number} id A unique integer value identifying this Product image.
          * @param {number} variant 
          * @param {File} image 
+         * @param {boolean | null} isMain 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        productsSellerVariantImagesUpdate(id: number, variant: number, image: File, options?: any): AxiosPromise<ProductVariantImage> {
-            return localVarFp.productsSellerVariantImagesUpdate(id, variant, image, options).then((request) => request(axios, basePath));
+        productsSellerVariantImagesUpdate(id: number, variant: number, image: File, isMain: boolean | null, options?: any): AxiosPromise<ProductVariantImage> {
+            return localVarFp.productsSellerVariantImagesUpdate(id, variant, image, isMain, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -8079,13 +8183,14 @@ export interface ProductsApiInterface {
 
     /**
      * 
+     * @param {string} [product] product
      * @param {number} [limit] Number of results to return per page.
      * @param {number} [offset] The initial index from which to return the results.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof ProductsApiInterface
      */
-    productsCustomerFavouritesList(limit?: number, offset?: number, options?: AxiosRequestConfig): AxiosPromise<ProductsCustomerFavouritesList200Response>;
+    productsCustomerFavouritesList(product?: string, limit?: number, offset?: number, options?: AxiosRequestConfig): AxiosPromise<ProductsCustomerFavouritesList200Response>;
 
     /**
      * 
@@ -8107,13 +8212,14 @@ export interface ProductsApiInterface {
 
     /**
      * 
+     * @param {string} [product] product
      * @param {number} [limit] Number of results to return per page.
      * @param {number} [offset] The initial index from which to return the results.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof ProductsApiInterface
      */
-    productsCustomerReviewsList(limit?: number, offset?: number, options?: AxiosRequestConfig): AxiosPromise<ProductsCustomerReviewsList200Response>;
+    productsCustomerReviewsList(product?: string, limit?: number, offset?: number, options?: AxiosRequestConfig): AxiosPromise<ProductsCustomerReviewsList200Response>;
 
     /**
      * 
@@ -8242,11 +8348,12 @@ export interface ProductsApiInterface {
      * 
      * @param {number} variant 
      * @param {File} image 
+     * @param {boolean | null} isMain 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof ProductsApiInterface
      */
-    productsSellerVariantImagesCreate(variant: number, image: File, options?: AxiosRequestConfig): AxiosPromise<ProductVariantImage>;
+    productsSellerVariantImagesCreate(variant: number, image: File, isMain: boolean | null, options?: AxiosRequestConfig): AxiosPromise<ProductVariantImage>;
 
     /**
      * 
@@ -8272,11 +8379,12 @@ export interface ProductsApiInterface {
      * @param {number} id A unique integer value identifying this Product image.
      * @param {number} variant 
      * @param {File} image 
+     * @param {boolean | null} isMain 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof ProductsApiInterface
      */
-    productsSellerVariantImagesPartialUpdate(id: number, variant: number, image: File, options?: AxiosRequestConfig): AxiosPromise<ProductVariantImage>;
+    productsSellerVariantImagesPartialUpdate(id: number, variant: number, image: File, isMain: boolean | null, options?: AxiosRequestConfig): AxiosPromise<ProductVariantImage>;
 
     /**
      * 
@@ -8292,11 +8400,12 @@ export interface ProductsApiInterface {
      * @param {number} id A unique integer value identifying this Product image.
      * @param {number} variant 
      * @param {File} image 
+     * @param {boolean | null} isMain 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof ProductsApiInterface
      */
-    productsSellerVariantImagesUpdate(id: number, variant: number, image: File, options?: AxiosRequestConfig): AxiosPromise<ProductVariantImage>;
+    productsSellerVariantImagesUpdate(id: number, variant: number, image: File, isMain: boolean | null, options?: AxiosRequestConfig): AxiosPromise<ProductVariantImage>;
 
     /**
      * 
@@ -8369,14 +8478,15 @@ export class ProductsApi extends BaseAPI implements ProductsApiInterface {
 
     /**
      * 
+     * @param {string} [product] product
      * @param {number} [limit] Number of results to return per page.
      * @param {number} [offset] The initial index from which to return the results.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof ProductsApi
      */
-    public productsCustomerFavouritesList(limit?: number, offset?: number, options?: AxiosRequestConfig) {
-        return ProductsApiFp(this.configuration).productsCustomerFavouritesList(limit, offset, options).then((request) => request(this.axios, this.basePath));
+    public productsCustomerFavouritesList(product?: string, limit?: number, offset?: number, options?: AxiosRequestConfig) {
+        return ProductsApiFp(this.configuration).productsCustomerFavouritesList(product, limit, offset, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -8403,14 +8513,15 @@ export class ProductsApi extends BaseAPI implements ProductsApiInterface {
 
     /**
      * 
+     * @param {string} [product] product
      * @param {number} [limit] Number of results to return per page.
      * @param {number} [offset] The initial index from which to return the results.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof ProductsApi
      */
-    public productsCustomerReviewsList(limit?: number, offset?: number, options?: AxiosRequestConfig) {
-        return ProductsApiFp(this.configuration).productsCustomerReviewsList(limit, offset, options).then((request) => request(this.axios, this.basePath));
+    public productsCustomerReviewsList(product?: string, limit?: number, offset?: number, options?: AxiosRequestConfig) {
+        return ProductsApiFp(this.configuration).productsCustomerReviewsList(product, limit, offset, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -8564,12 +8675,13 @@ export class ProductsApi extends BaseAPI implements ProductsApiInterface {
      * 
      * @param {number} variant 
      * @param {File} image 
+     * @param {boolean | null} isMain 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof ProductsApi
      */
-    public productsSellerVariantImagesCreate(variant: number, image: File, options?: AxiosRequestConfig) {
-        return ProductsApiFp(this.configuration).productsSellerVariantImagesCreate(variant, image, options).then((request) => request(this.axios, this.basePath));
+    public productsSellerVariantImagesCreate(variant: number, image: File, isMain: boolean | null, options?: AxiosRequestConfig) {
+        return ProductsApiFp(this.configuration).productsSellerVariantImagesCreate(variant, image, isMain, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -8600,12 +8712,13 @@ export class ProductsApi extends BaseAPI implements ProductsApiInterface {
      * @param {number} id A unique integer value identifying this Product image.
      * @param {number} variant 
      * @param {File} image 
+     * @param {boolean | null} isMain 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof ProductsApi
      */
-    public productsSellerVariantImagesPartialUpdate(id: number, variant: number, image: File, options?: AxiosRequestConfig) {
-        return ProductsApiFp(this.configuration).productsSellerVariantImagesPartialUpdate(id, variant, image, options).then((request) => request(this.axios, this.basePath));
+    public productsSellerVariantImagesPartialUpdate(id: number, variant: number, image: File, isMain: boolean | null, options?: AxiosRequestConfig) {
+        return ProductsApiFp(this.configuration).productsSellerVariantImagesPartialUpdate(id, variant, image, isMain, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -8624,12 +8737,13 @@ export class ProductsApi extends BaseAPI implements ProductsApiInterface {
      * @param {number} id A unique integer value identifying this Product image.
      * @param {number} variant 
      * @param {File} image 
+     * @param {boolean | null} isMain 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof ProductsApi
      */
-    public productsSellerVariantImagesUpdate(id: number, variant: number, image: File, options?: AxiosRequestConfig) {
-        return ProductsApiFp(this.configuration).productsSellerVariantImagesUpdate(id, variant, image, options).then((request) => request(this.axios, this.basePath));
+    public productsSellerVariantImagesUpdate(id: number, variant: number, image: File, isMain: boolean | null, options?: AxiosRequestConfig) {
+        return ProductsApiFp(this.configuration).productsSellerVariantImagesUpdate(id, variant, image, isMain, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -8681,6 +8795,7 @@ export type ProductsSellerProductsListGenderEnum = typeof ProductsSellerProducts
  */
 export const ProductsSellerProductsListStatusEnum = {
     Draft: 'DRAFT',
+    Scheduled: 'SCHEDULED',
     Active: 'ACTIVE',
     Inactive: 'INACTIVE',
     Archive: 'ARCHIVE'

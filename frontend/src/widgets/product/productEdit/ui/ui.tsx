@@ -99,6 +99,8 @@ export const ProductEditPage: FC<ProductEditPageProps> = ({ product }) => {
   )
   const { data: categories } = useQuery(['categories'], sellerClient.fetchCategories)
 
+  // const { data: tags } = useQuery(['tags'], sellerClient.fetchTags)
+
   const formik = useFormik<TypeProduct>({
     initialValues: {
       title: '',

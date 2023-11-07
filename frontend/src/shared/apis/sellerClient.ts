@@ -9,6 +9,16 @@ export class SellerClient {
     return data
   }
 
+  async fetchSpecifications() {
+    const { data } = await $apiProductsApi.productsSpecificationsList()
+    return data
+  }
+
+  async fetchTags() {
+    const { data } = await $apiProductsApi.productsTagsList()
+    return data
+  }
+
   async fetchMe() {
     const { data } = await $apiAccountsApi.accountsUsersMeRead()
 

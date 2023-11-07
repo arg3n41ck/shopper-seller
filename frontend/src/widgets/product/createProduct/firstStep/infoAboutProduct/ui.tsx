@@ -130,8 +130,8 @@ export const InfoAboutProduct = () => {
     return data
   }
 
-  const uploadProductVariantImage = async (variant: number = 0, image: File) => {
-    const { data } = await $apiProductsApi.productsSellerVariantImagesCreate(variant, image)
+  const uploadProductVariantImage = async (variant: number = 0, image: File, isMain: boolean) => {
+    const { data } = await $apiProductsApi.productsSellerVariantImagesCreate(variant, image, isMain)
     return data
   }
 
@@ -176,8 +176,8 @@ export const InfoAboutProduct = () => {
               await Promise.all(
                 // eslint-disable-next-line
                 //@ts-ignore
-                images.map(async ({ image }: TypeImage) => {
-                  await uploadProductVariantImage(responseVariant?.id, image)
+                images.map(async ({ image, main_image }: TypeImage) => {
+                  await uploadProductVariantImage(responseVariant?.id, image, main_image)
                 }),
               )
             }),

@@ -44,6 +44,11 @@ export const MyProductsMainSection: FC = () => {
   const debouncedSearchTerm = useDebounce(searchProduct, 500)
   const [offset, setOffset] = useState<number>(0)
   const limit: number = 10
+  const { data: specifications } = useQuery(['specifications'], sellerClient.fetchSpecifications)
+
+  const sizesForFilter = specifications?.find((specification) => specification.title === 'size')?.values
+
+  const colorsForFilter = specifications?.find((specification) => specification.title === 'color')?.values
 
   const [filters, setFilters] = useState<TypeProductFilters>({
     category: '',
@@ -156,7 +161,7 @@ export const MyProductsMainSection: FC = () => {
                   <CustomSelect
                     placeholder={'Цвет'}
                     value={filters.color}
-                    options={[]}
+                    options={colorsForFilter || []}
                     onChange={(value) => handleFilterChange('color', value)}
                     fieldTitle="size"
                     fieldValue="size"
@@ -166,7 +171,7 @@ export const MyProductsMainSection: FC = () => {
                   <CustomSelect
                     placeholder={'Размер'}
                     value={filters.size}
-                    options={[]}
+                    options={sizesForFilter || []}
                     onChange={(value) => handleFilterChange('size', value)}
                     fieldTitle="size"
                     fieldValue="size"
