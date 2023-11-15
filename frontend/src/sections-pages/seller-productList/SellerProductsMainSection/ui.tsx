@@ -13,6 +13,7 @@ import { SellerClient } from '@/shared/apis/sellerClient'
 import { useQuery } from '@tanstack/react-query'
 import useDebounce from '@/shared/lib/hooks/useDebounce'
 import { TypeProductFilters } from '@/shared/lib/types/sellerTypes'
+import { CustomSelectHover } from '@/shared/ui/selects/default/CustomSelectHover'
 
 const columns = [
   { title: 'Название товара', value: 'title' },
@@ -45,10 +46,11 @@ export const MyProductsMainSection: FC = () => {
   const [offset, setOffset] = useState<number>(0)
   const limit: number = 10
   const { data: specifications } = useQuery(['specifications'], sellerClient.fetchSpecifications)
+  const { data: categories } = useQuery(['categories'], sellerClient.fetchCategories)
 
-  const sizesForFilter = specifications?.find((specification) => specification.title === 'size')?.values
+  const sizesForFilter = specifications?.find((specification) => specification.slug === 'size')?.values
 
-  const colorsForFilter = specifications?.find((specification) => specification.title === 'color')?.values
+  const colorsForFilter = specifications?.find((specification) => specification.slug === 'color')?.values
 
   const [filters, setFilters] = useState<TypeProductFilters>({
     category: '',
@@ -148,7 +150,14 @@ export const MyProductsMainSection: FC = () => {
             <>
               {isFilter && (
                 <div className="flex items-center gap-5 bg-white p-5">
-                  <CustomSelect
+                  <CustomSelectHover
+                    value={filters.category}
+                    placeholder={'Категория'}
+                    options={categories}
+                    onClick={(value) => handleFilterChange('category', value)}
+                  />
+
+                  {/* <CustomSelect
                     placeholder={'Категория'}
                     value={filters.category}
                     options={[]}
@@ -156,7 +165,7 @@ export const MyProductsMainSection: FC = () => {
                     fieldTitle="size"
                     fieldValue="size"
                     className={'w-max bg-white'}
-                  />
+                  /> */}
 
                   <CustomSelect
                     placeholder={'Цвет'}

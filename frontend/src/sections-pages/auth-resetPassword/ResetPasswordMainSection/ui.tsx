@@ -6,7 +6,7 @@ import { useFormik } from 'formik'
 import { Clock } from 'react-feather'
 import { Trans, useTranslation } from 'react-i18next'
 import { resetPasswordValidationSchema } from './schema'
-import { toast } from 'react-toastify'
+import { handleApiError } from '@/shared/lib/helpers'
 
 export const ResetPasswordMainSection = () => {
   const { t } = useTranslation()
@@ -39,8 +39,7 @@ export const ResetPasswordMainSection = () => {
         // @ts-ignore
       } catch (error: AxiosError) {
         setIsLoading(false)
-        const keysName = Object.keys(error.response.data)
-        toast.error(error.response.data[keysName[0]][0])
+        handleApiError(error)
       }
     },
   })

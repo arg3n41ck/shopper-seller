@@ -33,7 +33,9 @@ const Autocomplete = ({
   helperText,
   className,
 }: AutocompleteProps) => {
-  const [inputValue, setInputValue] = useState<string>('')
+  const [inputValue, setInputValue] = useState<string>(
+    options.find((option) => option[fieldValue] === value)?.[fieldTitle] || '',
+  )
   const [showOptions, setShowOptions] = useState<boolean>(false)
   const inputRef = useRef<HTMLInputElement>(null)
   const timerIdRef = useRef<number | null>(null)
@@ -88,7 +90,7 @@ const Autocomplete = ({
         <input
           type="text"
           placeholder={placeholder}
-          value={options.find((option) => option[fieldValue] === value)?.[fieldTitle] || inputValue}
+          value={inputValue}
           ref={inputRef}
           onChange={handleInputChange}
           onFocus={() => setShowOptions(true)}

@@ -36,8 +36,10 @@ ApiClient.interceptors.response.use(
         const refreshToken = localStorage.getItem('refresh_token') as string
 
         if (!refreshToken || refreshToken === 'undefined') {
+          const isAuthPage = !window.location.pathname.includes('auth')
           removeFieldsFromLocalStorage(['access_token', 'refresh_token'])
-          window.location.href = PATH_AUTH.logIn
+          if (isAuthPage) window.location.href = PATH_AUTH.logIn
+
           // No refresh token available, reject the promise
           return Promise.reject(error)
         }

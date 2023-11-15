@@ -10,6 +10,7 @@ import { toast } from 'react-toastify'
 import * as yup from 'yup'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { SellerClient } from '@/shared/apis/sellerClient'
+import { handleApiError } from '@/shared/lib/helpers'
 
 interface IFormValues {
   first_name: string
@@ -63,8 +64,7 @@ export const EditUserInfoModal: FC<Props> = ({ open, onClose }) => {
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore
       } catch (error: AxiosError) {
-        const keysName = Object.keys(error.response.data)
-        toast.error(error.response.data[keysName[0]][0])
+        handleApiError(error)
       }
     },
   })

@@ -18,7 +18,7 @@ import { $apiProductsApi } from '@/shared/api'
 import { useMutation, useQuery } from '@tanstack/react-query'
 import { TypeProduct } from '@/shared/lib/types/sellerTypes'
 import { Product, ProductCreate } from '@/shared/api/gen'
-import { toast } from 'react-toastify'
+import { handleApiError } from '@/shared/lib/helpers'
 
 const sellerClient = new SellerClient()
 
@@ -142,8 +142,7 @@ export const ProductEditPage: FC<ProductEditPageProps> = ({ product }) => {
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore
       } catch (error: AxiosError) {
-        const keysName = Object.keys(error.response.data)
-        toast.error(error.response.data[keysName[0]][0])
+        handleApiError(error)
       }
     },
   })

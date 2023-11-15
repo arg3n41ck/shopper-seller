@@ -39,7 +39,7 @@ const CustomSelect = ({
   // eslint-disable-next-line
   const handleSelect = (optionValue: any) => {
     setIsOpen(false)
-    onChange(optionValue[fieldValue])
+    onChange(optionValue[fieldValue] || optionValue)
   }
 
   useOutsideClick(selectRef, () => {
@@ -63,7 +63,7 @@ const CustomSelect = ({
         )}
         onClick={() => setIsOpen(!isOpen)}
       >
-        {options.find((option) => option[fieldValue] === value)?.[fieldTitle] || placeholder}
+        {options.find((option) => option[fieldValue] === value)?.[fieldTitle] || value || placeholder}
         <div className={cn('transition-all duration-[0.1s] ease-in-out', { ['rotate-180']: isOpen })}>
           <ChevronDown />
         </div>
@@ -76,10 +76,10 @@ const CustomSelect = ({
               {options.map((option) => (
                 <li
                   className="block h-auto cursor-pointer p-[8px] transition-all hover:bg-neutral-300"
-                  key={option.id}
+                  key={option.id || option}
                   onClick={() => handleSelect(option)}
                 >
-                  {option[fieldTitle]}
+                  {option[fieldTitle] || option}
                 </li>
               ))}
             </ul>

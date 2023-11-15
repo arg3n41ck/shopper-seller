@@ -71,7 +71,8 @@ const ProductDetailsField: FC<ProductDetailsFieldProps> = ({ title, fieldName, c
                 <div>
                   <TextField
                     value={input.value}
-                    placeholder={'Кол-во'}
+                    placeholder={'%'}
+                    type="number"
                     label={'Кол-во'}
                     onChange={(e) => handleValueChange(index, e.target.value)}
                   />

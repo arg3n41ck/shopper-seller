@@ -29,8 +29,8 @@ export const LKSellerHeader: FC = () => {
         <div className="h-[43px] w-[43px] cursor-pointer">
           {/* <Skeleton height={'100%'} width={'100%'} border={'50%'} /> */}
           <Image
-            src={'/public/images/mock/child.png'}
-            alt="dog"
+            src={shop?.logo || '/images/mock/child.png'}
+            alt={shop?.title || 'logo icon'}
             width={43}
             height={43}
             className="h-full rounded-[50%]"

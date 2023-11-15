@@ -183,7 +183,7 @@ export interface Category {
      * @type {string}
      * @memberof Category
      */
-    'slug'?: string;
+    'slug'?: string | null;
     /**
      * 
      * @type {string}
@@ -628,7 +628,7 @@ export interface Product {
      * @type {string}
      * @memberof Product
      */
-    'slug': string;
+    'slug'?: string | null;
     /**
      * 
      * @type {string}
@@ -791,7 +791,7 @@ export interface ProductCreate {
      * @type {string}
      * @memberof ProductCreate
      */
-    'slug': string;
+    'slug'?: string | null;
     /**
      * 
      * @type {string}
@@ -1133,7 +1133,7 @@ export interface ProductVariant {
      * @type {string}
      * @memberof ProductVariant
      */
-    'slug'?: string;
+    'slug'?: string | null;
     /**
      * 
      * @type {number}
@@ -1861,7 +1861,7 @@ export interface SizeVariant {
      * @type {string}
      * @memberof SizeVariant
      */
-    'price': string;
+    'price': string | null;
 }
 /**
  * 
@@ -1880,7 +1880,7 @@ export interface Specification {
      * @type {string}
      * @memberof Specification
      */
-    'slug'?: string;
+    'slug'?: string | null;
     /**
      * 
      * @type {string}
@@ -1911,7 +1911,7 @@ export interface Tag {
      * @type {string}
      * @memberof Tag
      */
-    'slug'?: string;
+    'slug'?: string | null;
     /**
      * 
      * @type {string}
@@ -9177,15 +9177,20 @@ export const SellersApiAxiosParamCreator = function (configuration?: Configurati
         /**
          * 
          * @param {string} slug 
-         * @param {ShopUpdate} data 
+         * @param {string} title 
+         * @param {string | null} [description] 
+         * @param {File | null} [logo] 
+         * @param {string | null} [siteLink] 
+         * @param {string | null} [instagramLink] 
+         * @param {string | null} [whatsAppLink] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        sellersSellerShopsPartialUpdate: async (slug: string, data: ShopUpdate, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+        sellersSellerShopsPartialUpdate: async (slug: string, title: string, description?: string | null, logo?: File | null, siteLink?: string | null, instagramLink?: string | null, whatsAppLink?: string | null, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'slug' is not null or undefined
             assertParamExists('sellersSellerShopsPartialUpdate', 'slug', slug)
-            // verify required parameter 'data' is not null or undefined
-            assertParamExists('sellersSellerShopsPartialUpdate', 'data', data)
+            // verify required parameter 'title' is not null or undefined
+            assertParamExists('sellersSellerShopsPartialUpdate', 'title', title)
             const localVarPath = `/sellers/seller/shops/{slug}/`
                 .replace(`{${"slug"}}`, encodeURIComponent(String(slug)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -9198,19 +9203,44 @@ export const SellersApiAxiosParamCreator = function (configuration?: Configurati
             const localVarRequestOptions = { method: 'PATCH', ...baseOptions, ...options};
             const localVarHeaderParameter = {} as any;
             const localVarQueryParameter = {} as any;
+            const localVarFormParams = new ((configuration && configuration.formDataCtor) || FormData)();
 
             // authentication Basic required
             // http basic authentication required
             setBasicAuthToObject(localVarRequestOptions, configuration)
 
 
+            if (title !== undefined) { 
+                localVarFormParams.append('title', title as any);
+            }
     
-            localVarHeaderParameter['Content-Type'] = 'application/json';
-
+            if (description !== undefined) { 
+                localVarFormParams.append('description', description as any);
+            }
+    
+            if (logo !== undefined) { 
+                localVarFormParams.append('logo', logo as any);
+            }
+    
+            if (siteLink !== undefined) { 
+                localVarFormParams.append('site_link', siteLink as any);
+            }
+    
+            if (instagramLink !== undefined) { 
+                localVarFormParams.append('instagram_link', instagramLink as any);
+            }
+    
+            if (whatsAppLink !== undefined) { 
+                localVarFormParams.append('whats_app_link', whatsAppLink as any);
+            }
+    
+    
+            localVarHeaderParameter['Content-Type'] = 'multipart/form-data';
+    
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(data, localVarRequestOptions, configuration)
+            localVarRequestOptions.data = localVarFormParams;
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -9220,15 +9250,27 @@ export const SellersApiAxiosParamCreator = function (configuration?: Configurati
         /**
          * 
          * @param {string} slug 
-         * @param {Shop} data 
+         * @param {string} slug2 
+         * @param {string} title 
+         * @param {number} seller 
+         * @param {File | null} [logo] 
+         * @param {string | null} [description] 
+         * @param {SellersSellerShopsUpdateStatusEnum} [status] 
+         * @param {string | null} [siteLink] 
+         * @param {string | null} [instagramLink] 
+         * @param {string | null} [whatsAppLink] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        sellersSellerShopsUpdate: async (slug: string, data: Shop, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+        sellersSellerShopsUpdate: async (slug: string, slug2: string, title: string, seller: number, logo?: File | null, description?: string | null, status?: SellersSellerShopsUpdateStatusEnum, siteLink?: string | null, instagramLink?: string | null, whatsAppLink?: string | null, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'slug' is not null or undefined
             assertParamExists('sellersSellerShopsUpdate', 'slug', slug)
-            // verify required parameter 'data' is not null or undefined
-            assertParamExists('sellersSellerShopsUpdate', 'data', data)
+            // verify required parameter 'slug2' is not null or undefined
+            assertParamExists('sellersSellerShopsUpdate', 'slug2', slug2)
+            // verify required parameter 'title' is not null or undefined
+            assertParamExists('sellersSellerShopsUpdate', 'title', title)
+            // verify required parameter 'seller' is not null or undefined
+            assertParamExists('sellersSellerShopsUpdate', 'seller', seller)
             const localVarPath = `/sellers/seller/shops/{slug}/`
                 .replace(`{${"slug"}}`, encodeURIComponent(String(slug)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -9241,19 +9283,56 @@ export const SellersApiAxiosParamCreator = function (configuration?: Configurati
             const localVarRequestOptions = { method: 'PUT', ...baseOptions, ...options};
             const localVarHeaderParameter = {} as any;
             const localVarQueryParameter = {} as any;
+            const localVarFormParams = new ((configuration && configuration.formDataCtor) || FormData)();
 
             // authentication Basic required
             // http basic authentication required
             setBasicAuthToObject(localVarRequestOptions, configuration)
 
 
+            if (slug2 !== undefined) { 
+                localVarFormParams.append('slug', slug2 as any);
+            }
     
-            localVarHeaderParameter['Content-Type'] = 'application/json';
-
+            if (logo !== undefined) { 
+                localVarFormParams.append('logo', logo as any);
+            }
+    
+            if (title !== undefined) { 
+                localVarFormParams.append('title', title as any);
+            }
+    
+            if (description !== undefined) { 
+                localVarFormParams.append('description', description as any);
+            }
+    
+            if (seller !== undefined) { 
+                localVarFormParams.append('seller', seller as any);
+            }
+    
+            if (status !== undefined) { 
+                localVarFormParams.append('status', status as any);
+            }
+    
+            if (siteLink !== undefined) { 
+                localVarFormParams.append('site_link', siteLink as any);
+            }
+    
+            if (instagramLink !== undefined) { 
+                localVarFormParams.append('instagram_link', instagramLink as any);
+            }
+    
+            if (whatsAppLink !== undefined) { 
+                localVarFormParams.append('whats_app_link', whatsAppLink as any);
+            }
+    
+    
+            localVarHeaderParameter['Content-Type'] = 'multipart/form-data';
+    
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(data, localVarRequestOptions, configuration)
+            localVarRequestOptions.data = localVarFormParams;
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -9368,23 +9447,36 @@ export const SellersApiFp = function(configuration?: Configuration) {
         /**
          * 
          * @param {string} slug 
-         * @param {ShopUpdate} data 
+         * @param {string} title 
+         * @param {string | null} [description] 
+         * @param {File | null} [logo] 
+         * @param {string | null} [siteLink] 
+         * @param {string | null} [instagramLink] 
+         * @param {string | null} [whatsAppLink] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async sellersSellerShopsPartialUpdate(slug: string, data: ShopUpdate, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ShopUpdate>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.sellersSellerShopsPartialUpdate(slug, data, options);
+        async sellersSellerShopsPartialUpdate(slug: string, title: string, description?: string | null, logo?: File | null, siteLink?: string | null, instagramLink?: string | null, whatsAppLink?: string | null, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ShopUpdate>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.sellersSellerShopsPartialUpdate(slug, title, description, logo, siteLink, instagramLink, whatsAppLink, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
         /**
          * 
          * @param {string} slug 
-         * @param {Shop} data 
+         * @param {string} slug2 
+         * @param {string} title 
+         * @param {number} seller 
+         * @param {File | null} [logo] 
+         * @param {string | null} [description] 
+         * @param {SellersSellerShopsUpdateStatusEnum} [status] 
+         * @param {string | null} [siteLink] 
+         * @param {string | null} [instagramLink] 
+         * @param {string | null} [whatsAppLink] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async sellersSellerShopsUpdate(slug: string, data: Shop, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Shop>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.sellersSellerShopsUpdate(slug, data, options);
+        async sellersSellerShopsUpdate(slug: string, slug2: string, title: string, seller: number, logo?: File | null, description?: string | null, status?: SellersSellerShopsUpdateStatusEnum, siteLink?: string | null, instagramLink?: string | null, whatsAppLink?: string | null, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Shop>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.sellersSellerShopsUpdate(slug, slug2, title, seller, logo, description, status, siteLink, instagramLink, whatsAppLink, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
     }
@@ -9486,22 +9578,35 @@ export const SellersApiFactory = function (configuration?: Configuration, basePa
         /**
          * 
          * @param {string} slug 
-         * @param {ShopUpdate} data 
+         * @param {string} title 
+         * @param {string | null} [description] 
+         * @param {File | null} [logo] 
+         * @param {string | null} [siteLink] 
+         * @param {string | null} [instagramLink] 
+         * @param {string | null} [whatsAppLink] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        sellersSellerShopsPartialUpdate(slug: string, data: ShopUpdate, options?: any): AxiosPromise<ShopUpdate> {
-            return localVarFp.sellersSellerShopsPartialUpdate(slug, data, options).then((request) => request(axios, basePath));
+        sellersSellerShopsPartialUpdate(slug: string, title: string, description?: string | null, logo?: File | null, siteLink?: string | null, instagramLink?: string | null, whatsAppLink?: string | null, options?: any): AxiosPromise<ShopUpdate> {
+            return localVarFp.sellersSellerShopsPartialUpdate(slug, title, description, logo, siteLink, instagramLink, whatsAppLink, options).then((request) => request(axios, basePath));
         },
         /**
          * 
          * @param {string} slug 
-         * @param {Shop} data 
+         * @param {string} slug2 
+         * @param {string} title 
+         * @param {number} seller 
+         * @param {File | null} [logo] 
+         * @param {string | null} [description] 
+         * @param {SellersSellerShopsUpdateStatusEnum} [status] 
+         * @param {string | null} [siteLink] 
+         * @param {string | null} [instagramLink] 
+         * @param {string | null} [whatsAppLink] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        sellersSellerShopsUpdate(slug: string, data: Shop, options?: any): AxiosPromise<Shop> {
-            return localVarFp.sellersSellerShopsUpdate(slug, data, options).then((request) => request(axios, basePath));
+        sellersSellerShopsUpdate(slug: string, slug2: string, title: string, seller: number, logo?: File | null, description?: string | null, status?: SellersSellerShopsUpdateStatusEnum, siteLink?: string | null, instagramLink?: string | null, whatsAppLink?: string | null, options?: any): AxiosPromise<Shop> {
+            return localVarFp.sellersSellerShopsUpdate(slug, slug2, title, seller, logo, description, status, siteLink, instagramLink, whatsAppLink, options).then((request) => request(axios, basePath));
         },
     };
 };
@@ -9601,22 +9706,35 @@ export interface SellersApiInterface {
     /**
      * 
      * @param {string} slug 
-     * @param {ShopUpdate} data 
+     * @param {string} title 
+     * @param {string | null} [description] 
+     * @param {File | null} [logo] 
+     * @param {string | null} [siteLink] 
+     * @param {string | null} [instagramLink] 
+     * @param {string | null} [whatsAppLink] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof SellersApiInterface
      */
-    sellersSellerShopsPartialUpdate(slug: string, data: ShopUpdate, options?: AxiosRequestConfig): AxiosPromise<ShopUpdate>;
+    sellersSellerShopsPartialUpdate(slug: string, title: string, description?: string | null, logo?: File | null, siteLink?: string | null, instagramLink?: string | null, whatsAppLink?: string | null, options?: AxiosRequestConfig): AxiosPromise<ShopUpdate>;
 
     /**
      * 
      * @param {string} slug 
-     * @param {Shop} data 
+     * @param {string} slug2 
+     * @param {string} title 
+     * @param {number} seller 
+     * @param {File | null} [logo] 
+     * @param {string | null} [description] 
+     * @param {SellersSellerShopsUpdateStatusEnum} [status] 
+     * @param {string | null} [siteLink] 
+     * @param {string | null} [instagramLink] 
+     * @param {string | null} [whatsAppLink] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof SellersApiInterface
      */
-    sellersSellerShopsUpdate(slug: string, data: Shop, options?: AxiosRequestConfig): AxiosPromise<Shop>;
+    sellersSellerShopsUpdate(slug: string, slug2: string, title: string, seller: number, logo?: File | null, description?: string | null, status?: SellersSellerShopsUpdateStatusEnum, siteLink?: string | null, instagramLink?: string | null, whatsAppLink?: string | null, options?: AxiosRequestConfig): AxiosPromise<Shop>;
 
 }
 
@@ -9734,27 +9852,48 @@ export class SellersApi extends BaseAPI implements SellersApiInterface {
     /**
      * 
      * @param {string} slug 
-     * @param {ShopUpdate} data 
+     * @param {string} title 
+     * @param {string | null} [description] 
+     * @param {File | null} [logo] 
+     * @param {string | null} [siteLink] 
+     * @param {string | null} [instagramLink] 
+     * @param {string | null} [whatsAppLink] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof SellersApi
      */
-    public sellersSellerShopsPartialUpdate(slug: string, data: ShopUpdate, options?: AxiosRequestConfig) {
-        return SellersApiFp(this.configuration).sellersSellerShopsPartialUpdate(slug, data, options).then((request) => request(this.axios, this.basePath));
+    public sellersSellerShopsPartialUpdate(slug: string, title: string, description?: string | null, logo?: File | null, siteLink?: string | null, instagramLink?: string | null, whatsAppLink?: string | null, options?: AxiosRequestConfig) {
+        return SellersApiFp(this.configuration).sellersSellerShopsPartialUpdate(slug, title, description, logo, siteLink, instagramLink, whatsAppLink, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
      * 
      * @param {string} slug 
-     * @param {Shop} data 
+     * @param {string} slug2 
+     * @param {string} title 
+     * @param {number} seller 
+     * @param {File | null} [logo] 
+     * @param {string | null} [description] 
+     * @param {SellersSellerShopsUpdateStatusEnum} [status] 
+     * @param {string | null} [siteLink] 
+     * @param {string | null} [instagramLink] 
+     * @param {string | null} [whatsAppLink] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof SellersApi
      */
-    public sellersSellerShopsUpdate(slug: string, data: Shop, options?: AxiosRequestConfig) {
-        return SellersApiFp(this.configuration).sellersSellerShopsUpdate(slug, data, options).then((request) => request(this.axios, this.basePath));
+    public sellersSellerShopsUpdate(slug: string, slug2: string, title: string, seller: number, logo?: File | null, description?: string | null, status?: SellersSellerShopsUpdateStatusEnum, siteLink?: string | null, instagramLink?: string | null, whatsAppLink?: string | null, options?: AxiosRequestConfig) {
+        return SellersApiFp(this.configuration).sellersSellerShopsUpdate(slug, slug2, title, seller, logo, description, status, siteLink, instagramLink, whatsAppLink, options).then((request) => request(this.axios, this.basePath));
     }
 }
 
+/**
+ * @export
+ */
+export const SellersSellerShopsUpdateStatusEnum = {
+    Moderation: 'MODERATION',
+    Active: 'ACTIVE'
+} as const;
+export type SellersSellerShopsUpdateStatusEnum = typeof SellersSellerShopsUpdateStatusEnum[keyof typeof SellersSellerShopsUpdateStatusEnum];
 
 

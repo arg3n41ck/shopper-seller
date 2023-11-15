@@ -15,6 +15,7 @@ import * as yup from 'yup'
 import { AxiosError } from 'axios'
 import { $apiAccountsApi } from '@/shared/api'
 import { TokenObtainPair } from '@/shared/api/gen'
+import { handleApiError } from '@/shared/lib/helpers'
 
 interface IFormErrors {
   username?: string
@@ -47,12 +48,10 @@ export const LoginMainSection = () => {
         const { data } = (await $apiAccountsApi.accountsAuthTokenCreate(values)) as unknown as {
           data: { access: string; refresh: string }
         }
-
         setLocalStorageValues({
           access_token: data.access,
           refresh_token: data.refresh,
         })
-
         setIsLoading(false)
         await router.push({
           pathname: PATH_AUTH.authSuccess,
@@ -66,6 +65,8 @@ export const LoginMainSection = () => {
         // @ts-ignore
       } catch (error: AxiosError<IFormErrors>) {
         setIsLoading(false)
+        handleApiError(error)
+
         if (error.response && error.response.status === 400) {
           const { data } = error.response
           const formErrors: IFormErrors = {}

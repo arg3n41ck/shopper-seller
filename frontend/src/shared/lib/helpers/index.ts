@@ -1,5 +1,6 @@
 export * from './cn'
 export * from './createSlots'
+export * from './handleApiError'
 export * from './normalizeApiUrl'
 export * from './password'
 export * from './removeEmptyFields'

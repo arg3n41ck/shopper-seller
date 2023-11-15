@@ -16,7 +16,7 @@ import { Accordion } from '@/shared/ui/accordions'
 import { TypeProduct, TypeVariant } from '@/shared/lib/types/sellerTypes'
 import { ProductUpdate } from '@/shared/api/gen'
 import { PATH_LK_SELLER } from '@/shared/config'
-import { toast } from 'react-toastify'
+import { handleApiError } from '@/shared/lib/helpers'
 
 interface PreviewProductProps {
   product: TypeProduct | undefined
@@ -104,8 +104,7 @@ export const PreviewProductPage: FC<PreviewProductProps> = ({ product }) => {
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore
       } catch (error: AxiosError) {
-        const keysName = Object.keys(error.response.data)
-        toast.error(error.response.data[keysName[0]][0])
+        handleApiError(error)
       }
       // } else {
       //   // router.push({

@@ -6,8 +6,8 @@ import { Clipboard, Folder, Home, List, LogOut, Menu, Settings, Users } from 're
 import { motion } from 'framer-motion'
 import cn from 'classnames'
 import LogOutBackdrop from './logOutModal'
-import { toast } from 'react-toastify'
 import { removeFieldsFromLocalStorage } from '@/shared/lib/hooks/useLocalStorage'
+import { handleApiError } from '@/shared/lib/helpers'
 
 interface Props {
   open: boolean
@@ -82,8 +82,7 @@ export const LKSellerSideBar: FC<Props> = ({ open, menuHandler }) => {
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
     } catch (error: AxiosError) {
-      const keysName = Object.keys(error.response.data)
-      toast.error(error.response.data[keysName[0]][0])
+      handleApiError(error)
     }
   }
 

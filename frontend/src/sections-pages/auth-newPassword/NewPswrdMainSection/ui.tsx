@@ -4,7 +4,7 @@ import { PATH_AUTH } from '@/shared/config'
 import { Button } from 'src/shared/ui/buttons'
 import { LoaderIcon } from '@/shared/ui/loaders'
 import TextField from '@/shared/ui/inputs/textField'
-import { passwordLengthCheck } from '@/shared/lib/helpers'
+import { handleApiError, passwordLengthCheck } from '@/shared/lib/helpers'
 import { useFormik } from 'formik'
 import { useRouter } from 'next/router'
 import { Clock, X } from 'react-feather'
@@ -12,7 +12,6 @@ import { Trans, useTranslation } from 'react-i18next'
 import cn from 'classnames'
 import { newPasswordInitialValues, newPasswordValidationSchema } from './schema'
 import { $apiAccountsApi } from '@/shared/api'
-import { toast } from 'react-toastify'
 
 export const NewPasswordMainSection = () => {
   const router = useRouter()
@@ -51,8 +50,7 @@ export const NewPasswordMainSection = () => {
         // @ts-ignore
       } catch (error: AxiosError) {
         setIsLoading(false)
-        const keysName = Object.keys(error.response.data)
-        toast.error(error.response.data[keysName[0]][0])
+        handleApiError(error)
       }
     },
   })

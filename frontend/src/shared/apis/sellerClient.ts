@@ -1,5 +1,4 @@
 import { $apiAccountsApi, $apiProductsApi, $apiSellersApi } from '../api'
-import { ShopUpdate } from '../api/gen'
 import { TypeUser } from '../lib/types/authTypes'
 import { TypeProductFilters } from '../lib/types/sellerTypes'
 
@@ -51,8 +50,14 @@ export class SellerClient {
     return data.results[0]
   }
 
-  async updateShop({ slug, shopData }: { slug: string; shopData: ShopUpdate }) {
-    const { data } = await $apiSellersApi.sellersSellerShopsPartialUpdate(slug, shopData)
+  async updateShop({
+    slug,
+    shopData: { title, description, logo },
+  }: {
+    slug: string
+    shopData: { title: string; description: string; logo: File | null }
+  }) {
+    const { data } = await $apiSellersApi.sellersSellerShopsPartialUpdate(slug, title, description, logo)
     return data
   }
 
@@ -63,15 +68,15 @@ export class SellerClient {
     return data
   }
 
-  async fetchProducts({ category, gender, status, limit, search, offset }: TypeProductFilters) {
+  async fetchProducts({ category, color, size, gender, status, limit, search, offset }: TypeProductFilters) {
     const { data } = await $apiProductsApi.productsSellerProductsList(
       gender || undefined,
       undefined,
       category,
       status || undefined,
       undefined,
-      undefined,
-      undefined,
+      color,
+      size,
       search,
       undefined,
       limit,

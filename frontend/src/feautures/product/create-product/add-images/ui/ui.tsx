@@ -15,7 +15,16 @@ interface AddImagesProps {
 }
 
 export const AddImages: FC<AddImagesProps> = ({ value, fieldTitle, className, onChange, deleteImage }) => {
-  const isMainImage = (index: number) => value[index]?.main_image
+  const handleToggleMainImage = (index: number) => {
+    const updatedValue = value.map((item, i) => {
+      return {
+        ...item,
+        main_image: i === index && !item.main_image,
+      }
+    })
+
+    onChange(fieldTitle, updatedValue)
+  }
 
   const handleImagesChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
     const files = e.target.files
@@ -45,11 +54,11 @@ export const AddImages: FC<AddImagesProps> = ({ value, fieldTitle, className, on
                     <Button
                       variant={BUTTON_STYLES.primaryCtaIndigo}
                       className={`${
-                        isMainImage(index) ? 'visible' : 'invisible opacity-70'
+                        item.main_image ? 'visible' : 'invisible opacity-70'
                       } h-[25px] max-w-[100px] px-1 py-2 !text-[12px] !font-normal  group-hover/buttons:visible`}
-                      onClick={() => onChange(`${fieldTitle}.${index}.main_image`, !isMainImage(index))}
+                      onClick={() => handleToggleMainImage(index)}
                     >
-                      {isMainImage(index) ? 'Основное фото' : 'Сделать основным'}
+                      {item.main_image ? 'Основное фото' : 'Сделать основным'}
                     </Button>
 
                     <Button
@@ -63,7 +72,7 @@ export const AddImages: FC<AddImagesProps> = ({ value, fieldTitle, className, on
 
                   <Image
                     className={`rounded-5 relative h-[187px] w-[150px] cursor-pointer border-[2px] border-transparent object-cover ${
-                      isMainImage(index) ? '!border-primaryDash600' : ''
+                      item.main_image ? '!border-primaryDash600' : ''
                     } group-hover/buttons:border-primaryDash600`}
                     src={image}
                     width={150}

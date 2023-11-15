@@ -5,7 +5,7 @@ import ShowAndHideIcon from 'src/shared/ui/templates/passwordShowAndHideIcon'
 import Checkbox from 'src/shared/ui/inputs/checkbox'
 import { LoaderIcon } from '@/shared/ui/loaders'
 import TextField from '@/shared/ui/inputs/textField'
-import { passwordLengthCheck } from '@/shared/lib/helpers'
+import { handleApiError, passwordLengthCheck } from '@/shared/lib/helpers'
 import { useFormik } from 'formik'
 import { useRouter } from 'next/router'
 import { Trans, useTranslation } from 'react-i18next'
@@ -89,12 +89,7 @@ export const SignUpMainSection = () => {
         // @ts-ignore
       } catch (error: AxiosError) {
         setIsLoading(false)
-        const keysName = Object.keys(error.response.data)
-
-        if (keysName?.includes('seller_key')) {
-          toast.error(error.response.data.seller_key.key[0])
-        }
-        toast.error(error.response.data[keysName[0]][0])
+        handleApiError(error)
       }
     },
   })

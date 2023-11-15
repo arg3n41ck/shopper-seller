@@ -10,7 +10,7 @@ export const ProductTable: React.FC<ProductTableProps> = ({ tableHeader, tableBo
   return (
     <div>
       <table
-        className="relative w-full max-w-[1200px] 
+        className="relative w-full 
         table-fixed overflow-auto
         before:pointer-events-none
         before:absolute

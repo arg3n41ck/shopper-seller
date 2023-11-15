@@ -1,23 +1,24 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, ChangeEvent } from 'react'
 import { TextArea } from '@/shared/ui/inputs/textArea'
 import Image from 'next/image'
 import { useTranslation } from 'react-i18next'
 import { Button } from '@/shared/ui/buttons'
 import { BUTTON_STYLES } from '@/shared/lib/consts/styles'
-import { Edit2 } from 'react-feather'
+import { Edit2, Image as ImageIcon } from 'react-feather'
 import TextField from '@/shared/ui/inputs/textField'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { SellerClient } from '@/shared/apis/sellerClient'
 import { Skeleton } from '@/shared/ui/loaders'
 import { useFormik } from 'formik'
-import { ShopUpdate } from '@/shared/api/gen'
 import { toast } from 'react-toastify'
+import { handleApiError } from '@/shared/lib/helpers'
 
 const sellerClient = new SellerClient()
 
 interface FormValues {
   title: string
   description: string
+  logo: File | string | null
 }
 
 export const AboutShopMainSection = () => {
@@ -26,9 +27,13 @@ export const AboutShopMainSection = () => {
   const queryClient = useQueryClient()
   const { data: shop } = useQuery(['shop'], sellerClient.fetchShop)
   const { data: user } = useQuery(['me'], sellerClient.fetchMe)
+  const [imagePreview, setImagePreview] = useState<string>('')
+
   const handleChangeIsEdit = () => setIsEdit((prev) => !prev)
 
-  const mutationEditShop = useMutation(({ slug, shopData }: { slug: string; shopData: ShopUpdate }) =>
+  const mutationEditShop = useMutation(({ slug, shopData }: { slug: string; shopData: FormValues }) =>
+    // eslint-disable-next-line
+    // @ts-ignore
     sellerClient.updateShop({ slug, shopData }),
   )
 
@@ -36,6 +41,7 @@ export const AboutShopMainSection = () => {
     initialValues: {
       title: '',
       description: '',
+      logo: null,
     },
     onSubmit: async (values) => {
       try {
@@ -49,16 +55,26 @@ export const AboutShopMainSection = () => {
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore
       } catch (error: AxiosError) {
-        const keysName = Object.keys(error.response.data)
-        toast.error(error.response.data[keysName[0]][0])
+        handleApiError(error)
       }
     },
   })
 
+  const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0]
+
+    if (file) {
+      formik.setFieldValue('logo', file)
+
+      const previewURL = URL.createObjectURL(file)
+      setImagePreview(previewURL)
+    }
+  }
   useEffect(() => {
     formik.setValues({
       title: shop?.title || '',
       description: shop?.description || '',
+      logo: shop?.logo || null,
     })
   }, [shop])
 
@@ -70,16 +86,28 @@ export const AboutShopMainSection = () => {
 
           <div>
             <div className="flex items-start gap-[25px]">
-              <div className="h-[95px] w-[95px] cursor-pointer">
+              <div className=" relative h-[95px] w-[95px] cursor-pointer">
                 <Image
-                  src={'/dog.jpg'}
-                  alt="dog"
+                  src={imagePreview || shop?.logo || '/images/mock/child.png'}
+                  alt={shop?.title || 'logo icon'}
                   className="h-full rounded-[50%]"
                   width={95}
                   height={95}
                   objectFit="cover"
                   layout=""
                 />
+
+                {isEdit && (
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <label
+                      className="flex h-full w-full cursor-pointer items-center justify-center text-primaryDash600"
+                      htmlFor="logoInput"
+                    >
+                      <ImageIcon size={30} />
+                    </label>
+                    <input className="hidden" id="logoInput" type="file" onChange={handleFileChange} accept="image/*" />
+                  </div>
+                )}
               </div>
 
               <div className="flex max-w-[250px] flex-col gap-[12px]">
@@ -137,6 +165,7 @@ export const AboutShopMainSection = () => {
           </div>
 
           <Button
+            disabled={!isEdit}
             variant={BUTTON_STYLES.primaryCta}
             onClick={() => formik.handleSubmit()}
             className="mt-[35px] max-w-[182px]"

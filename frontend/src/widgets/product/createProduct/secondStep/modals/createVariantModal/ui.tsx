@@ -13,8 +13,8 @@ import { Trash2 } from 'react-feather'
 import { DeleteVariantBackdrop } from '../deleteVariantBackboard'
 import { isNumber } from 'lodash'
 import { TypeImageFile, TypeSizeQuantity, TypeVariant } from '@/shared/lib/types/sellerTypes'
-import { toast } from 'react-toastify'
 import CustomSwitch from '@/shared/ui/inputs/switch'
+import { handleApiError } from '@/shared/lib/helpers'
 
 interface VariantProps {
   open: boolean
@@ -27,7 +27,7 @@ interface VariantProps {
 
 const sizeQuantitySchema = yup.object({
   size: yup.string().required('Введите размер'),
-  price: yup.string(),
+  price: yup.number().nullable(),
   quantity: yup
     .number()
     .typeError('Количество должно быть числом')
@@ -51,13 +51,13 @@ const CreateVariantModal: FC<VariantProps> = ({
   defaultValues = {
     title: '',
     images: [],
-    size_variants: [{ size: '', quantity: '' }],
+    size_variants: [{ size: '', quantity: '', price: null }],
     description: '',
   },
 }) => {
   const { t } = useTranslation()
   const [isDeleteBackdrop, setIsDeleteBackdrop] = useState<boolean>(false)
-  const idOfVariant = defaultValues?.index || (defaultValues?.slug as string | number)
+  const idOfVariant = isNumber(defaultValues?.index) ? defaultValues?.index : (defaultValues?.slug as string | number)
   const [isSwitchEnabled, setIsSwitchEnabled] = useState(false)
 
   const handleSwitchChange = (checked: boolean) => {
@@ -74,8 +74,8 @@ const CreateVariantModal: FC<VariantProps> = ({
         // eslint-disable-next-line
         const { slug, id, ...restValues } = values
 
-        isNumber(defaultValues.index) && editVariant
-          ? editVariant(idOfVariant, restValues)
+        isNumber(defaultValues.index) || defaultValues?.slug
+          ? editVariant && editVariant(idOfVariant, restValues)
           : addVariant && addVariant(values)
 
         resetForm()
@@ -83,8 +83,7 @@ const CreateVariantModal: FC<VariantProps> = ({
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore
       } catch (error: AxiosError) {
-        const keysName = Object.keys(error.response.data)
-        toast.error(error.response.data[keysName[0]][0])
+        handleApiError(error)
       }
     },
   })
@@ -196,9 +195,7 @@ const CreateVariantModal: FC<VariantProps> = ({
       <DeleteVariantBackdrop
         open={isDeleteBackdrop}
         onClose={handleShowDeleteBackDrop}
-        deleteVariant={() =>
-          isNumber(defaultValues?.index) || (defaultValues?.slug && removeVariant && removeVariant(idOfVariant))
-        }
+        deleteVariant={() => removeVariant && removeVariant(idOfVariant)}
       />
     </>
   )

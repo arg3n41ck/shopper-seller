@@ -131,7 +131,7 @@ type TypeVariants = TypeVariant[]
 
 interface TypeSizeQuantity {
   size: string
-  price?: string
+  price?: string | null
   quantity: number | string
 }
 

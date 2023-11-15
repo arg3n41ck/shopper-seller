@@ -11,6 +11,7 @@ import * as yup from 'yup'
 import { $apiAccountsApi } from '@/shared/api'
 import { toast } from 'react-toastify'
 import { useQueryClient } from '@tanstack/react-query'
+import { handleApiError } from '@/shared/lib/helpers'
 
 interface IFormValues {
   password: string
@@ -71,9 +72,7 @@ export const EditPhoneNumberModal: FC<Props> = ({ open, onClose }) => {
         // @ts-ignore
       } catch (error: AxiosError) {
         setIsLoading(false)
-
-        const keysName = Object.keys(error.response.data)
-        toast.error(error.response.data[keysName[0]][0])
+        handleApiError(error)
       }
     },
   })

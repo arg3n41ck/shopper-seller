@@ -8,7 +8,7 @@ import { TypeAddressData } from '@/shared/lib/types/sellerTypes'
 import { isEqual } from 'lodash'
 import { DeleteAddressBackdrop } from './modals/deleteAddressBackboard'
 import cn from 'classnames'
-import { toast } from 'react-toastify'
+import { handleApiError } from '@/shared/lib/helpers'
 
 interface Props {
   data: TypeAddressData
@@ -65,8 +65,7 @@ export const AddressItem: FC<Props> = ({ data, showEdit, onOpen, onClose, action
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore
       } catch (error: AxiosError) {
-        const keysName = Object.keys(error.response.data)
-        toast.error(error.response.data[keysName[0]][0])
+        handleApiError(error)
       }
     },
   })

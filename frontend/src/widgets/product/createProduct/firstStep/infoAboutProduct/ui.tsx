@@ -18,10 +18,9 @@ import { BUTTON_STYLES } from '@/shared/lib/consts/styles'
 import { Edit, Plus } from 'react-feather'
 import { useMutation, useQuery } from '@tanstack/react-query'
 import { $apiProductsApi } from '@/shared/api'
-import { removeEmptyFields } from '@/shared/lib/helpers'
+import { handleApiError, removeEmptyFields } from '@/shared/lib/helpers'
 import { ProductCreate } from '@/shared/api/gen'
 import { TypeCategory, TypeImage, TypeProduct, TypeSizeQuantity, TypeVariant } from '@/shared/lib/types/sellerTypes'
-import { toast } from 'react-toastify'
 
 const sellerClient = new SellerClient()
 
@@ -107,7 +106,7 @@ export const InfoAboutProduct = () => {
   const [createVariantModalValues, setCreateVariantModalValues] = useState<TypeVariant>({
     title: '',
     images: [],
-    size_variants: [{ size: '', quantity: '' }],
+    size_variants: [{ size: '', quantity: '', price: null }],
     description: '',
   })
   const { data: categories } = useQuery(['categories'], sellerClient.fetchCategories)
@@ -191,8 +190,7 @@ export const InfoAboutProduct = () => {
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore
       } catch (error: AxiosError) {
-        const keysName = Object.keys(error.response.data)
-        toast.error(error.response.data[keysName[0]][0])
+        handleApiError(error)
       }
     },
   })
@@ -224,6 +222,12 @@ export const InfoAboutProduct = () => {
       (_: TypeVariant, index: number) => index !== variantIndexToRemove,
     )
     formik.setFieldValue('variants', updatedVariants)
+    setCreateVariantModalValues({
+      title: '',
+      images: [],
+      size_variants: [{ size: '', quantity: '' }],
+      description: '',
+    })
     handleShowCreateVariantModal()
   }
 

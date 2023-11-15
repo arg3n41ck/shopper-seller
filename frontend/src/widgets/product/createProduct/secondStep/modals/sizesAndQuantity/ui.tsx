@@ -27,7 +27,7 @@ const func2 = (obj: any, key: string) => {
 const SizesAndQuantity: FC<Props> = ({ value, onChange, touched, error, addPriceField, onDelete }) => {
   const handleAddFields = async () => {
     // if (isFieldsFilledBeforeIndex(value, value.length)) {
-    onChange('size_variants', [...value, { size: '', quantity: '' }])
+    onChange('size_variants', [...value, { size: '', quantity: '', price: null }])
     // }
   }
 
@@ -52,9 +52,10 @@ const SizesAndQuantity: FC<Props> = ({ value, onChange, touched, error, addPrice
               name={`size_variants[${index}].quantity`}
               value={sizeQuantityItem.quantity}
               onChange={(e) => {
-                onChange(`size_variants[${index}].quantity`, +e.target.value)
+                onChange(`size_variants[${index}].quantity`, e.target.value)
               }}
               placeholder={'Количество'}
+              type="number"
               label={'Количество'}
               error={touched?.[index]?.quantity && Boolean(func(error?.[index], 'quantity'))}
               errorMessage={touched?.[index]?.quantity && func2(error?.[index], 'quantity')}
