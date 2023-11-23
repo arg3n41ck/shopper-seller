@@ -54,7 +54,7 @@ export const EditUserInfoModal: FC<Props> = ({ open, onClose }) => {
       try {
         await mutationEditShop.mutateAsync({ first_name, last_name })
 
-        queryClient.invalidateQueries(['me'])
+        await queryClient.invalidateQueries(['me'])
 
         toast.success('Данные вашего магазина изменены')
 

@@ -61,7 +61,7 @@ export const EditPhoneNumberModal: FC<Props> = ({ open, onClose }) => {
           re_phone_number: repeat_phone_number,
         })
 
-        queryClient.invalidateQueries(['me'])
+        await queryClient.invalidateQueries(['me'])
 
         toast.success('Ваш номер телефона изменен')
 

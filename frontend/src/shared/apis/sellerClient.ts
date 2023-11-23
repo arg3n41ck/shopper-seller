@@ -1,4 +1,5 @@
 import { $apiAccountsApi, $apiProductsApi, $apiSellersApi } from '../api'
+import { ProductUpdate } from '../api/gen'
 import { TypeUser } from '../lib/types/authTypes'
 import { TypeProductFilters } from '../lib/types/sellerTypes'
 
@@ -50,6 +51,26 @@ export class SellerClient {
     return data.results[0]
   }
 
+  async fetchVariant(slug: string) {
+    const { data } = await $apiProductsApi.productsSellerProductVariantsRead(slug)
+    return data
+  }
+
+  async editProduct(slug: string, productData: ProductUpdate) {
+    const { data } = await $apiProductsApi.productsSellerProductsPartialUpdate(slug, productData)
+    return data
+  }
+
+  async createTag(tag: string) {
+    const { data } = await $apiProductsApi.productsTagsCreate({ title: tag })
+    return data
+  }
+
+  async updateVariantMainImage(variant: number = 0, isMain: boolean) {
+    const { data } = await $apiProductsApi.productsSellerVariantImagesPartialUpdate(variant, undefined, isMain)
+    return data
+  }
+
   async updateShop({
     slug,
     shopData: { title, description, logo },
@@ -58,6 +79,11 @@ export class SellerClient {
     shopData: { title: string; description: string; logo: File | null }
   }) {
     const { data } = await $apiSellersApi.sellersSellerShopsPartialUpdate(slug, title, description, logo)
+    return data
+  }
+
+  async uploadProductVariantImage(variant: number = 0, image: File, isMain: boolean) {
+    const { data } = await $apiProductsApi.productsSellerVariantImagesCreate(variant, image, isMain)
     return data
   }
 

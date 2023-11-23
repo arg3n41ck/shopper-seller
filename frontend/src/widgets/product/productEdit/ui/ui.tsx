@@ -15,10 +15,11 @@ import { TextArea } from '@/shared/ui/inputs/textArea'
 import { ProductDetailsField } from '../../createProduct'
 import { Button } from '@/shared/ui/buttons'
 import { $apiProductsApi } from '@/shared/api'
-import { useMutation, useQuery } from '@tanstack/react-query'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { TypeProduct } from '@/shared/lib/types/sellerTypes'
 import { Product, ProductCreate } from '@/shared/api/gen'
 import { handleApiError } from '@/shared/lib/helpers'
+import { convertStringTagsToIds } from '@/shared/lib/helpers/convertStringTagsToIds'
 
 const sellerClient = new SellerClient()
 
@@ -66,9 +67,11 @@ const validationSchema = (t: (key: string) => string) =>
       .typeError(t('Цена должна быть числом'))
       .positive(t('Цена должна быть больше или равна 0'))
       .required(t('Введите цену продукта')),
-    discount: yup.number().min(0, t('Скидка должна быть не меньше 0')).max(100, t('Скидка должна быть не больше 100')),
-    // parent_category: yup.string().required(t('Выберите категорию продукта')),
-    // category: yup.string().required(t('Выберите подкатегорию продукта')),
+    discount: yup
+      .number()
+      .typeError(t('Скидка должна быть числом'))
+      .min(0, t('Скидка должна быть не меньше 0'))
+      .max(100, t('Скидка должна быть не больше 100')),
     recommendation: yup.string().required(t('Введите рекомендации по уходу')),
     tags: yup.array(),
     publish_date: yup.string(),
@@ -77,15 +80,15 @@ const validationSchema = (t: (key: string) => string) =>
 const countriesData = [
   {
     id: '1',
-    name: 'США',
+    title: 'США',
   },
   {
     id: '2',
-    name: 'Китай',
+    title: 'Китай',
   },
   {
     id: '3',
-    name: 'Германия',
+    title: 'Германия',
   },
 ]
 
@@ -98,6 +101,7 @@ export const ProductEditPage: FC<ProductEditPageProps> = ({ product }) => {
     editProduct(id, values),
   )
   const { data: categories } = useQuery(['categories'], sellerClient.fetchCategories)
+  const queryClient = useQueryClient()
 
   // const { data: tags } = useQuery(['tags'], sellerClient.fetchTags)
 
@@ -128,16 +132,24 @@ export const ProductEditPage: FC<ProductEditPageProps> = ({ product }) => {
     onSubmit: async (values, { resetForm }) => {
       try {
         // eslint-disable-next-line
-        const { parent_category, variants, publish_date, sku, ...restValues } = values
+        const { parent_category, variants, tags, publish_date, sku, ...restValues } = values
+
+        if (restValues.discount === '') {
+          restValues.discount = 0
+        }
+
+        const stringTags = tags.filter((tag) => typeof tag === 'string')
+
+        const createdTagIds = await convertStringTagsToIds(stringTags)
+
+        const updatedTags = values.tags.map((tag) => (typeof tag === 'string' ? createdTagIds.shift() : tag))
 
         // eslint-disable-next-line
         //@ts-ignore
-        await mutationEditProduct.mutateAsync({ id, values: restValues })
-
-        // router.push({
-        // 	pathname: PATH_LK_SELLER_CREATE_PRODUCT.step2,
-        // 	query: { id: data.id },
-        // })
+        await mutationEditProduct.mutateAsync({ id, values: { ...restValues, tags: updatedTags } })
+        await queryClient.invalidateQueries(['product'])
+        await queryClient.invalidateQueries(['tags'])
+        router.back()
         resetForm()
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore
@@ -151,11 +163,15 @@ export const ProductEditPage: FC<ProductEditPageProps> = ({ product }) => {
     // eslint-disable-next-line
     //@ts-ignore
     return categories?.find((category) => category.id === formik.values.parent_category)?.children || []
-  }, [formik])
+  }, [categories])
 
   const handleFieldsValueChange = (fieldName: string, value: string) => formik.setFieldValue(fieldName, value)
 
   const handleTagsChange = (newTags: string[]) => formik.setFieldValue('tags', newTags)
+
+  const tagIds = useMemo(() => {
+    return product?.tags?.map((tag) => tag.id) || []
+  }, [product])
 
   useEffect(() => {
     formik.setValues({
@@ -169,7 +185,7 @@ export const ProductEditPage: FC<ProductEditPageProps> = ({ product }) => {
       country: product?.country || '',
       // eslint-disable-next-line
       //@ts-ignore
-      tags: product?.tags || [],
+      tags: tagIds,
       recommendation: product?.recommendation || '',
       sku: product?.sku || '',
       // eslint-disable-next-line
@@ -228,6 +244,7 @@ export const ProductEditPage: FC<ProductEditPageProps> = ({ product }) => {
             onChange={formik.handleChange}
             placeholder={t('Цена')}
             label={t('Цена')}
+            type="number"
             name="price_from"
           />
 
@@ -238,6 +255,7 @@ export const ProductEditPage: FC<ProductEditPageProps> = ({ product }) => {
             onChange={formik.handleChange}
             placeholder={t('Скидка')}
             label={t('Скидка')}
+            type="number"
             name="discount"
             helperText="не обязательно"
           />
@@ -275,16 +293,16 @@ export const ProductEditPage: FC<ProductEditPageProps> = ({ product }) => {
         </div>
 
         <Autocomplete
-          placeholder={t('Страна производителя ')}
-          inputLabel={t('Страна производителя ')}
+          placeholder={t('Страна производителя')}
+          inputLabel={t('Страна производителя')}
           options={countriesData || []}
           onChange={(value) => handleFieldsValueChange('country', value)}
           error={formik.touched.country && Boolean(formik.errors.country)}
           value={formik.values.country}
           errorMessage={formik.touched.country ? formik.errors.country : ''}
           width="100%"
-          fieldTitle="name"
-          fieldValue="name"
+          fieldTitle="title"
+          fieldValue="title"
           className={'mt-5'}
           helperText="не обязательно"
         />
@@ -300,9 +318,11 @@ export const ProductEditPage: FC<ProductEditPageProps> = ({ product }) => {
           name="description"
           className={'mt-5'}
         />
+      </div>
 
-        <ProductDetailsField formik={formik} fieldName="specifications" className={'mt-5'} />
+      <ProductDetailsField formik={formik} fieldName="specifications" className={'mt-5 max-w-[592px]'} />
 
+      <div className="max-w-[528px]">
         <TextArea
           value={formik.values.recommendation}
           error={formik.touched.recommendation && Boolean(formik.errors.recommendation)}

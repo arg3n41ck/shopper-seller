@@ -31,10 +31,10 @@ interface ProductDetailPageProps {
 export const ProductDetailPage: FC<ProductDetailPageProps> = ({ product }) => {
   const router = useRouter()
   const [showVariantDetail, setShowVariantDetail] = useState(false)
-  const [selectedVariant, setSelectedVariant] = useState<TypeVariant | null>(null)
+  const [selectedVariant, setSelectedVariant] = useState<string | null>(null)
 
-  const handleSelectVariant = (variant: TypeVariant) => {
-    setSelectedVariant(variant)
+  const handleSelectVariant = (slug: string) => {
+    setSelectedVariant(slug)
   }
 
   const handleShowVariantDetail = () => {
@@ -53,7 +53,7 @@ export const ProductDetailPage: FC<ProductDetailPageProps> = ({ product }) => {
       <p className="text-[23.04px] font-semibold text-[#000]">Детальный просмотр товара</p>
 
       <div className="grid grid-cols-1 gap-10">
-        <div className="mt-10 flex items-start justify-between">
+        <div className="mt-10 flex items-start justify-between gap-4">
           <div className="flex items-start gap-[70px]">
             <ProductDetailCarouselIMages images={product?.variants[0]?.images} uniqueCarouselId="product-detail" />
 
@@ -71,12 +71,12 @@ export const ProductDetailPage: FC<ProductDetailPageProps> = ({ product }) => {
 
                 <div>
                   <p className="text-[12px] font-semibold text-[#676767]">Количество в наличии</p>
-                  <p className="text-[16px] font-semibold text-[#171717]">200 шт.</p>
+                  <p className="text-[16px] font-semibold text-[#171717]">{product.quantity} шт.</p>
                 </div>
 
                 <div>
                   <p className="text-[12px] font-semibold text-[#676767]">Цена</p>
-                  <p className="text-[16px] font-semibold text-[#171717]">23990 сом</p>
+                  <p className="text-[16px] font-semibold text-[#171717]">{Math.floor(+product.price_from)} сом</p>
                 </div>
 
                 {!!product?.sku && (
@@ -181,8 +181,10 @@ export const ProductDetailPage: FC<ProductDetailPageProps> = ({ product }) => {
 
                   <Button
                     onClick={() => {
-                      handleSelectVariant(variant)
-                      handleShowVariantDetail()
+                      if (variant?.slug) {
+                        handleSelectVariant(variant.slug)
+                        handleShowVariantDetail()
+                      }
                     }}
                     variant={BUTTON_STYLES.primaryCtaIndigo}
                     className="invisible absolute left-2 top-2 z-[1] h-[25px] max-w-[65px] px-1 py-2 !text-[12px] !font-normal group-hover/edit:visible"
@@ -201,7 +203,7 @@ export const ProductDetailPage: FC<ProductDetailPageProps> = ({ product }) => {
         <ProductVariantDetailModal
           // eslint-disable-next-line
           //@ts-ignore
-          variant={selectedVariant}
+          slug_variant={selectedVariant}
           open={showVariantDetail}
           handleClose={handleShowVariantDetail}
         />

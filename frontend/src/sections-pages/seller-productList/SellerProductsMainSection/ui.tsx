@@ -149,64 +149,58 @@ export const MyProductsMainSection: FC = () => {
           tableBody={
             <>
               {isFilter && (
-                <div className="flex items-center gap-5 bg-white p-5">
-                  <CustomSelectHover
-                    value={filters.category}
-                    placeholder={'Категория'}
-                    options={categories}
-                    onClick={(value) => handleFilterChange('category', value)}
-                  />
+                <tr>
+                  <td colSpan={columns.length} className="bg-white">
+                    <div className="flex items-center gap-5 bg-white p-5">
+                      <CustomSelectHover
+                        value={filters.category}
+                        placeholder={'Категория'}
+                        options={categories}
+                        onClick={(value) => handleFilterChange('category', value)}
+                      />
 
-                  {/* <CustomSelect
-                    placeholder={'Категория'}
-                    value={filters.category}
-                    options={[]}
-                    onChange={(value) => handleFilterChange('category', value)}
-                    fieldTitle="size"
-                    fieldValue="size"
-                    className={'w-max bg-white'}
-                  /> */}
+                      <CustomSelect
+                        placeholder={'Цвет'}
+                        value={filters.color}
+                        options={colorsForFilter || []}
+                        onChange={(value) => handleFilterChange('color', value)}
+                        fieldTitle="size"
+                        fieldValue="size"
+                        className={'w-max bg-white'}
+                      />
 
-                  <CustomSelect
-                    placeholder={'Цвет'}
-                    value={filters.color}
-                    options={colorsForFilter || []}
-                    onChange={(value) => handleFilterChange('color', value)}
-                    fieldTitle="size"
-                    fieldValue="size"
-                    className={'w-max bg-white'}
-                  />
+                      <CustomSelect
+                        placeholder={'Размер'}
+                        value={filters.size}
+                        options={sizesForFilter || []}
+                        onChange={(value) => handleFilterChange('size', value)}
+                        fieldTitle="size"
+                        fieldValue="size"
+                        className={'w-max bg-white'}
+                      />
 
-                  <CustomSelect
-                    placeholder={'Размер'}
-                    value={filters.size}
-                    options={sizesForFilter || []}
-                    onChange={(value) => handleFilterChange('size', value)}
-                    fieldTitle="size"
-                    fieldValue="size"
-                    className={'w-max bg-white'}
-                  />
+                      <CustomSelect
+                        placeholder={'Пол'}
+                        value={filters.gender}
+                        options={gender}
+                        onChange={(value) => handleFilterChange('gender', value)}
+                        fieldTitle="title"
+                        fieldValue="value"
+                        className={'w-max bg-white'}
+                      />
 
-                  <CustomSelect
-                    placeholder={'Пол'}
-                    value={filters.gender}
-                    options={gender}
-                    onChange={(value) => handleFilterChange('gender', value)}
-                    fieldTitle="title"
-                    fieldValue="value"
-                    className={'w-max bg-white'}
-                  />
-
-                  <CustomSelect
-                    placeholder={'Статус'}
-                    value={filters.status}
-                    options={status}
-                    onChange={(value) => handleFilterChange('status', value)}
-                    fieldTitle="title"
-                    fieldValue="value"
-                    className={'w-max bg-white'}
-                  />
-                </div>
+                      <CustomSelect
+                        placeholder={'Статус'}
+                        value={filters.status}
+                        options={status}
+                        onChange={(value) => handleFilterChange('status', value)}
+                        fieldTitle="title"
+                        fieldValue="value"
+                        className={'w-max bg-white'}
+                      />
+                    </div>
+                  </td>
+                </tr>
               )}
 
               {/* eslint-disable-next-line */}

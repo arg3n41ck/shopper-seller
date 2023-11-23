@@ -53,7 +53,7 @@ export const EditPasswordModal: FC<Props> = ({ open, onClose }) => {
         onClose()
         resetForm()
 
-        queryClient.invalidateQueries(['me'])
+        await queryClient.invalidateQueries(['me'])
 
         toast.success('Ваш пароль изменен')
 

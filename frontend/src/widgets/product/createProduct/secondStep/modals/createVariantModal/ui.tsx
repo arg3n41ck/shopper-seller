@@ -11,8 +11,8 @@ import { TextArea } from '@/shared/ui/inputs/textArea'
 import { Button } from '@/shared/ui/buttons'
 import { Trash2 } from 'react-feather'
 import { DeleteVariantBackdrop } from '../deleteVariantBackboard'
-import { isNumber } from 'lodash'
-import { TypeImageFile, TypeSizeQuantity, TypeVariant } from '@/shared/lib/types/sellerTypes'
+import { isBoolean, isNumber } from 'lodash'
+import { TypeSizeQuantity, TypeVariant } from '@/shared/lib/types/sellerTypes'
 import CustomSwitch from '@/shared/ui/inputs/switch'
 import { handleApiError } from '@/shared/lib/helpers'
 
@@ -23,6 +23,8 @@ interface VariantProps {
   editVariant?: (index: string | number, value: TypeVariant) => void
   removeVariant?: (index: string | number) => void
   defaultValues?: TypeVariant
+  deleteImage?: (id: number) => void
+  toggleVariantMainImage?: (id: number, is_main: boolean) => void
 }
 
 const sizeQuantitySchema = yup.object({
@@ -54,6 +56,8 @@ const CreateVariantModal: FC<VariantProps> = ({
     size_variants: [{ size: '', quantity: '', price: null }],
     description: '',
   },
+  deleteImage,
+  toggleVariantMainImage,
 }) => {
   const { t } = useTranslation()
   const [isDeleteBackdrop, setIsDeleteBackdrop] = useState<boolean>(false)
@@ -72,7 +76,7 @@ const CreateVariantModal: FC<VariantProps> = ({
     onSubmit: async (values, { resetForm }) => {
       try {
         // eslint-disable-next-line
-        const { slug, id, ...restValues } = values
+        const { slug, id, index, ...restValues } = values
 
         isNumber(defaultValues.index) || defaultValues?.slug
           ? editVariant && editVariant(idOfVariant, restValues)
@@ -97,9 +101,36 @@ const CreateVariantModal: FC<VariantProps> = ({
     formik.setFieldValue('size_variants', updatedFields)
   }
 
-  const handleDeleteImage = (indexOfImageToDelete: number) => {
+  const handleDeleteImage = async (indexOfImageToDelete: number, id?: number) => {
+    !!id && deleteImage && (await deleteImage(id))
+
     const updatedImages = [...formik.values.images].filter((_, index: number) => index !== indexOfImageToDelete)
     formik.setFieldValue('images', updatedImages)
+  }
+
+  const handleToggleMainImage = async (index: number, id?: number, is_main?: boolean) => {
+    !!id && isBoolean(is_main) && toggleVariantMainImage && (await toggleVariantMainImage(id, is_main))
+
+    const updatedValue = formik.values.images.map((item, i) => {
+      return {
+        ...item,
+        is_main: i === index && !item.is_main,
+      }
+    })
+
+    formik.setFieldValue('images', updatedValue)
+  }
+
+  const handleImagesChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
+    const files = e.target.files
+    if (files && files?.length) {
+      const images = Array.from(files).map((file) => ({
+        image: file,
+        is_main: false,
+      }))
+
+      formik.setFieldValue('images', [...formik.values.images, ...images])
+    }
   }
 
   return (
@@ -133,9 +164,9 @@ const CreateVariantModal: FC<VariantProps> = ({
 
           <AddImages
             value={formik.values.images}
-            fieldTitle={'images'}
-            onChange={(name: string, value: TypeImageFile[] | string | boolean) => formik.setFieldValue(name, value)}
+            handleToggleMainImage={handleToggleMainImage}
             deleteImage={handleDeleteImage}
+            handleImagesChange={handleImagesChange}
           />
 
           <p className="mb-5 mt-8 text-[18px] font-semibold text-neutral-900">Размеры и количество</p>
@@ -163,6 +194,7 @@ const CreateVariantModal: FC<VariantProps> = ({
             value={formik.values.description}
             onChange={formik.handleChange}
             placeholder="Дополнительная информация о модели"
+            label="Дополнительная информация о модели"
             name="description"
             className={'mt-5 max-w-[490px]'}
           />

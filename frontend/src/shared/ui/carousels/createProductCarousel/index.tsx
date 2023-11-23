@@ -18,7 +18,7 @@ interface CarouselProps {
 const Carousel: FC<CarouselProps> = ({ slides, hovering }) => {
   const prevRef = useRef<HTMLDivElement>(null)
   const nextRef = useRef<HTMLDivElement>(null)
-  const sortedSlides = slides.slice().sort((a, b) => (b.main_image ? 1 : 0) - (a.main_image ? 1 : 0))
+  const sortedSlides = slides.slice().sort((a, b) => (b.is_main ? 1 : 0) - (a.is_main ? 1 : 0))
 
   return (
     <div className="relative max-h-[280px] max-w-[252px]">

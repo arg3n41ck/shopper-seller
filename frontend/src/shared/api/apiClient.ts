@@ -32,11 +32,12 @@ ApiClient.interceptors.response.use(
   async (error) => {
     const originalRequest = error.config
     if (error.response && error.response.status === 401) {
+      const isAuthPage = !window.location.pathname.includes('auth')
+
       try {
         const refreshToken = localStorage.getItem('refresh_token') as string
 
         if (!refreshToken || refreshToken === 'undefined') {
-          const isAuthPage = !window.location.pathname.includes('auth')
           removeFieldsFromLocalStorage(['access_token', 'refresh_token'])
           if (isAuthPage) window.location.href = PATH_AUTH.logIn
 
@@ -68,6 +69,8 @@ ApiClient.interceptors.response.use(
         }
       } catch (err) {
         // An error occurred while refreshing tokens, reject the promise
+        removeFieldsFromLocalStorage(['access_token', 'refresh_token'])
+        if (!isAuthPage) window.location.href = PATH_AUTH.logIn
         return Promise.reject(error)
       }
     }

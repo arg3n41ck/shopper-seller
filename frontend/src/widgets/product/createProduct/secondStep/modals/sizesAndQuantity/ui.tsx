@@ -52,7 +52,7 @@ const SizesAndQuantity: FC<Props> = ({ value, onChange, touched, error, addPrice
               name={`size_variants[${index}].quantity`}
               value={sizeQuantityItem.quantity}
               onChange={(e) => {
-                onChange(`size_variants[${index}].quantity`, e.target.value)
+                onChange(`size_variants[${index}].quantity`, +e.target.value)
               }}
               placeholder={'Количество'}
               type="number"

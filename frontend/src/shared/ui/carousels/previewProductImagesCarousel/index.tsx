@@ -10,7 +10,7 @@ interface CarouselWithMainImageProps {
 
 export const CarouselWithMainImage: FC<CarouselWithMainImageProps> = ({ images }) => {
   const [activeIndex, setActiveIndex] = useState<number>(0)
-  const sortedImages = [...images].sort((a, b) => (b.main_image ? 1 : 0) - (a.main_image ? 1 : 0))
+  const sortedImages = [...images].sort((a, b) => (b.is_main ? 1 : 0) - (a.is_main ? 1 : 0))
   const carouselRef = useRef<HTMLDivElement | null>(null)
 
   const handleImageClick = (index: number) => {
@@ -39,7 +39,7 @@ export const CarouselWithMainImage: FC<CarouselWithMainImageProps> = ({ images }
   }
 
   useEffect(() => {
-    const mainImageIndex = sortedImages.findIndex((image: TypeImageFile) => image.main_image)
+    const mainImageIndex = sortedImages.findIndex((image: TypeImageFile) => image.is_main)
     setActiveIndex(mainImageIndex !== -1 ? mainImageIndex : 0)
     scrollToImage(mainImageIndex !== -1 ? mainImageIndex : 0)
   }, [images])

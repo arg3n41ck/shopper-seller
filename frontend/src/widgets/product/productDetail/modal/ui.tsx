@@ -6,32 +6,66 @@ import { Edit2, Trash2 } from 'react-feather'
 import { CreateVariantModal, DeleteVariantBackdrop } from '../../createProduct'
 import Image from 'next/image'
 import { $apiProductsApi } from '@/shared/api'
-import { TypeImageFile, TypeSizeQuantity, TypeVariant } from '@/shared/lib/types/sellerTypes'
+import { TypeImage, TypeSizeQuantity, TypeVariant } from '@/shared/lib/types/sellerTypes'
+import { useQuery, useQueryClient } from '@tanstack/react-query'
+import { SellerClient } from '@/shared/apis/sellerClient'
 
 interface ProductVariantDetailModalProps {
-  variant: TypeVariant
+  slug_variant: string
   open: boolean
   handleClose: () => void
 }
 
+const sellerClient = new SellerClient()
+
 const deleteVariant = async (slug: string) => await $apiProductsApi.productsSellerProductVariantsDelete(slug)
 
-const editVariant = async (variant: string, updatedVariant: TypeVariant) => {
-  // eslint-disable-next-line
-  const { images, ...restValuesVariant } = updatedVariant
-  // eslint-disable-next-line
-  //@ts-ignore
-  const { data } = await $apiProductsApi.productsSellerProductVariantsPartialUpdate(variant, restValuesVariant)
-  return data
-}
-
-export const ProductVariantDetailModal: FC<ProductVariantDetailModalProps> = ({ variant, open, handleClose }) => {
+export const ProductVariantDetailModal: FC<ProductVariantDetailModalProps> = ({ slug_variant, open, handleClose }) => {
+  const queryClient = useQueryClient()
   const [isDeleteBackdrop, setIsDeleteBackdrop] = useState<boolean>(false)
   const [isEditVariantModal, setIsEditVariantModal] = useState(false)
+  const { data: variant } = useQuery(['variant', slug_variant], () => sellerClient.fetchVariant(slug_variant))
+
+  const editVariant = async (variant: string, updatedVariant: TypeVariant) => {
+    // eslint-disable-next-line
+    const { images, image_main, price_max, price_min, ...restValuesVariant } = updatedVariant
+    // eslint-disable-next-line
+    //@ts-ignore
+    const { data } = await $apiProductsApi.productsSellerProductVariantsPartialUpdate(variant, restValuesVariant)
+
+    // eslint-disable-next-line
+    // @ts-ignore
+    const fileImages = images.filter((item) => item.image instanceof File)
+
+    await Promise.all(
+      // eslint-disable-next-line
+      // @ts-ignore
+      fileImages.map(async ({ image, is_main }: TypeImage) => {
+        await sellerClient.uploadProductVariantImage(data?.id, image, is_main)
+      }),
+    )
+
+    await queryClient.invalidateQueries(['product'])
+    await queryClient.invalidateQueries(['variant'])
+
+    return data
+  }
+
+  const deleteVariantImage = async (id: number) => {
+    await $apiProductsApi.productsSellerVariantImagesDelete(id)
+    await queryClient.invalidateQueries(['product'])
+  }
+
+  const toggleVariantMainImage = async (id: number, is_main: boolean) => {
+    await sellerClient.updateVariantMainImage(id, is_main)
+    // await queryClient.invalidateQueries(['product'])
+  }
 
   const handleShowEditVariantModal = () => setIsEditVariantModal((prev) => !prev)
 
   const handleShowDeleteBackDrop = () => setIsDeleteBackdrop((prev) => !prev)
+
+  if (!variant) return null
 
   return (
     <>
@@ -67,20 +101,20 @@ export const ProductVariantDetailModal: FC<ProductVariantDetailModalProps> = ({ 
           <p className="mb-3 mt-[30px] text-[18px] font-semibold text-neutral-900">Фотографии</p>
 
           <div className="flex max-w-full items-center gap-5 overflow-x-scroll">
-            {variant.images.map((image: TypeImageFile) => (
+            {variant.images?.map((image) => (
               <div className="relative" key={image.id}>
                 <Image
                   className={`rounded-5 relative h-[187px] w-[150px] cursor-pointer border-[2px] border-transparent object-cover ${
                     // eslint-disable-next-line
-                    true ? '!border-primaryDash600' : ''
+                    image.image === variant.image_main ? '!border-primaryDash600' : ''
                   } group-hover/buttons:border-primaryDash600`}
-                  src={image.image}
+                  src={image.image || ''}
                   width={150}
                   height={187}
                   alt={`image ${image.id}`}
                 />
 
-                {true && (
+                {image.image === variant.image_main && (
                   <Button
                     variant={BUTTON_STYLES.primaryCtaIndigo}
                     className="absolute left-2 top-2 z-[1] h-[25px] max-w-[84px] px-1 py-2 !text-[12px] !font-normal"
@@ -106,7 +140,7 @@ export const ProductVariantDetailModal: FC<ProductVariantDetailModalProps> = ({ 
                     <div className="flex items-start justify-start gap-1">
                       <p className=" text-base font-normal text-neutral-900">от</p>
 
-                      <p className=" text-base font-normal text-neutral-900">{size?.price} сом</p>
+                      <p className=" text-base font-normal text-neutral-900">{variant.price_min} сом</p>
                     </div>
                   </div>
 
@@ -115,9 +149,9 @@ export const ProductVariantDetailModal: FC<ProductVariantDetailModalProps> = ({ 
                       <div className="flex items-center justify-start gap-1">
                         <div className=" text-base font-normal text-neutral-900">от</div>
 
-                        <p className=" text-sm font-normal text-neutral-900 line-through">{size?.price} сом</p>
+                        <p className=" text-sm font-normal text-neutral-900 line-through">{variant.price_max} сом</p>
                       </div>
-                      <p className="text-base font-normal text-error700">{size?.price} сом</p>
+                      <p className="text-base font-normal text-error700">{variant.price_min} сом</p>
                     </div>
                   </div>
                 </div>
@@ -165,7 +199,11 @@ export const ProductVariantDetailModal: FC<ProductVariantDetailModalProps> = ({ 
           // eslint-disable-next-line
           //@ts-ignore
           removeVariant={(value) => deleteVariant(value)}
+          // eslint-disable-next-line
+          //@ts-ignore
           defaultValues={variant}
+          deleteImage={deleteVariantImage}
+          toggleVariantMainImage={toggleVariantMainImage}
         />
       )}
     </>

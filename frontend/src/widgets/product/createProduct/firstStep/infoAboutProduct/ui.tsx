@@ -87,15 +87,15 @@ const validationSchema = (t: (key: string) => string) =>
 const countriesData = [
   {
     id: '1',
-    name: 'США',
+    title: 'США',
   },
   {
     id: '2',
-    name: 'Китай',
+    title: 'Китай',
   },
   {
     id: '3',
-    name: 'Германия',
+    title: 'Германия',
   },
 ]
 
@@ -175,8 +175,8 @@ export const InfoAboutProduct = () => {
               await Promise.all(
                 // eslint-disable-next-line
                 //@ts-ignore
-                images.map(async ({ image, main_image }: TypeImage) => {
-                  await uploadProductVariantImage(responseVariant?.id, image, main_image)
+                images.map(async ({ image, is_main }: TypeImage) => {
+                  await uploadProductVariantImage(responseVariant?.id, image, is_main)
                 }),
               )
             }),
@@ -205,7 +205,7 @@ export const InfoAboutProduct = () => {
     // eslint-disable-next-line
     //@ts-ignore
     return categories?.find((category: TypeCategory) => category.id === formik.values.parent_category)?.children || []
-  }, [formik])
+  }, [formik, categories])
 
   const addVariant = (value: TypeVariant) => {
     formik.setFieldValue('variants', [...formik.values.variants, value])
@@ -332,8 +332,8 @@ export const InfoAboutProduct = () => {
           value={formik.values.country}
           errorMessage={formik.touched.country ? formik.errors.country : ''}
           width="100%"
-          fieldTitle="name"
-          fieldValue="name"
+          fieldTitle="title"
+          fieldValue="title"
           className={'mt-5'}
           helperText="не обязательно"
         />

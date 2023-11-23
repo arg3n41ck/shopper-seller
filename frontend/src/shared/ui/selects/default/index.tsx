@@ -58,7 +58,7 @@ const CustomSelect = ({
 
       <div
         className={cn(
-          'flex h-[48px] w-max cursor-pointer items-center justify-between gap-[6px] border-[1px] border-neutral-300 px-[9px] py-[8px] text-[18px] text-neutral-400',
+          'flex h-[48px] w-full cursor-pointer items-center justify-between gap-[6px] border-[1px] border-neutral-300 px-[9px] py-[8px] text-[18px] text-neutral-400',
           { ['border-neutral-900 text-neutral-900']: isActive, ['mt-2']: inputLabel, ['!border-error500']: error },
         )}
         onClick={() => setIsOpen(!isOpen)}
@@ -73,10 +73,10 @@ const CustomSelect = ({
         <>
           {!!options.length && (
             <ul className="absolute left-0 z-[1] m-0 max-h-[200px] w-full list-none overflow-y-auto border-[1px] border-neutral-300 bg-white p-0">
-              {options.map((option) => (
+              {options.map((option, i) => (
                 <li
                   className="block h-auto cursor-pointer p-[8px] transition-all hover:bg-neutral-300"
-                  key={option.id || option}
+                  key={option.id || i + 1}
                   onClick={() => handleSelect(option)}
                 >
                   {option[fieldTitle] || option}

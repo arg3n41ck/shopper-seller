@@ -10,13 +10,13 @@ import { Button } from '@/shared/ui/buttons'
 import Checkbox from '@/shared/ui/inputs/checkbox'
 import ChooseColors from '@/shared/ui/templates/chooseColors'
 import CustomSelect from '@/shared/ui/selects/default'
-import { $apiProductsApi } from '@/shared/api'
-import { useMutation } from '@tanstack/react-query'
 import { Accordion } from '@/shared/ui/accordions'
 import { TypeProduct, TypeVariant } from '@/shared/lib/types/sellerTypes'
-import { ProductUpdate } from '@/shared/api/gen'
-import { PATH_LK_SELLER } from '@/shared/config'
 import { handleApiError } from '@/shared/lib/helpers'
+import { SellerClient } from '@/shared/apis/sellerClient'
+import { PATH_LK_SELLER } from '@/shared/config'
+import { convertStringTagsToIds } from '@/shared/lib/helpers/convertStringTagsToIds'
+import { useQueryClient } from '@tanstack/react-query'
 
 interface PreviewProductProps {
   product: TypeProduct | undefined
@@ -24,10 +24,7 @@ interface PreviewProductProps {
 
 const getOriginalPrice = (price: number, discount: number) => Math.floor(price / (1 - discount / 100))
 
-const editProduct = async (slug: string, productData: ProductUpdate) => {
-  const { data } = await $apiProductsApi.productsSellerProductsPartialUpdate(slug, productData)
-  return data
-}
+const sellerClient = new SellerClient()
 
 export const PreviewProductPage: FC<PreviewProductProps> = ({ product }) => {
   const router = useRouter()
@@ -37,7 +34,7 @@ export const PreviewProductPage: FC<PreviewProductProps> = ({ product }) => {
   const [publishByDate, setPublishByDate] = useState(false)
   const [publishOrDraft, setPublishOrDraft] = useState('DRAFT')
   const [chooseSize, setChooseSize] = useState('')
-
+  const queryClient = useQueryClient()
   const handleChooseSize = (value: string) => setChooseSize(value)
 
   const handleChangePublishByDate = () => setPublishByDate((prev) => !prev)
@@ -70,10 +67,6 @@ export const PreviewProductPage: FC<PreviewProductProps> = ({ product }) => {
     })
   }
 
-  const mutationEditProduct = useMutation(({ slug, productData }: { slug: string; productData: ProductUpdate }) =>
-    editProduct(slug, productData),
-  )
-
   const formik = useFormik({
     initialValues: {
       tags: [],
@@ -82,21 +75,26 @@ export const PreviewProductPage: FC<PreviewProductProps> = ({ product }) => {
       minutes: '',
     },
     onSubmit: async (values) => {
-      // if (publishByDate) {
       try {
         const dateTime = `${values.date}T${values.hours}:${values.minutes}`
 
+        const stringTags = values.tags.filter((tag) => typeof tag === 'string')
+
+        const createdTagIds = await convertStringTagsToIds(stringTags)
+
+        const updatedTags = values.tags.map((tag) => (typeof tag === 'string' ? createdTagIds.shift() : tag))
+
         const body = {
           published_date: dateTime,
-          tags: values.tags,
+          tags: updatedTags,
           status: publishOrDraft,
         }
 
-        // await sellerClient.editProduct({ slug, body })
-
         // eslint-disable-next-line
         // @ts-ignore
-        await mutationEditProduct.mutateAsync({ slug, productData: body })
+        await sellerClient.editProduct(slug, body)
+        await queryClient.invalidateQueries(['tags'])
+        await queryClient.invalidateQueries(['products'])
 
         router.push({
           pathname: PATH_LK_SELLER.productsList,
@@ -106,12 +104,6 @@ export const PreviewProductPage: FC<PreviewProductProps> = ({ product }) => {
       } catch (error: AxiosError) {
         handleApiError(error)
       }
-      // } else {
-      //   // router.push({
-      //   //   pathname: PATH_LK_SELLER_CREATE_PRODUCT.previewProduct,
-      //   //   query: { id },
-      //   // });
-      // }
     },
   })
 
@@ -166,7 +158,6 @@ export const PreviewProductPage: FC<PreviewProductProps> = ({ product }) => {
                   onChange={handleChooseSize}
                   fieldTitle="size"
                   fieldValue="size"
-                  className={'w-[100%]'}
                 />
               </>
             )}
@@ -196,25 +187,25 @@ export const PreviewProductPage: FC<PreviewProductProps> = ({ product }) => {
 
           <div className="mt-5">
             <Accordion
-              className="w-full border-b border-[#ECECEC] p-3"
+              className="w-full border-b border-secondWhite p-3"
               title={<p className="text-base font-medium uppercase text-neutral-900">Описание</p>}
             >
               s
             </Accordion>
             <Accordion
-              className="w-full border-b border-[#ECECEC] p-3"
+              className="w-full border-b border-secondWhite p-3"
               title={<p className="text-base font-medium uppercase text-neutral-900">Размер и крой</p>}
             >
               s
             </Accordion>
             <Accordion
-              className="w-full border-b border-[#ECECEC] p-3"
+              className="w-full border-b border-secondWhite p-3"
               title={<p className="text-base font-medium uppercase text-neutral-900">Доставка и возврат</p>}
             >
               s
             </Accordion>
             <Accordion
-              className="w-full border-b border-[#ECECEC] p-3"
+              className="w-full border-b border-secondWhite p-3"
               title={<p className="text-base font-medium uppercase text-neutral-900">Отзывы (47)</p>}
             >
               s
@@ -229,7 +220,7 @@ export const PreviewProductPage: FC<PreviewProductProps> = ({ product }) => {
         <div className={'mb-10'}>
           <p className={'mb-3 text-[16px] font-[500] text-neutral-900'}>Тэги для поиска</p>
 
-          <AddTagInput tags={formik.values.tags} onChange={handleTagsChange} />
+          <AddTagInput tags={formik.values.tags} onChange={handleTagsChange} className="max-w-[490px]" />
         </div>
 
         <Checkbox

@@ -61,7 +61,7 @@ export const EditEmailModal: FC<Props> = ({ open, onClose }) => {
           re_email: repeat_email,
         })
 
-        queryClient.invalidateQueries(['me'])
+        await queryClient.invalidateQueries(['me'])
 
         toast.success('Ваша эл. почта изменена')
 

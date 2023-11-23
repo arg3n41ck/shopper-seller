@@ -38,7 +38,7 @@ export const CustomSelectHover: React.FC<CustomSelectHoverProps> = ({
           { ['border-neutral-900 text-neutral-900']: value },
         )}
       >
-        <p>{(options as Category[]).find((option) => option.slug === value)?.title || value || placeholder}</p>
+        <p>{(options as Category[])?.find((option) => option.slug === value)?.title || value || placeholder}</p>
 
         <div className={cn('transition-all duration-[0.1s] ease-in-out', { ['rotate-180']: isOpen })}>
           <ChevronDown />

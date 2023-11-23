@@ -12,14 +12,21 @@ import { Skeleton } from '@/shared/ui/loaders'
 import { useFormik } from 'formik'
 import { toast } from 'react-toastify'
 import { handleApiError } from '@/shared/lib/helpers'
+import { isNull, omitBy } from 'lodash'
+import * as yup from 'yup'
 
 const sellerClient = new SellerClient()
 
 interface FormValues {
   title: string
   description: string
-  logo: File | string | null
+  logo?: File | string | null
 }
+
+export const myShopInfoValidationSchema = (t: (key: string) => string) =>
+  yup.object({
+    title: yup.string().required(t('Обязательное поле')),
+  })
 
 export const AboutShopMainSection = () => {
   const { t } = useTranslation()
@@ -43,9 +50,18 @@ export const AboutShopMainSection = () => {
       description: '',
       logo: null,
     },
+    validationSchema: myShopInfoValidationSchema(t),
     onSubmit: async (values) => {
       try {
-        !!shop?.slug && (await mutationEditShop.mutateAsync({ slug: shop.slug, shopData: values }))
+        const sanitizedValues = omitBy(values, isNull) as FormValues
+
+        if (sanitizedValues.logo instanceof File) {
+          !!shop?.slug && (await mutationEditShop.mutateAsync({ slug: shop.slug, shopData: sanitizedValues }))
+        } else {
+          const { logo, ...shopDataWithoutLogo } = sanitizedValues //eslint-disable-line
+
+          !!shop?.slug && (await mutationEditShop.mutateAsync({ slug: shop.slug, shopData: shopDataWithoutLogo }))
+        }
 
         await queryClient.invalidateQueries(['shop'])
 
@@ -117,6 +133,8 @@ export const AboutShopMainSection = () => {
                     onChange={formik.handleChange}
                     placeholder={t('Название магазина')}
                     label={t('Название магазина')}
+                    error={formik.touched.title && Boolean(formik.errors.title)}
+                    errorMessage={formik.touched.title ? formik.errors.title : ''}
                     name="title"
                     className={'max-w-[400px]'}
                   />
@@ -151,7 +169,7 @@ export const AboutShopMainSection = () => {
           <div className="mt-[60px]">
             <p className="text-[18px] font-[500] text-neutral-900">Информация о магазине</p>
 
-            {isEdit || !shop?.description ? (
+            {isEdit ? (
               <TextArea
                 value={formik.values.description}
                 onChange={formik.handleChange}
@@ -160,7 +178,7 @@ export const AboutShopMainSection = () => {
                 className={'mt-5 max-w-[528px]'}
               />
             ) : (
-              <p className="mt-4 max-w-[664px] text-base font-normal text-neutral-900">{shop.description}</p>
+              <p className="mt-4 max-w-[664px] text-base font-normal text-neutral-900">{shop?.description || '---'}</p>
             )}
           </div>
 

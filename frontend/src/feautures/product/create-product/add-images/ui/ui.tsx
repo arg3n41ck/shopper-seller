@@ -8,38 +8,19 @@ import { TypeImageFile } from '@/shared/lib/types/sellerTypes'
 
 interface AddImagesProps {
   value: TypeImageFile[]
-  fieldTitle: string
   className?: string
-  onChange: (name: string, value: TypeImageFile[] | string | boolean) => void
-  deleteImage: (index: number) => void
+  deleteImage: (index: number, id?: number) => void
+  handleToggleMainImage: (index: number, id?: number, is_main?: boolean) => void
+  handleImagesChange: (e: React.ChangeEvent<HTMLInputElement>) => void
 }
 
-export const AddImages: FC<AddImagesProps> = ({ value, fieldTitle, className, onChange, deleteImage }) => {
-  const handleToggleMainImage = (index: number) => {
-    const updatedValue = value.map((item, i) => {
-      return {
-        ...item,
-        main_image: i === index && !item.main_image,
-      }
-    })
-
-    onChange(fieldTitle, updatedValue)
-  }
-
-  const handleImagesChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
-    const files = e.target.files
-    if (files && files?.length) {
-      const images = Array.from(files).map((file) => ({
-        image: file,
-        main_image: false,
-      }))
-
-      // eslint-disable-next-line
-      // @ts-ignore
-      onChange(fieldTitle, [...value, ...images])
-    }
-  }
-
+export const AddImages: FC<AddImagesProps> = ({
+  value,
+  className,
+  deleteImage,
+  handleToggleMainImage,
+  handleImagesChange,
+}) => {
   return (
     <div className={clsx(className, 'w-full overflow-x-auto')}>
       <div className="flex gap-5">
@@ -54,17 +35,17 @@ export const AddImages: FC<AddImagesProps> = ({ value, fieldTitle, className, on
                     <Button
                       variant={BUTTON_STYLES.primaryCtaIndigo}
                       className={`${
-                        item.main_image ? 'visible' : 'invisible opacity-70'
+                        item.is_main ? 'visible' : 'invisible opacity-70'
                       } h-[25px] max-w-[100px] px-1 py-2 !text-[12px] !font-normal  group-hover/buttons:visible`}
-                      onClick={() => handleToggleMainImage(index)}
+                      onClick={() => handleToggleMainImage(index, item?.id, !item?.is_main)}
                     >
-                      {item.main_image ? 'Основное фото' : 'Сделать основным'}
+                      {item.is_main ? 'Основное фото' : 'Сделать основным'}
                     </Button>
 
                     <Button
                       variant={BUTTON_STYLES.primaryCtaIndigo}
                       className="invisible h-[25px] max-w-[24px] px-1 py-2 !text-[12px] !font-normal opacity-50 group-hover/buttons:visible"
-                      onClick={() => deleteImage(index)}
+                      onClick={() => deleteImage(index, item?.id)}
                     >
                       <X size={16} />
                     </Button>
@@ -72,7 +53,7 @@ export const AddImages: FC<AddImagesProps> = ({ value, fieldTitle, className, on
 
                   <Image
                     className={`rounded-5 relative h-[187px] w-[150px] cursor-pointer border-[2px] border-transparent object-cover ${
-                      item.main_image ? '!border-primaryDash600' : ''
+                      item.is_main ? '!border-primaryDash600' : ''
                     } group-hover/buttons:border-primaryDash600`}
                     src={image}
                     width={150}

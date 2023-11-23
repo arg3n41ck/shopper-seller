@@ -60,6 +60,7 @@ interface TypeProductFromBack {
   variants: TypeVariants
   reviews: TypeProductReview[]
   rating: number
+  quantity: number
 }
 
 interface TypeProduct {
@@ -125,13 +126,16 @@ interface TypeVariant {
   description: string
   size_variants: TypeSizeQuantity[]
   images: TypeImageFile[]
+  image_main?: string
+  price_min?: number
+  price_max?: number
 }
 
 type TypeVariants = TypeVariant[]
 
 interface TypeSizeQuantity {
   size: string
-  price?: string | null
+  price?: string | number | null
   quantity: number | string
 }
 
@@ -139,13 +143,13 @@ interface TypeImage {
   id?: number
   variant?: number
   image: File
-  main_image: boolean
+  is_main: boolean
 }
 
 interface TypeImageFile {
   id?: number
   index?: number
-  main_image: boolean
+  is_main: boolean
   image: string
 }
 
