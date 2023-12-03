@@ -7,7 +7,7 @@ interface HoverSideMenuProps {
   options: Category[] | Category | undefined
   prevItem?: Category
   child?: boolean
-  onClick?: (item: string) => void
+  onClick?: (item: Category) => void
 }
 
 export const HoverSideMenuDesktop: React.FC<HoverSideMenuProps> = ({ options: propsItem, child = false, onClick }) => {
@@ -22,7 +22,7 @@ export const HoverSideMenuDesktop: React.FC<HoverSideMenuProps> = ({ options: pr
   }, [currentItem])
 
   const handleClick = (item: Category) => {
-    onClick && onClick(item.slug || '')
+    onClick && onClick(item)
     if (item?.title && item?.children?.length) return
     setCurrentItem(item)
   }
@@ -43,7 +43,10 @@ export const HoverSideMenuDesktop: React.FC<HoverSideMenuProps> = ({ options: pr
   const items = Array.isArray(propsItem) ? propsItem : propsItem?.children
 
   return (
-    <div className={cn('absolute flex items-start', 'w-[250px] bg-white shadow-md')} onMouseLeave={handleMouseLeave}>
+    <div
+      className={cn('absolute z-[999] flex items-start', 'w-[250px] bg-white shadow-md')}
+      onMouseLeave={handleMouseLeave}
+    >
       <div className={cn('', 'hide-scrollbar h-[450px] overflow-y-auto overflow-x-hidden')}>
         {items?.map((item, i) => (
           <ul

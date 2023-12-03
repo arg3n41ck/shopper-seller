@@ -48,7 +48,6 @@ interface TypeProductFromBack {
   price_from: string
   discount: number | string
   category: TypeCategory
-  parent_category: string
   country: string
   tags: TypeProductTag[]
   specifications: TypeSpecification[]
@@ -74,8 +73,7 @@ interface TypeProduct {
   for_kids: boolean
   price_from: string
   discount: number | string
-  category: TypeCategory | number | string
-  parent_category: string
+  category: number | string
   country: string
   tags: string[]
   specifications: TypeSpecification[]
@@ -87,6 +85,7 @@ interface TypeProduct {
   variants: TypeVariants
   reviews?: TypeProductReview[]
   rating?: number
+  pre_order: string
 }
 
 interface TypeCategory {
@@ -129,6 +128,7 @@ interface TypeVariant {
   image_main?: string
   price_min?: number
   price_max?: number
+  is_main: boolean
 }
 
 type TypeVariants = TypeVariant[]

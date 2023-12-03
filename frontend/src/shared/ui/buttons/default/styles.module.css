@@ -6,6 +6,7 @@
 
 .PrimaryCTAButton {
   @apply bg-primaryMain900 text-white hover:bg-neutral-500;
+  border: 1px solid #171717;
 }
 
 .PrimaryCTAIndigoButton {

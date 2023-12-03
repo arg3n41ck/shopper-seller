@@ -156,7 +156,7 @@ export const MyProductsMainSection: FC = () => {
                         value={filters.category}
                         placeholder={'Категория'}
                         options={categories}
-                        onClick={(value) => handleFilterChange('category', value)}
+                        onClick={(value) => handleFilterChange('category', value.slug || '')}
                       />
 
                       <CustomSelect

@@ -1,6 +1,6 @@
 import React, { FC, useState } from 'react'
 import { ProductDetailCarouselIMages } from '@/feautures/product/product-detail'
-import { Edit2 } from 'react-feather'
+import { CheckCircle, Edit2 } from 'react-feather'
 import { BUTTON_STYLES } from '@/shared/lib/consts/styles'
 import { useRouter } from 'next/router'
 import { PATH_LK_SELLER } from '@/shared/config'
@@ -8,6 +8,7 @@ import { Button } from '@/shared/ui/buttons'
 import { VariantProduct } from '../../createProduct'
 import { ProductVariantDetailModal } from '../modal'
 import { TypeProductFromBack, TypeSpecification, TypeVariant } from '@/shared/lib/types/sellerTypes'
+import ProductDetailReview from '../reviews/ui'
 
 const gender = [
   {
@@ -192,11 +193,31 @@ export const ProductDetailPage: FC<ProductDetailPageProps> = ({ product }) => {
                     Посмотреть
                     {/* <Edit size={16} /> */}
                   </Button>
+
+                  <Button
+                    onClick={() => {}}
+                    variant={BUTTON_STYLES[variant.is_main ? 'primaryCta' : 'withoutBackground']}
+                    className="mt-4 !p-1"
+                  >
+                    <div className="flex items-center gap-2">
+                      {variant.is_main && <CheckCircle size={16} />}
+                      {variant.is_main ? 'Основной' : 'Сделать основным'}
+                    </div>
+                  </Button>
                 </div>
               ))}
             </div>
           </div>
         )}
+
+        <div className="flex flex-col gap-5">
+          <div className="inline-flex items-center justify-start gap-2">
+            <p className="text-lg font-medium text-neutral-900">Отзывы</p>
+            <p className="shrink grow basis-0 text-lg font-medium text-stone-500">3</p>
+          </div>
+
+          <ProductDetailReview />
+        </div>
       </div>
 
       {showVariantDetail && (

@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, FC, useRef } from 'react'
+import React, { useEffect, useMemo, FC, useRef, useState } from 'react'
 import { useFormik } from 'formik'
 import * as yup from 'yup'
 import { SellerClient } from '@/shared/apis/sellerClient'
@@ -20,6 +20,8 @@ import { TypeProduct } from '@/shared/lib/types/sellerTypes'
 import { Product, ProductCreate } from '@/shared/api/gen'
 import { handleApiError } from '@/shared/lib/helpers'
 import { convertStringTagsToIds } from '@/shared/lib/helpers/convertStringTagsToIds'
+import CustomSwitch from '@/shared/ui/inputs/switch'
+import { CustomSelectHover } from '@/shared/ui/selects/default/CustomSelectHover'
 
 const sellerClient = new SellerClient()
 
@@ -100,10 +102,9 @@ export const ProductEditPage: FC<ProductEditPageProps> = ({ product }) => {
   const mutationEditProduct = useMutation(({ id, values }: { id: string; values: ProductCreate }) =>
     editProduct(id, values),
   )
+  const [isPreOrder, setIsPreOrder] = useState(false)
   const { data: categories } = useQuery(['categories'], sellerClient.fetchCategories)
   const queryClient = useQueryClient()
-
-  // const { data: tags } = useQuery(['tags'], sellerClient.fetchTags)
 
   const formik = useFormik<TypeProduct>({
     initialValues: {
@@ -113,7 +114,6 @@ export const ProductEditPage: FC<ProductEditPageProps> = ({ product }) => {
       for_kids: false,
       price_from: '',
       discount: '',
-      parent_category: '',
       category: '',
       country: '',
       tags: [],
@@ -125,6 +125,7 @@ export const ProductEditPage: FC<ProductEditPageProps> = ({ product }) => {
       publish_date: '',
       sku: '',
       variants: [],
+      pre_order: '',
     },
 
     innerRef: initialValuesRef,
@@ -132,7 +133,7 @@ export const ProductEditPage: FC<ProductEditPageProps> = ({ product }) => {
     onSubmit: async (values, { resetForm }) => {
       try {
         // eslint-disable-next-line
-        const { parent_category, variants, tags, publish_date, sku, ...restValues } = values
+        const { variants, tags, publish_date, sku, ...restValues } = values
 
         if (restValues.discount === '') {
           restValues.discount = 0
@@ -159,11 +160,7 @@ export const ProductEditPage: FC<ProductEditPageProps> = ({ product }) => {
     },
   })
 
-  const subcategories = useMemo(() => {
-    // eslint-disable-next-line
-    //@ts-ignore
-    return categories?.find((category) => category.id === formik.values.parent_category)?.children || []
-  }, [categories])
+  const toggleIsPreOrder = () => setIsPreOrder((prev) => !prev)
 
   const handleFieldsValueChange = (fieldName: string, value: string) => formik.setFieldValue(fieldName, value)
 
@@ -179,6 +176,7 @@ export const ProductEditPage: FC<ProductEditPageProps> = ({ product }) => {
       description: product?.description || '',
       gender: product?.gender || '',
       for_kids: product?.for_kids || false,
+      // pre_order: product?.pre_order || false,
       price_from: product?.price_from || '',
       discount: product?.discount || '',
       category: product?.category?.id || '',
@@ -262,33 +260,14 @@ export const ProductEditPage: FC<ProductEditPageProps> = ({ product }) => {
         </div>
 
         <div className={'mt-5 flex w-[100%] gap-[24px]'}>
-          <Autocomplete
-            placeholder={t('Основная категория')}
-            inputLabel={t('Основная категория')}
-            options={categories || []}
-            onChange={(value) => {
-              handleFieldsValueChange('parent_category', value)
-              formik.setFieldValue('category', '')
-            }}
-            value={formik.values.parent_category}
-            error={formik.touched.parent_category && !!formik.errors.parent_category}
-            errorMessage={formik.touched.parent_category ? formik.errors.parent_category : ''}
-            width="100%"
-            fieldTitle="title"
-            fieldValue="id"
-          />
-
-          <Autocomplete
-            placeholder={t('Подкатегория')}
-            inputLabel={t('Подкатегория')}
-            options={subcategories || []}
-            onChange={(value) => handleFieldsValueChange('category', value)}
-            error={formik.touched.category && Boolean(formik.errors.category)}
+          <CustomSelectHover
             value={formik.values.category}
-            errorMessage={formik.touched.category ? formik.errors.category : ''}
-            width="100%"
-            fieldTitle="title"
-            fieldValue="id"
+            placeholder={'Категория'}
+            label={t('Категория')}
+            options={categories}
+            onClick={(value) => formik.setFieldValue('category', value.id)}
+            className="w-full"
+            showBreadCrumb
           />
         </div>
 
@@ -306,6 +285,26 @@ export const ProductEditPage: FC<ProductEditPageProps> = ({ product }) => {
           className={'mt-5'}
           helperText="не обязательно"
         />
+
+        <div className="mt-5 flex items-center gap-3">
+          <p className="text-base font-medium text-neutral-900">Предзаказ</p>
+          <CustomSwitch checked={isPreOrder} onChange={toggleIsPreOrder} />
+        </div>
+
+        {isPreOrder && (
+          <TextField
+            value={formik.values.pre_order}
+            error={formik.touched.pre_order && Boolean(formik.errors.pre_order)}
+            errorMessage={formik.touched.pre_order ? formik.errors.pre_order : ''}
+            onChange={formik.handleChange}
+            placeholder={t('Кол-во дней ')}
+            label={t('Через сколько дней товар будет готов')}
+            name="pre_order"
+            className="mt-5 max-w-[252px]"
+            type="number"
+          />
+        )}
+
         <p className="mt-[30px] text-[18px] font-[500] leading-[28px] text-neutral-900">Дополнительная информация</p>
 
         <TextArea

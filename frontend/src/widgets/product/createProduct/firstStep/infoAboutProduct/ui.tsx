@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react'
+import React, { useState } from 'react'
 import { SellerClient } from '@/shared/apis/sellerClient'
 import { PATH_LK_SELLER_CREATE_PRODUCT } from '@/shared/config'
 import Autocomplete from '@/shared/ui/inputs/autocomplete'
@@ -15,31 +15,16 @@ import { VariantProduct } from '../../secondStep'
 import { ProductDetailsField } from '../productDetailsField'
 import { CreateVariantModal } from '../../secondStep/modals'
 import { BUTTON_STYLES } from '@/shared/lib/consts/styles'
-import { Edit, Plus } from 'react-feather'
+import { CheckCircle, Edit, Plus } from 'react-feather'
 import { useMutation, useQuery } from '@tanstack/react-query'
 import { $apiProductsApi } from '@/shared/api'
 import { handleApiError, removeEmptyFields } from '@/shared/lib/helpers'
 import { ProductCreate } from '@/shared/api/gen'
-import { TypeCategory, TypeImage, TypeProduct, TypeSizeQuantity, TypeVariant } from '@/shared/lib/types/sellerTypes'
+import { TypeImage, TypeProduct, TypeSizeQuantity, TypeVariant } from '@/shared/lib/types/sellerTypes'
+import CustomSwitch from '@/shared/ui/inputs/switch'
+import { CustomSelectHover } from '@/shared/ui/selects/default/CustomSelectHover'
 
 const sellerClient = new SellerClient()
-
-// interface FormValues {
-//   title: string
-//   description: string
-//   gender: string
-//   for_kids: boolean
-//   price_from: string
-//   discount: string
-//   parent_category: string
-//   category: string
-//   country?: string
-//   tags: string[]
-//   specifications: SpecificationInput[]
-//   publish_date: string
-//   recommendation: string
-//   variants: TypeVariants
-// }
 
 type GenderType = {
   id: string
@@ -77,11 +62,11 @@ const validationSchema = (t: (key: string) => string) =>
       .positive(t('Цена должна быть больше или равна 0'))
       .required(t('Введите цену продукта')),
     discount: yup.number().min(0, t('Скидка должна быть не меньше 0')).max(100, t('Скидка должна быть не больше 100')),
-    parent_category: yup.string().required(t('Выберите категорию продукта')),
-    category: yup.string().required(t('Выберите подкатегорию продукта')),
+    category: yup.string().required(t('Выберите категорию продукта')),
     recommendation: yup.string().required(t('Введите рекомендации по уходу')),
     tags: yup.array(),
     publish_date: yup.string(),
+    pre_order: yup.number(),
   })
 
 const countriesData = [
@@ -103,13 +88,16 @@ export const InfoAboutProduct = () => {
   const { t } = useTranslation()
   const router = useRouter()
   const [createVariantModal, setCreateVariantModal] = useState(false)
+  const [isPreOrder, setIsPreOrder] = useState(false)
   const [createVariantModalValues, setCreateVariantModalValues] = useState<TypeVariant>({
     title: '',
     images: [],
     size_variants: [{ size: '', quantity: '', price: null }],
     description: '',
+    is_main: false,
   })
   const { data: categories } = useQuery(['categories'], sellerClient.fetchCategories)
+  const toggleIsPreOrder = () => setIsPreOrder((prev) => !prev)
 
   const createProduct = async (productData: ProductCreate) => {
     const { data } = await $apiProductsApi.productsSellerProductsCreate(productData)
@@ -145,19 +133,19 @@ export const InfoAboutProduct = () => {
       price_from: '',
       discount: '',
       country: '',
-      parent_category: '',
       category: '',
       tags: [],
       recommendation: '',
       specifications: [{ title: '', value: '' }],
       publish_date: '',
       variants: [],
+      pre_order: '',
     },
     validationSchema: validationSchema(t),
     onSubmit: async (values, { resetForm }) => {
       try {
         // eslint-disable-next-line
-        const { parent_category, variants, ...restValuesOfProduct } = values
+        const { variants, ...restValuesOfProduct } = values
 
         const productData = removeEmptyFields({ ...restValuesOfProduct }, ['for_kids', 'category'])
 
@@ -197,15 +185,25 @@ export const InfoAboutProduct = () => {
 
   const handleShowCreateVariantModal = () => {
     setCreateVariantModal((prev) => !prev)
+    setCreateVariantModalValues({
+      title: '',
+      images: [],
+      size_variants: [{ size: '', quantity: '', price: null }],
+      description: '',
+      is_main: false,
+    })
   }
 
   const handleFieldsValueChange = (fieldName: string, value: string) => formik.setFieldValue(fieldName, value)
 
-  const subcategories = useMemo(() => {
-    // eslint-disable-next-line
-    //@ts-ignore
-    return categories?.find((category: TypeCategory) => category.id === formik.values.parent_category)?.children || []
-  }, [formik, categories])
+  const handleSetMainVariant = (selectedIndex: number | string) => {
+    const updatedVariants = formik.values.variants.map((variant, index) => ({
+      ...variant,
+      is_main: index === selectedIndex ? !variant.is_main : false,
+    }))
+
+    formik.setFieldValue('variants', updatedVariants)
+  }
 
   const addVariant = (value: TypeVariant) => {
     formik.setFieldValue('variants', [...formik.values.variants, value])
@@ -227,6 +225,7 @@ export const InfoAboutProduct = () => {
       images: [],
       size_variants: [{ size: '', quantity: '' }],
       description: '',
+      is_main: false,
     })
     handleShowCreateVariantModal()
   }
@@ -293,33 +292,14 @@ export const InfoAboutProduct = () => {
         </div>
 
         <div className={'mt-5 flex w-[100%] gap-[24px]'}>
-          <Autocomplete
-            placeholder={t('Основная категория')}
-            inputLabel={t('Основная категория')}
-            options={categories || []}
-            onChange={(value) => {
-              handleFieldsValueChange('parent_category', value)
-              formik.setFieldValue('category', '')
-            }}
-            value={formik.values.parent_category}
-            error={formik.touched.parent_category && !!formik.errors.parent_category}
-            errorMessage={formik.touched.parent_category ? formik.errors.parent_category : ''}
-            width="100%"
-            fieldTitle="title"
-            fieldValue="id"
-          />
-
-          <Autocomplete
-            placeholder={t('Подкатегория')}
-            inputLabel={t('Подкатегория')}
-            options={subcategories || []}
-            onChange={(value) => handleFieldsValueChange('category', value)}
-            error={formik.touched.category && Boolean(formik.errors.category)}
+          <CustomSelectHover
             value={formik.values.category}
-            errorMessage={formik.touched.category ? formik.errors.category : ''}
-            width="100%"
-            fieldTitle="title"
-            fieldValue="id"
+            placeholder={'Категория'}
+            label={t('Категория')}
+            options={categories}
+            onClick={(value) => formik.setFieldValue('category', value.id)}
+            className="w-full"
+            showBreadCrumb
           />
         </div>
 
@@ -337,6 +317,25 @@ export const InfoAboutProduct = () => {
           className={'mt-5'}
           helperText="не обязательно"
         />
+
+        <div className="mt-5 flex items-center gap-3">
+          <p className="text-base font-medium text-neutral-900">Предзаказ</p>
+          <CustomSwitch checked={isPreOrder} onChange={toggleIsPreOrder} />
+        </div>
+
+        {isPreOrder && (
+          <TextField
+            value={formik.values.pre_order}
+            error={formik.touched.pre_order && Boolean(formik.errors.pre_order)}
+            errorMessage={formik.touched.pre_order ? formik.errors.pre_order : ''}
+            onChange={formik.handleChange}
+            placeholder={t('Кол-во дней ')}
+            label={t('Через сколько дней товар будет готов')}
+            name="pre_order"
+            className="mt-5 max-w-[252px]"
+            type="number"
+          />
+        )}
 
         <p className="mt-[30px] text-[18px] font-[500] leading-[28px] text-neutral-900">Дополнительная информация</p>
 
@@ -383,6 +382,17 @@ export const InfoAboutProduct = () => {
                 >
                   <Edit size={16} />
                 </Button>
+
+                <Button
+                  onClick={() => handleSetMainVariant(index)}
+                  variant={BUTTON_STYLES[variant.is_main ? 'primaryCta' : 'withoutBackground']}
+                  className="mt-4 !p-1"
+                >
+                  <div className="flex items-center gap-2">
+                    {variant.is_main && <CheckCircle size={16} />}
+                    {variant.is_main ? 'Основной' : 'Сделать основным'}
+                  </div>
+                </Button>
               </div>
             ))}
         </div>
@@ -411,6 +421,7 @@ export const InfoAboutProduct = () => {
           editVariant={editVariant}
           removeVariant={removeVariant}
           defaultValues={createVariantModalValues}
+          handleSetMainVariant={handleSetMainVariant}
         />
       )}
     </>

@@ -25,6 +25,7 @@ interface VariantProps {
   defaultValues?: TypeVariant
   deleteImage?: (id: number) => void
   toggleVariantMainImage?: (id: number, is_main: boolean) => void
+  handleSetMainVariant?: (value: number | string) => void
 }
 
 const sizeQuantitySchema = yup.object({
@@ -55,17 +56,24 @@ const CreateVariantModal: FC<VariantProps> = ({
     images: [],
     size_variants: [{ size: '', quantity: '', price: null }],
     description: '',
+    is_main: false,
   },
   deleteImage,
   toggleVariantMainImage,
+  handleSetMainVariant,
 }) => {
   const { t } = useTranslation()
   const [isDeleteBackdrop, setIsDeleteBackdrop] = useState<boolean>(false)
   const idOfVariant = isNumber(defaultValues?.index) ? defaultValues?.index : (defaultValues?.slug as string | number)
-  const [isSwitchEnabled, setIsSwitchEnabled] = useState(false)
+  const [isSwitchEnabled, setIsSwitchEnabled] = useState({
+    size_price: false,
+  })
 
-  const handleSwitchChange = (checked: boolean) => {
-    setIsSwitchEnabled(checked)
+  const handleSwitchChange = (fieldName: keyof typeof isSwitchEnabled) => {
+    setIsSwitchEnabled((prevState) => ({
+      ...prevState,
+      [fieldName]: !prevState[fieldName],
+    }))
   }
 
   const handleShowDeleteBackDrop = () => setIsDeleteBackdrop((prev) => !prev)
@@ -160,7 +168,7 @@ const CreateVariantModal: FC<VariantProps> = ({
             />
           </div>
 
-          <p className="mb-3 mt-[30px] text-[18px] font-semibold text-neutral-900">Фотографии</p>
+          <p className="mb-3 mt-5 text-[18px] font-semibold text-neutral-900">Фотографии</p>
 
           <AddImages
             value={formik.values.images}
@@ -171,19 +179,33 @@ const CreateVariantModal: FC<VariantProps> = ({
 
           <p className="mb-5 mt-8 text-[18px] font-semibold text-neutral-900">Размеры и количество</p>
 
-          <div className="flex w-full max-w-[490px] justify-between gap-3">
-            <p className="w-[430.52px] text-base font-medium text-neutral-900">Указать цену для каждого размера</p>
+          <div className="flex w-full max-w-[490px] gap-3">
+            <p className="text-base font-medium text-neutral-900">Сделать вариант основным</p>
 
-            <CustomSwitch checked={isSwitchEnabled} onChange={handleSwitchChange} />
+            <CustomSwitch
+              checked={formik.values.is_main}
+              onChange={() => {
+                formik.setFieldValue('is_main', !formik.values.is_main)
+                if (handleSetMainVariant && isNumber(idOfVariant)) {
+                  handleSetMainVariant(idOfVariant)
+                }
+              }}
+            />
           </div>
 
-          <div className="flex w-full max-w-[558px] flex-col gap-5">
+          <div className="mt-5 flex w-full max-w-[490px] justify-between gap-3">
+            <p className="text-base font-medium text-neutral-900">Указать цену для каждого размера</p>
+
+            <CustomSwitch checked={isSwitchEnabled.size_price} onChange={() => handleSwitchChange('size_price')} />
+          </div>
+
+          <div className=" mt-5 flex w-full max-w-[558px] flex-col gap-5">
             <SizesAndQuantity
               value={formik.values.size_variants}
               onChange={onChangeFormik}
               touched={formik.touched.size_variants}
               error={formik.errors.size_variants}
-              addPriceField={isSwitchEnabled}
+              addPriceField={isSwitchEnabled.size_price}
               onDelete={handleDeleteFieldOfSizeAndQuantity}
             />
           </div>
