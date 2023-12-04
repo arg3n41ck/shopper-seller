@@ -1,4 +1,4 @@
-import { Category } from '@/shared/api/gen/dist'
+import { Category } from '@/shared/api/gen'
 
 export const findCategoryAndParents = (categories: Category[] | undefined, identifier: string | number): string[] => {
   if (!categories) return []
