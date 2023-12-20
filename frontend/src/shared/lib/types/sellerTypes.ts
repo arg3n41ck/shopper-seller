@@ -85,7 +85,8 @@ interface TypeProduct {
   variants: TypeVariants
   reviews?: TypeProductReview[]
   rating?: number
-  pre_order: string
+  pre_order_days: string | number
+  is_pre_order: boolean
 }
 
 interface TypeCategory {
@@ -128,6 +129,7 @@ interface TypeVariant {
   image_main?: string
   price_min?: number
   price_max?: number
+  sum_size_quantities?: number
   is_main: boolean
 }
 
@@ -150,7 +152,12 @@ interface TypeImageFile {
   id?: number
   index?: number
   is_main: boolean
-  image: string
+  image:
+    | string
+    | {
+        fileName?: string
+        base64?: string
+      }
 }
 
 interface TypeProductTag {

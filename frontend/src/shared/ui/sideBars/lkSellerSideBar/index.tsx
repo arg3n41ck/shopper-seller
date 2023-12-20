@@ -2,7 +2,7 @@ import React, { FC, useMemo, useState } from 'react'
 import LogoIcon from '@/shared/assets/icons/LogoIcon'
 import { PATH_AUTH } from '@/shared/config'
 import { useRouter } from 'next/router'
-import { Clipboard, Folder, Home, List, LogOut, Menu, Settings, Users } from 'react-feather'
+import { Clipboard, Folder, Home, List, LogOut, Menu, Settings } from 'react-feather'
 import { motion } from 'framer-motion'
 import cn from 'classnames'
 import LogOutBackdrop from './logOutModal'
@@ -59,12 +59,6 @@ export const LKSellerSideBar: FC<Props> = ({ open, menuHandler }) => {
         path: '/lk-seller/about-shop',
         icon: <Clipboard />,
       },
-
-      {
-        name: 'Архив',
-        path: '/lk-seller/archive',
-        icon: <Users />,
-      },
       {
         name: 'Настройки',
         path: '/lk-seller/settings',
@@ -104,7 +98,7 @@ export const LKSellerSideBar: FC<Props> = ({ open, menuHandler }) => {
           </div>
         </div>
         <motion.ul
-          className={`max-w-[${open ? 288 : 60}px] grid grid-cols-1`}
+          className={`max-w-[${open ? 283 : 60}px] grid grid-cols-1`}
           animate={isOpen}
           variants={variantsSidebar}
           transition={transitionForAnimate}
@@ -124,7 +118,7 @@ export const LKSellerSideBar: FC<Props> = ({ open, menuHandler }) => {
                 onClick={() => router.push({ pathname: item.path })}
                 key={item.name}
               >
-                <div className="decoration-none flex gap-[37px] text-[16px] font-[600]">
+                <div className="decoration-none flex gap-6 text-[16px] font-[600]">
                   {item.icon}
                   {open && <p className="whitespace-nowrap">{item.name}</p>}
                 </div>

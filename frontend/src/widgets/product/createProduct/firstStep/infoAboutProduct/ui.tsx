@@ -1,10 +1,9 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { SellerClient } from '@/shared/apis/sellerClient'
 import { PATH_LK_SELLER_CREATE_PRODUCT } from '@/shared/config'
 import Autocomplete from '@/shared/ui/inputs/autocomplete'
 import { Button } from 'src/shared/ui/buttons'
 import Checkbox from 'src/shared/ui/inputs/checkbox'
-import CustomSelect from 'src/shared/ui/selects/default'
 import { TextArea } from '@/shared/ui/inputs/textArea'
 import TextField from '@/shared/ui/inputs/textField'
 import { useFormik } from 'formik'
@@ -16,39 +15,17 @@ import { ProductDetailsField } from '../productDetailsField'
 import { CreateVariantModal } from '../../secondStep/modals'
 import { BUTTON_STYLES } from '@/shared/lib/consts/styles'
 import { CheckCircle, Edit, Plus } from 'react-feather'
-import { useMutation, useQuery } from '@tanstack/react-query'
-import { $apiProductsApi } from '@/shared/api'
-import { handleApiError, removeEmptyFields } from '@/shared/lib/helpers'
-import { ProductCreate } from '@/shared/api/gen'
-import { TypeImage, TypeProduct, TypeSizeQuantity, TypeVariant } from '@/shared/lib/types/sellerTypes'
+import { useQuery } from '@tanstack/react-query'
+import { handleApiError } from '@/shared/lib/helpers'
+import { TypeProduct, TypeVariant } from '@/shared/lib/types/sellerTypes'
 import CustomSwitch from '@/shared/ui/inputs/switch'
 import { CustomSelectHover } from '@/shared/ui/selects/default/CustomSelectHover'
+import { countriesData, genders } from '@/shared/lib/consts/globals'
+import { CustomSelect } from '@/shared/ui'
+import { useCreateProduct } from '../../model'
+import { useConfirmOnExit } from '@/shared/lib/hooks/useConfirmOnExit'
 
 const sellerClient = new SellerClient()
-
-type GenderType = {
-  id: string
-  name: string
-  value: string
-}
-
-const gender: GenderType[] = [
-  {
-    id: '1',
-    name: 'Мужчина',
-    value: 'MALE',
-  },
-  {
-    id: '2',
-    name: 'Женщина',
-    value: 'FEMALE',
-  },
-  {
-    id: '3',
-    name: 'Унисекс',
-    value: 'UNISEX',
-  },
-]
 
 const validationSchema = (t: (key: string) => string) =>
   yup.object({
@@ -65,30 +42,13 @@ const validationSchema = (t: (key: string) => string) =>
     category: yup.string().required(t('Выберите категорию продукта')),
     recommendation: yup.string().required(t('Введите рекомендации по уходу')),
     tags: yup.array(),
-    publish_date: yup.string(),
     pre_order: yup.number(),
   })
-
-const countriesData = [
-  {
-    id: '1',
-    title: 'США',
-  },
-  {
-    id: '2',
-    title: 'Китай',
-  },
-  {
-    id: '3',
-    title: 'Германия',
-  },
-]
 
 export const InfoAboutProduct = () => {
   const { t } = useTranslation()
   const router = useRouter()
   const [createVariantModal, setCreateVariantModal] = useState(false)
-  const [isPreOrder, setIsPreOrder] = useState(false)
   const [createVariantModalValues, setCreateVariantModalValues] = useState<TypeVariant>({
     title: '',
     images: [],
@@ -97,32 +57,25 @@ export const InfoAboutProduct = () => {
     is_main: false,
   })
   const { data: categories } = useQuery(['categories'], sellerClient.fetchCategories)
-  const toggleIsPreOrder = () => setIsPreOrder((prev) => !prev)
-
-  const createProduct = async (productData: ProductCreate) => {
-    const { data } = await $apiProductsApi.productsSellerProductsCreate(productData)
-    return data
-  }
-
-  const createProductVariant = async (product: number = 0, variantData: TypeVariant) => {
-    const sizeVariants = variantData.size_variants.map((sizeVariant: TypeSizeQuantity) => ({
-      ...sizeVariant,
-      quantity: Number(sizeVariant.quantity),
-    }))
-    const { data } = await $apiProductsApi.productsSellerProductVariantsCreate({
-      product,
-      ...variantData,
-      size_variants: sizeVariants,
-    })
-    return data
-  }
-
-  const uploadProductVariantImage = async (variant: number = 0, image: File, isMain: boolean) => {
-    const { data } = await $apiProductsApi.productsSellerVariantImagesCreate(variant, image, isMain)
-    return data
-  }
-
-  const mutationCreateProduct = useMutation(createProduct)
+  const createProductFormValues = useCreateProduct()
+  const {
+    title,
+    description,
+    gender,
+    for_kids,
+    price_from,
+    discount,
+    country,
+    category,
+    tags,
+    recommendation,
+    specifications,
+    variants,
+    is_pre_order,
+    pre_order_days,
+    setProductData,
+  } = createProductFormValues
+  const [allowNavigation, setAllowNavigation] = useState(false)
 
   const formik = useFormik<TypeProduct>({
     initialValues: {
@@ -137,43 +90,21 @@ export const InfoAboutProduct = () => {
       tags: [],
       recommendation: '',
       specifications: [{ title: '', value: '' }],
-      publish_date: '',
       variants: [],
-      pre_order: '',
+      is_pre_order: false,
+      pre_order_days: '',
     },
+
     validationSchema: validationSchema(t),
     onSubmit: async (values, { resetForm }) => {
       try {
-        // eslint-disable-next-line
-        const { variants, ...restValuesOfProduct } = values
-
-        const productData = removeEmptyFields({ ...restValuesOfProduct }, ['for_kids', 'category'])
-
-        // eslint-disable-next-line
-        //@ts-ignore
-        const responseProduct = await mutationCreateProduct.mutateAsync(productData)
-
-        if (Array.isArray(variants) && variants.length > 0) {
-          await Promise.all(
-            variants.map(async ({ images, ...restValuesOfVariant }) => {
-              // eslint-disable-next-line
-              //@ts-ignore
-              const responseVariant = await createProductVariant(responseProduct.id, restValuesOfVariant)
-
-              await Promise.all(
-                // eslint-disable-next-line
-                //@ts-ignore
-                images.map(async ({ image, is_main }: TypeImage) => {
-                  await uploadProductVariantImage(responseVariant?.id, image, is_main)
-                }),
-              )
-            }),
-          )
-        }
+        setAllowNavigation(true)
+        await setProductData(values)
 
         router.push({
-          pathname: `${PATH_LK_SELLER_CREATE_PRODUCT.previewProduct}/${responseProduct.slug}`,
+          pathname: `${PATH_LK_SELLER_CREATE_PRODUCT.previewProduct}`,
         })
+
         resetForm()
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore
@@ -206,7 +137,15 @@ export const InfoAboutProduct = () => {
   }
 
   const addVariant = (value: TypeVariant) => {
-    formik.setFieldValue('variants', [...formik.values.variants, value])
+    let updatedVariants = [...formik.values.variants]
+
+    if (value.is_main) {
+      updatedVariants = updatedVariants.map((variant) => ({ ...variant, is_main: false }))
+    }
+
+    updatedVariants.push(value)
+
+    formik.setFieldValue('variants', updatedVariants)
   }
 
   const editVariant = (index: number | string, value: TypeVariant) => {
@@ -219,7 +158,9 @@ export const InfoAboutProduct = () => {
     const updatedVariants = formik.values.variants.filter(
       (_: TypeVariant, index: number) => index !== variantIndexToRemove,
     )
+
     formik.setFieldValue('variants', updatedVariants)
+
     setCreateVariantModalValues({
       title: '',
       images: [],
@@ -229,6 +170,27 @@ export const InfoAboutProduct = () => {
     })
     handleShowCreateVariantModal()
   }
+
+  useConfirmOnExit(formik.dirty, allowNavigation)
+
+  useEffect(() => {
+    formik.setValues({
+      title,
+      description,
+      gender,
+      for_kids,
+      price_from,
+      discount,
+      country,
+      category,
+      tags,
+      recommendation,
+      specifications,
+      variants,
+      is_pre_order,
+      pre_order_days,
+    })
+  }, [createProductFormValues])
 
   return (
     <>
@@ -254,9 +216,9 @@ export const InfoAboutProduct = () => {
           value={formik.values.gender}
           error={formik.touched.gender && Boolean(formik.errors.gender)}
           errorMessage={formik.touched.gender ? formik.errors.gender : ''}
-          options={gender}
+          options={genders}
           onChange={(value) => handleFieldsValueChange('gender', value)}
-          fieldTitle="name"
+          fieldTitle="title"
           fieldValue="value"
           className={'mt-5 w-[50%]'}
         />
@@ -296,6 +258,8 @@ export const InfoAboutProduct = () => {
             value={formik.values.category}
             placeholder={'Категория'}
             label={t('Категория')}
+            error={formik.touched.category && Boolean(formik.errors.category)}
+            errorMessage={formik.touched.category ? formik.errors.category : ''}
             options={categories}
             onClick={(value) => formik.setFieldValue('category', value.id)}
             className="w-full"
@@ -320,18 +284,21 @@ export const InfoAboutProduct = () => {
 
         <div className="mt-5 flex items-center gap-3">
           <p className="text-base font-medium text-neutral-900">Предзаказ</p>
-          <CustomSwitch checked={isPreOrder} onChange={toggleIsPreOrder} />
+          <CustomSwitch
+            checked={formik.values.is_pre_order}
+            onChange={() => formik.setFieldValue('is_pre_order', !formik.values.is_pre_order)}
+          />
         </div>
 
-        {isPreOrder && (
+        {formik.values.is_pre_order && (
           <TextField
-            value={formik.values.pre_order}
-            error={formik.touched.pre_order && Boolean(formik.errors.pre_order)}
-            errorMessage={formik.touched.pre_order ? formik.errors.pre_order : ''}
+            value={formik.values.pre_order_days}
+            error={formik.touched.pre_order_days && Boolean(formik.errors.pre_order_days)}
+            errorMessage={formik.touched.pre_order_days ? formik.errors.pre_order_days : ''}
             onChange={formik.handleChange}
             placeholder={t('Кол-во дней ')}
             label={t('Через сколько дней товар будет готов')}
-            name="pre_order"
+            name="pre_order_days"
             className="mt-5 max-w-[252px]"
             type="number"
           />

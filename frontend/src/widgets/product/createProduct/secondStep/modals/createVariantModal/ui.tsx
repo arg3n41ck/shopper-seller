@@ -65,6 +65,7 @@ const CreateVariantModal: FC<VariantProps> = ({
   const { t } = useTranslation()
   const [isDeleteBackdrop, setIsDeleteBackdrop] = useState<boolean>(false)
   const idOfVariant = isNumber(defaultValues?.index) ? defaultValues?.index : (defaultValues?.slug as string | number)
+  const isIdOfVariant = typeof idOfVariant === 'number' ? isNumber(idOfVariant) : !!idOfVariant
   const [isSwitchEnabled, setIsSwitchEnabled] = useState({
     size_price: false,
   })
@@ -179,19 +180,21 @@ const CreateVariantModal: FC<VariantProps> = ({
 
           <p className="mb-5 mt-8 text-[18px] font-semibold text-neutral-900">Размеры и количество</p>
 
-          <div className="flex w-full max-w-[490px] gap-3">
-            <p className="text-base font-medium text-neutral-900">Сделать вариант основным</p>
+          {!isIdOfVariant && (
+            <div className="flex w-full max-w-[490px] gap-3">
+              <p className="text-base font-medium text-neutral-900">Сделать вариант основным</p>
 
-            <CustomSwitch
-              checked={formik.values.is_main}
-              onChange={() => {
-                formik.setFieldValue('is_main', !formik.values.is_main)
-                if (handleSetMainVariant && isNumber(idOfVariant)) {
-                  handleSetMainVariant(idOfVariant)
-                }
-              }}
-            />
-          </div>
+              <CustomSwitch
+                checked={formik.values.is_main}
+                onChange={() => {
+                  formik.setFieldValue('is_main', !formik.values.is_main)
+                  if (handleSetMainVariant && isIdOfVariant) {
+                    handleSetMainVariant(idOfVariant)
+                  }
+                }}
+              />
+            </div>
+          )}
 
           <div className="mt-5 flex w-full max-w-[490px] justify-between gap-3">
             <p className="text-base font-medium text-neutral-900">Указать цену для каждого размера</p>

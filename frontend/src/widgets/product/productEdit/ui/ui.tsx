@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, FC, useRef, useState } from 'react'
+import React, { useEffect, useMemo, FC, useRef } from 'react'
 import { useFormik } from 'formik'
 import * as yup from 'yup'
 import { SellerClient } from '@/shared/apis/sellerClient'
@@ -8,7 +8,6 @@ import { AddTagInput } from '@/feautures/product/create-product'
 import { BUTTON_STYLES } from '@/shared/lib/consts/styles'
 import { Check } from 'react-feather'
 import TextField from '@/shared/ui/inputs/textField'
-import CustomSelect from '@/shared/ui/selects/default'
 import Checkbox from '@/shared/ui/inputs/checkbox'
 import Autocomplete from '@/shared/ui/inputs/autocomplete'
 import { TextArea } from '@/shared/ui/inputs/textArea'
@@ -18,10 +17,12 @@ import { $apiProductsApi } from '@/shared/api'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { TypeProduct } from '@/shared/lib/types/sellerTypes'
 import { Product, ProductCreate } from '@/shared/api/gen'
-import { handleApiError } from '@/shared/lib/helpers'
+import { handleApiError, removeEmptyFields } from '@/shared/lib/helpers'
 import { convertStringTagsToIds } from '@/shared/lib/helpers/convertStringTagsToIds'
 import CustomSwitch from '@/shared/ui/inputs/switch'
 import { CustomSelectHover } from '@/shared/ui/selects/default/CustomSelectHover'
+import { countriesData, genders } from '@/shared/lib/consts/globals'
+import { CustomSelect } from '@/shared/ui'
 
 const sellerClient = new SellerClient()
 
@@ -33,30 +34,6 @@ const editProduct = async (productId: string, updatedData: ProductCreate) => {
 interface ProductEditPageProps {
   product: Product
 }
-
-type GenderType = {
-  id: string
-  name: string
-  value: string
-}
-
-const gender: GenderType[] = [
-  {
-    id: '1',
-    name: 'Мужчина',
-    value: 'MALE',
-  },
-  {
-    id: '2',
-    name: 'Женщина',
-    value: 'FEMALE',
-  },
-  {
-    id: '3',
-    name: 'Унисекс',
-    value: 'UNISEX',
-  },
-]
 
 const validationSchema = (t: (key: string) => string) =>
   yup.object({
@@ -79,21 +56,6 @@ const validationSchema = (t: (key: string) => string) =>
     publish_date: yup.string(),
   })
 
-const countriesData = [
-  {
-    id: '1',
-    title: 'США',
-  },
-  {
-    id: '2',
-    title: 'Китай',
-  },
-  {
-    id: '3',
-    title: 'Германия',
-  },
-]
-
 export const ProductEditPage: FC<ProductEditPageProps> = ({ product }) => {
   const { t } = useTranslation()
   const router = useRouter()
@@ -102,7 +64,6 @@ export const ProductEditPage: FC<ProductEditPageProps> = ({ product }) => {
   const mutationEditProduct = useMutation(({ id, values }: { id: string; values: ProductCreate }) =>
     editProduct(id, values),
   )
-  const [isPreOrder, setIsPreOrder] = useState(false)
   const { data: categories } = useQuery(['categories'], sellerClient.fetchCategories)
   const queryClient = useQueryClient()
 
@@ -122,10 +83,9 @@ export const ProductEditPage: FC<ProductEditPageProps> = ({ product }) => {
         { title: '', value: '' },
         { title: '', value: '' },
       ],
-      publish_date: '',
-      sku: '',
       variants: [],
-      pre_order: '',
+      is_pre_order: false,
+      pre_order_days: '',
     },
 
     innerRef: initialValuesRef,
@@ -133,7 +93,7 @@ export const ProductEditPage: FC<ProductEditPageProps> = ({ product }) => {
     onSubmit: async (values, { resetForm }) => {
       try {
         // eslint-disable-next-line
-        const { variants, tags, publish_date, sku, ...restValues } = values
+        const { variants, tags, ...restValues } = values
 
         if (restValues.discount === '') {
           restValues.discount = 0
@@ -147,7 +107,7 @@ export const ProductEditPage: FC<ProductEditPageProps> = ({ product }) => {
 
         // eslint-disable-next-line
         //@ts-ignore
-        await mutationEditProduct.mutateAsync({ id, values: { ...restValues, tags: updatedTags } })
+        await mutationEditProduct.mutateAsync({ id, values: { ...removeEmptyFields(restValues), tags: updatedTags } })
         await queryClient.invalidateQueries(['product'])
         await queryClient.invalidateQueries(['tags'])
         router.back()
@@ -159,8 +119,6 @@ export const ProductEditPage: FC<ProductEditPageProps> = ({ product }) => {
       }
     },
   })
-
-  const toggleIsPreOrder = () => setIsPreOrder((prev) => !prev)
 
   const handleFieldsValueChange = (fieldName: string, value: string) => formik.setFieldValue(fieldName, value)
 
@@ -176,7 +134,8 @@ export const ProductEditPage: FC<ProductEditPageProps> = ({ product }) => {
       description: product?.description || '',
       gender: product?.gender || '',
       for_kids: product?.for_kids || false,
-      // pre_order: product?.pre_order || false,
+      is_pre_order: !!product?.is_pre_order,
+      pre_order_days: product?.pre_order_days || '',
       price_from: product?.price_from || '',
       discount: product?.discount || '',
       category: product?.category?.id || '',
@@ -220,7 +179,7 @@ export const ProductEditPage: FC<ProductEditPageProps> = ({ product }) => {
           value={formik.values.gender}
           error={formik.touched.gender && Boolean(formik.errors.gender)}
           errorMessage={formik.touched.gender ? formik.errors.gender : ''}
-          options={gender}
+          options={genders}
           onChange={(value) => handleFieldsValueChange('gender', value)}
           fieldTitle="name"
           fieldValue="value"
@@ -264,6 +223,8 @@ export const ProductEditPage: FC<ProductEditPageProps> = ({ product }) => {
             value={formik.values.category}
             placeholder={'Категория'}
             label={t('Категория')}
+            error={formik.touched.category && Boolean(formik.errors.category)}
+            errorMessage={formik.touched.category ? formik.errors.category : ''}
             options={categories}
             onClick={(value) => formik.setFieldValue('category', value.id)}
             className="w-full"
@@ -288,18 +249,21 @@ export const ProductEditPage: FC<ProductEditPageProps> = ({ product }) => {
 
         <div className="mt-5 flex items-center gap-3">
           <p className="text-base font-medium text-neutral-900">Предзаказ</p>
-          <CustomSwitch checked={isPreOrder} onChange={toggleIsPreOrder} />
+          <CustomSwitch
+            checked={formik.values.is_pre_order}
+            onChange={() => formik.setFieldValue('is_pre_order', !formik.values.is_pre_order)}
+          />
         </div>
 
-        {isPreOrder && (
+        {formik.values.is_pre_order && (
           <TextField
-            value={formik.values.pre_order}
-            error={formik.touched.pre_order && Boolean(formik.errors.pre_order)}
-            errorMessage={formik.touched.pre_order ? formik.errors.pre_order : ''}
+            value={formik.values.pre_order_days}
+            error={formik.touched.pre_order_days && Boolean(formik.errors.pre_order_days)}
+            errorMessage={formik.touched.pre_order_days ? formik.errors.pre_order_days : ''}
             onChange={formik.handleChange}
             placeholder={t('Кол-во дней ')}
             label={t('Через сколько дней товар будет готов')}
-            name="pre_order"
+            name="pre_order_days"
             className="mt-5 max-w-[252px]"
             type="number"
           />

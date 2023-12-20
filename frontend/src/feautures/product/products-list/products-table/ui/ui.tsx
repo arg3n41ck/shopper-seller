@@ -8,7 +8,7 @@ interface ProductTableProps {
 
 export const ProductTable: React.FC<ProductTableProps> = ({ tableHeader, tableBody, tableFooter }) => {
   return (
-    <div>
+    <div className="w-full">
       <table
         className="relative w-full 
         table-fixed overflow-auto

@@ -20,6 +20,7 @@ interface PathLKSellerStructure {
   productsList: string
   archive: string
   settings: string
+  orderHistory: string
 }
 
 export type TypedPathLKSeller = Paths<PathLKSellerStructure>

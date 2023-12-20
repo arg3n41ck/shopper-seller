@@ -12,16 +12,16 @@ const fetchProduct = async (slug: string) => {
 
 const ProductDetail = () => {
   const router = useRouter()
-  const id = (router.query?.id as string) || ''
+  const slug = (router.query?.slug as string) || ''
   const [isQueryEnabled, setIsQueryEnabled] = useState(false)
 
   useEffect(() => {
-    if (id) {
+    if (slug) {
       setIsQueryEnabled(true)
     }
-  }, [id])
+  }, [slug])
 
-  const { data } = useQuery(['product', id], () => fetchProduct(id), {
+  const { data } = useQuery(['product', slug], () => fetchProduct(slug), {
     enabled: isQueryEnabled,
   })
 

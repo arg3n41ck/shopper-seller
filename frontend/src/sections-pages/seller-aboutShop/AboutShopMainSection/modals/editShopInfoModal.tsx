@@ -59,9 +59,6 @@ export const EditShopInfoModal = ({ open, onClose }: IEditShopInfoModalProps) =>
         // onClose()
       } catch (error: Error | unknown) {
         setIsLoading(false)
-        if (error) {
-          throw new Error()
-        }
       }
     },
   })

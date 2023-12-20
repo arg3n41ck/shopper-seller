@@ -1,6 +1,9 @@
 import { Category } from '@/shared/api/gen'
 
-export const findCategoryAndParents = (categories: Category[] | undefined, identifier: string | number): string[] => {
+export const findCategoryAndParents = (
+  categories: Category[] | undefined,
+  identifier: string | number | undefined,
+): string[] => {
   if (!categories) return []
 
   const queue: { category: Category; path: string[] }[] = categories.map((cat) => ({ category: cat, path: [] }))

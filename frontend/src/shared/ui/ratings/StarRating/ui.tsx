@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
-import FillStar from 'public/images/icons/ratings/fill-star.svg'
-import EmptyStar from 'public/images/icons/ratings/empty-star.svg'
+import FillStar from 'src/shared/assets/icons/ratings/fill-star.svg'
+import EmptyStar from 'src/shared/assets/icons/ratings/empty-star.svg'
 import Image from 'next/image'
 
 interface StarRatingProps {

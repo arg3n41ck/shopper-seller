@@ -44,9 +44,19 @@ export const CarouselWithMainImage: FC<CarouselWithMainImageProps> = ({ images }
     scrollToImage(mainImageIndex !== -1 ? mainImageIndex : 0)
   }, [images])
 
+  const getImageSrc = (image: TypeImageFile): string => {
+    if (image && typeof image.image === 'object' && image.image instanceof File) {
+      return URL.createObjectURL(image.image)
+    } else if (image && typeof image.image === 'object' && image.image.base64) {
+      return image.image.base64
+    } else {
+      return '/images/mock/child.png'
+    }
+  }
+
   return (
-    <div className="relative flex gap-[20px]">
-      <div className="hideScrollbar max-h-[690px] overflow-y-scroll">
+    <div className="relative flex max-h-[690px] gap-[20px]">
+      <div className="hideScrollbar overflow-y-scroll">
         <button
           className="absolute top-0 z-[2] flex h-[32px] w-[120px] items-center justify-center border-none bg-[rgba(23,23,23,0.32)] text-white outline-none"
           onClick={() => handleScroll('up')}
@@ -66,7 +76,7 @@ export const CarouselWithMainImage: FC<CarouselWithMainImageProps> = ({ images }
         <div className="flex flex-col gap-[12px]" ref={carouselRef}>
           {sortedImages.map((image, index) => (
             <div
-              key={image.id}
+              key={index}
               onClick={() => handleImageClick(index)}
               className={cn('w-[120px] opacity-[0.6] transition-all hover:opacity-100', {
                 ['!opacity-100']: activeIndex === index,
@@ -74,7 +84,7 @@ export const CarouselWithMainImage: FC<CarouselWithMainImageProps> = ({ images }
             >
               <Image
                 className="h-[120px] min-h-[103px] w-[120px] cursor-pointer object-cover"
-                src={image.image}
+                src={getImageSrc(image) || '/images/mock/child.png'}
                 alt={`Carousel image ${index}`}
                 width={80}
                 height={80}
@@ -84,10 +94,10 @@ export const CarouselWithMainImage: FC<CarouselWithMainImageProps> = ({ images }
         </div>
       </div>
 
-      <div className="h-[633px] w-[475px]">
+      <div className="h-[498px] w-[374px]">
         <Image
           className="h-full w-full object-cover"
-          src={sortedImages[activeIndex]?.image}
+          src={getImageSrc(sortedImages[activeIndex]) || '/images/mock/child.png'}
           alt={`Main carousel image`}
           width={476}
           height={563}

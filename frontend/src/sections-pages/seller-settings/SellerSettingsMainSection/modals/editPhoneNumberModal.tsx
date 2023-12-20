@@ -1,5 +1,4 @@
 import React, { FC, useState } from 'react'
-import ShowAndHideIcon from 'src/shared/ui/templates/passwordShowAndHideIcon'
 import { BUTTON_STYLES } from '@/shared/lib/consts/styles'
 import { Button } from 'src/shared/ui/buttons'
 import { LoaderIcon } from '@/shared/ui/loaders'
@@ -8,15 +7,12 @@ import TextField from '@/shared/ui/inputs/textField'
 import { useFormik } from 'formik'
 import { useTranslation } from 'react-i18next'
 import * as yup from 'yup'
-import { $apiAccountsApi } from '@/shared/api'
-import { toast } from 'react-toastify'
-import { useQueryClient } from '@tanstack/react-query'
 import { handleApiError } from '@/shared/lib/helpers'
+import { ArrowLeft } from 'react-feather'
 
 interface IFormValues {
-  password: string
   phone_number: string
-  repeat_phone_number: string
+  code: string
 }
 
 interface Props {
@@ -24,14 +20,15 @@ interface Props {
   onClose: () => void
 }
 
-const validationSchema = (t: (key: string) => string) =>
+const validationSchema = (t: (key: string) => string, currentStep: number) =>
   yup.object({
-    password: yup.string().required(t('Обязательно брат')),
     phone_number: yup.string().required(t('Обязательно брат')),
-    repeat_phone_number: yup
-      .string()
-      .required(t('Повтори номер телефона брат'))
-      .oneOf([yup.ref('phone_number')], t('Не совпадает брат')),
+    code: yup.string().when([], () => {
+      if (currentStep === 2) {
+        return yup.string().required(t('Обязательно брат'))
+      }
+      return yup.string()
+    }),
   })
 
 interface Props {
@@ -42,32 +39,38 @@ interface Props {
 export const EditPhoneNumberModal: FC<Props> = ({ open, onClose }) => {
   const { t } = useTranslation()
   const [isLoading, setIsLoading] = useState(false)
-  const [showPassword, setShowPassword] = useState(false)
-  const queryClient = useQueryClient()
+  const [currentStep, setCurrentStep] = useState(1)
+  // const queryClient = useQueryClient()
 
   const formik = useFormik<IFormValues>({
     initialValues: {
-      password: '',
       phone_number: '',
-      repeat_phone_number: '',
+      code: '',
     },
-    validationSchema: validationSchema(t),
-    onSubmit: async ({ password, phone_number, repeat_phone_number }, { resetForm }) => {
+    validationSchema: validationSchema(t, currentStep),
+    onSubmit: async () => {
       setIsLoading(true)
       try {
-        await $apiAccountsApi.accountsUsersChangePhoneNumberRequest({
-          current_password: password,
-          phone_number,
-          re_phone_number: repeat_phone_number,
-        })
+        if (currentStep === 1) {
+          setCurrentStep(2)
+          setIsLoading(false)
+        } else {
+          onClose()
+        }
 
-        await queryClient.invalidateQueries(['me'])
+        // await $apiAccountsApi.accountsUsersChangePhoneNumberRequest({
+        //   current_password: password,
+        //   phone_number,
+        //   re_phone_number: repeat_phone_number,
+        // })
 
-        toast.success('Ваш номер телефона изменен')
+        // await queryClient.invalidateQueries(['me'])
 
-        setIsLoading(false)
-        onClose()
-        resetForm()
+        // toast.success('Ваш номер телефона изменен')
+
+        // setIsLoading(false)
+        // onClose()
+        // resetForm()
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore
       } catch (error: AxiosError) {
@@ -77,6 +80,8 @@ export const EditPhoneNumberModal: FC<Props> = ({ open, onClose }) => {
     },
   })
 
+  const goToFirstStep = () => setCurrentStep(1)
+
   const handleClose = () => {
     formik.resetForm()
     onClose()
@@ -84,20 +89,29 @@ export const EditPhoneNumberModal: FC<Props> = ({ open, onClose }) => {
 
   return (
     <Modal open={open} onClose={handleClose}>
-      <div className="px-[42px] py-[46px]">
-        <div className="flex max-w-[385px] flex-col gap-[8px]">
-          <p className="text-[27.65px] font-[600] leading-[33px] text-neutral-900">Измените ваш номер телефона</p>
+      {currentStep === 2 && (
+        <div onClick={goToFirstStep} className="absolute left-[24px] top-[24px] cursor-pointer">
+          <ArrowLeft />
+        </div>
+      )}
 
-          <p className="text-[13.33px] leading-[16px] text-neutral-900">
-            Вы можете обновить ваш номер телефона в любое время чтобы хранить ваш Shopper аккаунт защищенным.
+      <div className="px-10 pb-10 pt-[60px]">
+        <div className="flex max-w-[385px] flex-col gap-[8px]">
+          <p className="text-[27.65px] font-[600] leading-[33px] text-neutral-900">Номер телефона</p>
+
+          <p className="mt-5 text-[13.33px] leading-[16px] text-neutral-900">
+            {currentStep === 1
+              ? '+996 998 554 331'
+              : `Код подтверждения отправлен на номер ${formik.values.phone_number}`}{' '}
           </p>
         </div>
 
         <form onSubmit={formik.handleSubmit}>
-          <div className="mb-12 mt-9 flex flex-col gap-8">
-            <div className="flex flex-col gap-8">
+          <div className="my-5 flex flex-col gap-8">
+            {currentStep === 1 ? (
               <TextField
                 placeholder={t('Новый номер телефона')}
+                label={t('Новый номер телефона')}
                 error={formik.touched.phone_number && Boolean(formik.errors.phone_number)}
                 errorMessage={
                   formik.touched.phone_number && formik.errors.phone_number ? formik.errors.phone_number : ''
@@ -106,41 +120,26 @@ export const EditPhoneNumberModal: FC<Props> = ({ open, onClose }) => {
                 onChange={formik.handleChange}
                 name="phone_number"
               />
-
+            ) : (
               <TextField
-                placeholder={t('Подтвердите номер телефона')}
-                error={formik.touched.repeat_phone_number && Boolean(formik.errors.repeat_phone_number)}
-                errorMessage={
-                  formik.touched.repeat_phone_number && formik.errors.repeat_phone_number
-                    ? formik.errors.repeat_phone_number
-                    : ''
-                }
-                value={formik.values.repeat_phone_number}
+                placeholder={t('Код подтверждения')}
+                error={formik.touched.code && Boolean(formik.errors.code)}
+                errorMessage={formik.touched.code && formik.errors.code ? formik.errors.code : ''}
+                value={formik.values.code}
                 onChange={formik.handleChange}
-                name="repeat_phone_number"
+                name="code"
               />
-
-              <TextField
-                placeholder={t('Пароль')}
-                error={formik.touched.password && Boolean(formik.errors.password)}
-                errorMessage={formik.touched.password && formik.errors.password ? formik.errors.password : ''}
-                value={formik.values.password}
-                onChange={formik.handleChange}
-                name="password"
-                type={showPassword ? 'text' : 'password'}
-                endAdornment={ShowAndHideIcon({
-                  show: showPassword,
-                  onHide: () => setShowPassword(false),
-                  onShow: () => setShowPassword(true),
-                })}
-              />
-            </div>
+            )}
           </div>
 
-          <div className="flex justify-center">
+          <div className="flex items-center justify-center gap-3">
+            <Button onClick={onClose} variant={BUTTON_STYLES.withoutBackground} type="button">
+              <div className="flex items-center gap-[10px]">Отмена</div>
+            </Button>
+
             <Button variant={BUTTON_STYLES.primaryCta}>
               <div className="flex items-center gap-[10px]">
-                Сохранить
+                {currentStep === 1 ? 'Продолжить' : 'Подтвердить'}
                 <LoaderIcon loading={isLoading} size={24} />
               </div>
             </Button>

@@ -7,6 +7,7 @@ import { Swiper, SwiperSlide } from 'swiper/react'
 import styles from './styles.module.css'
 import cn from 'classnames'
 import { TypeImageFile } from '@/shared/lib/types/sellerTypes'
+import Image from 'next/image'
 
 SwiperCore.use([Navigation, Pagination])
 
@@ -30,11 +31,16 @@ const Carousel: FC<CarouselProps> = ({ slides, hovering }) => {
             prevEl: prevRef.current,
             nextEl: nextRef.current,
           }}
-          pagination={{ clickable: true }}
         >
           {sortedSlides.map((item, index: number) => (
             <SwiperSlide key={index}>
-              <img className="h-[280px] w-full object-cover" src={item.image} alt="asd" />
+              <Image
+                className="h-[280px] w-full object-cover"
+                src={typeof item.image === 'string' ? item.image : item.image.base64 || '/images/mock/child.png'}
+                alt={`Slide #${item?.id}`}
+                width={160}
+                height={280}
+              />
             </SwiperSlide>
           ))}
         </Swiper>

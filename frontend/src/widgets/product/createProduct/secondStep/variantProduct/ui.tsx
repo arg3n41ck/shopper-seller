@@ -36,19 +36,27 @@ const VariantProduct: FC<VariantProps> = ({ data, selectVariant }: VariantProps)
         onClick={() => selectVariant && selectVariant(data)}
       >
         <Carousel slides={convertedImages} hovering={hovering} />
-        <div className="flex flex-col gap-3">
-          <p className="text-[18px] font-[600] text-neutral-900">{data.title}</p>
-          <p className="text-[14px] font-normal text-[#262626]">{data.description}</p>
+
+        <div className="flex flex-col">
           <div className="flex flex-wrap items-center gap-2">
-            {!!data.size_variants?.length &&
-              data.size_variants.map((item: TypeSizeQuantity, index: number) => (
-                <div className="color-[#676767] text-[12px] font-normal" key={index}>
-                  {item.size}
-                </div>
-              ))}
+            <p className="text-base font-normal text-stone-500">Цвет: </p>
+
+            <p className="text-[18px] font-[600] text-neutral-900">{data.title}</p>
           </div>
-          {/* <ResidueText>700 шт.</ResidueText> */}
-          {/* <p className="text-[19.2px] font-[600] text-neutral-900">{data.price} сом</p> */}
+
+          {/* <p className="text-[14px] font-normal text-[#262626]">{data.description}</p> */}
+
+          <div className="flex flex-wrap items-center gap-2">
+            {!!data.size_variants?.length && (
+              <p className="text-base font-normal text-stone-500">
+                Размеры: {data.size_variants.map((item: TypeSizeQuantity) => item.size).join(', ')}
+              </p>
+            )}
+          </div>
+          {data.price_min ||
+            (data.price_max && (
+              <p className="text-base font-medium text-neutral-900">{data.price_min || data.price_max} сом</p>
+            ))}
         </div>
       </div>
     </>

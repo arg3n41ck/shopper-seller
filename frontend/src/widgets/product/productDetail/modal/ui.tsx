@@ -28,7 +28,7 @@ export const ProductVariantDetailModal: FC<ProductVariantDetailModalProps> = ({ 
 
   const editVariant = async (variant: string, updatedVariant: TypeVariant) => {
     // eslint-disable-next-line
-    const { images, image_main, price_max, price_min, ...restValuesVariant } = updatedVariant
+    const { images, image_main, price_max, price_min, sum_size_quantities, ...restValuesVariant } = updatedVariant
     // eslint-disable-next-line
     //@ts-ignore
     const { data } = await $apiProductsApi.productsSellerProductVariantsPartialUpdate(variant, restValuesVariant)
@@ -108,7 +108,7 @@ export const ProductVariantDetailModal: FC<ProductVariantDetailModalProps> = ({ 
                     // eslint-disable-next-line
                     image.image === variant.image_main ? '!border-primaryDash600' : ''
                   } group-hover/buttons:border-primaryDash600`}
-                  src={image.image || ''}
+                  src={image.image || '/images/mock/child.png'}
                   width={150}
                   height={187}
                   alt={`image ${image.id}`}

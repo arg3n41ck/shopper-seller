@@ -1,14 +1,11 @@
-import { $apiProductsApi } from '@/shared/api'
+import React, { useEffect, useState } from 'react'
+import { SellerClient } from '@/shared/apis/sellerClient'
 import { LKSellerLayout } from '@/widgets/layouts'
 import { ProductEditPage } from '@/widgets/product'
 import { useQuery } from '@tanstack/react-query'
 import { useRouter } from 'next/router'
-import React, { useEffect, useState } from 'react'
 
-const fetchProduct = async (slug: string) => {
-  const { data } = await $apiProductsApi.productsSellerProductsRead(slug)
-  return data
-}
+const sellerClient = new SellerClient()
 
 const ProductDetail = () => {
   const router = useRouter()
@@ -21,7 +18,7 @@ const ProductDetail = () => {
     }
   }, [id])
 
-  const { data } = useQuery(['product', id], () => fetchProduct(id), {
+  const { data } = useQuery(['product', id], () => sellerClient.fetchProduct(id), {
     enabled: isQueryEnabled,
   })
 

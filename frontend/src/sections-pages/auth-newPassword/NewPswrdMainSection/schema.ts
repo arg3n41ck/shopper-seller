@@ -13,5 +13,5 @@ export const newPasswordValidationSchema = (t: (key: string) => string) =>
     re_password: yup
       .string()
       .required(t('auth.validation.password.newPassword.repeat'))
-      .oneOf([yup.ref('new_password')], t('auth.validation.password.newPassword.doNotMatch')),
+      .oneOf([yup.ref('password')], t('auth.validation.password.newPassword.doNotMatch')),
   })

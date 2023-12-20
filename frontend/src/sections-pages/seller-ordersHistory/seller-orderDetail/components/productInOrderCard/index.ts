@@ -1,0 +1,1 @@
+export { ProductInOrderCard } from './ui'

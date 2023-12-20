@@ -25,6 +25,7 @@ export const PATH_LK_SELLER: TypedPathLKSeller = {
   root: LK_SELLER_ROOT,
   aboutShop: path(LK_SELLER_ROOT, '/about-shop'),
   productsList: path(LK_SELLER_ROOT, '/products-list'),
+  orderHistory: path(LK_SELLER_ROOT, '/order-history'),
   archive: path(LK_SELLER_ROOT, '/archive'),
   settings: path(LK_SELLER_ROOT, '/settings'),
 }

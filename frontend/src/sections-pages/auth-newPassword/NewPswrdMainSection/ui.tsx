@@ -17,7 +17,7 @@ export const NewPasswordMainSection = () => {
   const router = useRouter()
   const { t } = useTranslation()
   const [isLoading, setIsLoading] = useState<boolean>(false)
-  const token = (router.query.token as string) || ''
+  const token = (router.query['amp;token'] as string) || ''
   const uid = (router.query.uid as string) || ''
 
   const [showPassword, setShowPassword] = useState({
@@ -42,7 +42,7 @@ export const NewPasswordMainSection = () => {
           pathname: PATH_AUTH.authSuccess,
           query: {
             title: t('auth.resetPassword.successChangePassword'),
-            path: PATH_AUTH.root,
+            path: PATH_AUTH.logIn,
             buttonTitle: 'Перейти в авторизацию',
           },
         })

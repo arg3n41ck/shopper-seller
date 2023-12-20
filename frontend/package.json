@@ -10,10 +10,10 @@
     "api-gen": "rm -rf src/shared/api/gen && openapi-generator-cli generate -g typescript-axios -c openapi-config.yml -o src/shared/api/gen && cd src/shared/api/gen && yarn && yarn build"
   },
   "dependencies": {
-    "@tanstack/react-query": "^4.32.1",
-    "@tanstack/react-query-devtools": "^4.32.1",
     "@next/font": "^13.4.19",
     "@reduxjs/toolkit": "^1.9.5",
+    "@tanstack/react-query": "^4.32.1",
+    "@tanstack/react-query-devtools": "^4.32.1",
     "@types/node": "20.4.8",
     "@types/react": "18.2.18",
     "@types/react-dom": "18.2.7",
@@ -24,6 +24,7 @@
     "framer-motion": "^10.15.0",
     "global": "^4.4.0",
     "i18next": "^23.4.1",
+    "idb": "^8.0.0",
     "next": "^13.4.12",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
@@ -36,7 +37,8 @@
     "swiper": "^10.1.0",
     "tw-merge": "^0.0.1-alpha.3",
     "typescript": "5.1.6",
-    "yup": "^1.2.0"
+    "yup": "^1.2.0",
+    "zustand": "^4.4.7"
   },
   "devDependencies": {
     "@openapitools/openapi-generator-cli": "^2.5.2",

@@ -47,12 +47,12 @@ export const HoverSideMenuDesktop: React.FC<HoverSideMenuProps> = ({ options: pr
       className={cn('absolute z-[999] flex items-start', 'w-[250px] bg-white shadow-md')}
       onMouseLeave={handleMouseLeave}
     >
-      <div className={cn('', 'hide-scrollbar h-[450px] overflow-y-auto overflow-x-hidden')}>
+      <div className={cn('', 'scrollbar-hide h-[450px] overflow-y-auto overflow-x-hidden')}>
         {items?.map((item, i) => (
           <ul
             key={item?.title || i + i}
             className={cn('flex h-[40px] w-[250px] cursor-pointer items-center px-3', {
-              'hover:bg-neutral-200 ': isMouseInside,
+              'hover:bg-neutral-100 ': isMouseInside,
             })}
           >
             <li

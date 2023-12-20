@@ -11,21 +11,17 @@ export const TimerPicker: React.FC<TimerPickerProps> = ({ onTimeChange }) => {
 
   const handleHoursChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const newHours = event.target.value
-    if (/^\d{0,2}$/.test(newHours) && parseInt(newHours, 10) <= 23) {
+    if (newHours === '' || (newHours.length <= 2 && !isNaN(+newHours) && +newHours <= 23)) {
       setHours(newHours)
-      onTimeChange(parseInt(newHours, 10), parseInt(minutes, 10))
-    } else {
-      setHours('')
+      onTimeChange(newHours ? parseInt(newHours, 10) : 0, parseInt(minutes, 10))
     }
   }
 
   const handleMinutesChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const newMinutes = event.target.value
-    if (/^\d{0,2}$/.test(newMinutes) && parseInt(newMinutes, 10) <= 59) {
+    if (newMinutes === '' || (newMinutes.length <= 2 && !isNaN(+newMinutes) && +newMinutes <= 59)) {
       setMinutes(newMinutes)
-      onTimeChange(parseInt(hours, 10), parseInt(newMinutes, 10))
-    } else {
-      setMinutes('')
+      onTimeChange(parseInt(hours, 10), newMinutes ? parseInt(newMinutes, 10) : 0)
     }
   }
 

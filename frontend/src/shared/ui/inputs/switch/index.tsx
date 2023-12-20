@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 
 interface CustomSwitchProps {
   checked: boolean
@@ -12,6 +12,10 @@ const CustomSwitch: React.FC<CustomSwitchProps> = ({ checked, onChange }) => {
     setIsChecked(!isChecked)
     onChange(!isChecked)
   }
+
+  useEffect(() => {
+    setIsChecked(checked)
+  }, [checked])
 
   return (
     <label className="relative inline-block h-6 w-10 cursor-pointer">

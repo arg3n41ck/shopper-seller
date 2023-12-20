@@ -41,9 +41,7 @@ const Autocomplete: React.FC<AutocompleteProps> = ({
   onKeyPress,
   addIfNotExists = false,
 }: AutocompleteProps) => {
-  const [inputValue, setInputValue] = useState<string>(
-    options.find((option) => option[fieldValue] === value)?.[fieldTitle] || '',
-  )
+  const [inputValue, setInputValue] = useState<string>('')
   const [showOptions, setShowOptions] = useState<boolean>(false)
   const inputRef = useRef<HTMLInputElement>(null)
   const timerIdRef = useRef<number | null>(null)
@@ -91,6 +89,10 @@ const Autocomplete: React.FC<AutocompleteProps> = ({
       inputRef.current.focus()
     }
   }, [showOptions])
+
+  useEffect(() => {
+    setInputValue(options.find((option) => option[fieldValue] === value)?.[fieldTitle] || '')
+  }, [value])
 
   return (
     <div className={cn(className, 'w-[100%]')}>

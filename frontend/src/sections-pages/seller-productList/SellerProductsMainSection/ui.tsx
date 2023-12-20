@@ -7,35 +7,64 @@ import { Button } from '@/shared/ui/buttons'
 import TextField from '@/shared/ui/inputs/textField'
 import { ProductTable } from '@/feautures/product'
 import Image from 'next/image'
-import CustomSelect from '@/shared/ui/selects/default'
 import cn from 'classnames'
 import { SellerClient } from '@/shared/apis/sellerClient'
 import { useQuery } from '@tanstack/react-query'
 import useDebounce from '@/shared/lib/hooks/useDebounce'
 import { TypeProductFilters } from '@/shared/lib/types/sellerTypes'
 import { CustomSelectHover } from '@/shared/ui/selects/default/CustomSelectHover'
+import { Product } from '@/shared/api/gen'
+import { CustomSelect, FilterTag, Statuses } from '@/shared/ui'
+import { format, parseISO } from 'date-fns'
+import { genders, statuses } from '@/shared/lib/consts/globals'
 
-const columns = [
+type ProductKey = 'title' | 'created_at' | 'price_from' | 'status'
+
+interface Column {
+  title: string
+  value: ProductKey
+}
+
+const columns: Column[] = [
   { title: 'Название товара', value: 'title' },
-  { title: 'Дата добавления', value: 'publish_date' },
+  { title: 'Дата добавления', value: 'created_at' },
   { title: 'Цена', value: 'price_from' },
   { title: 'Статус', value: 'status' },
 ]
 
-const gender = [
-  { title: 'Мужской', value: 'MALE' },
-  { title: 'Женский', value: 'FEMALE' },
-  { title: 'Унисекс', value: 'UNISEX' },
-]
-
-const status = [
-  { title: 'Активный', value: 'ACTIVE' },
-  { title: 'Не активный', value: 'INACTIVE' },
-  { title: 'Архив', value: 'ARCHIVE' },
-  { title: 'Черновик', value: 'DRAFT' },
-]
-
 const sellerClient = new SellerClient()
+
+const getValue = (product: Product, value: ProductKey) => {
+  switch (value) {
+    case 'title':
+      return (
+        <div className="flex items-center gap-[10px]">
+          <Image
+            src={product?.variants?.[0]?.images?.[0]?.image || '/images/mock/child.png'}
+            width={40}
+            height={40}
+            alt={product.title}
+            className="h-[40px] w-[40px] object-cover"
+          />
+
+          <p className="uppercase">{product[value]}</p>
+        </div>
+      )
+    case 'created_at':
+      return <p className="uppercase">{format(parseISO(product[value] || ''), 'dd/MM/yyyy')}</p>
+    case 'price_from':
+      return <p className="uppercase">{Math.floor(+product[value])} сом</p>
+    case 'status':
+      return (
+        <div className="flex flex-col items-start gap-1">
+          <Statuses type="product" status={product[value]} />
+          <p className="uppercase">{format(parseISO(product?.updated_at || ''), 'dd/MM/yyyy HH:mm:ss')}</p>
+        </div>
+      )
+    default:
+      return product[value] || '---'
+  }
+}
 
 export const MyProductsMainSection: FC = () => {
   const router = useRouter()
@@ -47,6 +76,7 @@ export const MyProductsMainSection: FC = () => {
   const limit: number = 10
   const { data: specifications } = useQuery(['specifications'], sellerClient.fetchSpecifications)
   const { data: categories } = useQuery(['categories'], sellerClient.fetchCategories)
+  const productStatuses = Object.values(statuses['product'])
 
   const sizesForFilter = specifications?.find((specification) => specification.slug === 'size')?.values
 
@@ -60,7 +90,7 @@ export const MyProductsMainSection: FC = () => {
     status: '',
   })
 
-  const { data } = useQuery(['filteredProducts', filters, debouncedSearchTerm, offset], () =>
+  const { data } = useQuery(['products', filters, debouncedSearchTerm, offset], () =>
     sellerClient.fetchProducts({
       category: filters.category,
       color: filters.color,
@@ -74,15 +104,14 @@ export const MyProductsMainSection: FC = () => {
   )
 
   const handleNextPage = () => {
-    const newOffset = offset + 10
-    const maxOffset = Math.max(data?.count || 0 - 10, 0)
-    if (data?.results.length || 0 >= limit) {
-      setOffset(Math.min(newOffset, maxOffset))
+    const newOffset = offset + limit
+    if (data && newOffset < data.count) {
+      setOffset(newOffset)
     }
   }
 
   const handlePreviousPage = () => {
-    setOffset(Math.max(offset - 10, 0))
+    setOffset(Math.max(offset - limit, 0))
   }
 
   const handleFilterChange = (name: string, value: string) => {
@@ -98,6 +127,10 @@ export const MyProductsMainSection: FC = () => {
     router.push({
       pathname: `${PATH_LK_SELLER.productsList}/product-detail/${slug}`,
     })
+
+  const removeFilter = (key: string) => {
+    setFilters({ ...filters, [key]: '' })
+  }
 
   return (
     <>
@@ -140,7 +173,7 @@ export const MyProductsMainSection: FC = () => {
           tableHeader={
             <>
               {columns.map((column, index) => (
-                <th className="bg-neutral-50 px-5 py-3 text-left" key={index}>
+                <th className="bg-neutral-50 px-3 py-3 text-left tracking-wide" key={index}>
                   <p className="text-[12px] font-semibold uppercase text-[#171717]">{column.title}</p>
                 </th>
               ))}
@@ -150,54 +183,64 @@ export const MyProductsMainSection: FC = () => {
             <>
               {isFilter && (
                 <tr>
-                  <td colSpan={columns.length} className="bg-white">
-                    <div className="flex items-center gap-5 bg-white p-5">
-                      <CustomSelectHover
-                        value={filters.category}
-                        placeholder={'Категория'}
-                        options={categories}
-                        onClick={(value) => handleFilterChange('category', value.slug || '')}
-                      />
+                  <td className="bg-white" colSpan={columns.length}>
+                    <div className="flex flex-col gap-5 p-5">
+                      <div className="flex flex-wrap items-center gap-5 bg-white">
+                        <CustomSelectHover
+                          value={filters.category}
+                          placeholder={'Категория'}
+                          options={categories}
+                          onClick={(value) => handleFilterChange('category', value.slug || '')}
+                        />
 
-                      <CustomSelect
-                        placeholder={'Цвет'}
-                        value={filters.color}
-                        options={colorsForFilter || []}
-                        onChange={(value) => handleFilterChange('color', value)}
-                        fieldTitle="size"
-                        fieldValue="size"
-                        className={'w-max bg-white'}
-                      />
+                        <CustomSelect
+                          placeholder={'Цвет'}
+                          value={filters.color}
+                          options={colorsForFilter || []}
+                          onChange={(value) => handleFilterChange('color', value)}
+                          fieldTitle="size"
+                          fieldValue="size"
+                          className={'w-max bg-white'}
+                        />
 
-                      <CustomSelect
-                        placeholder={'Размер'}
-                        value={filters.size}
-                        options={sizesForFilter || []}
-                        onChange={(value) => handleFilterChange('size', value)}
-                        fieldTitle="size"
-                        fieldValue="size"
-                        className={'w-max bg-white'}
-                      />
+                        <CustomSelect
+                          placeholder={'Размер'}
+                          value={filters.size}
+                          options={sizesForFilter || []}
+                          onChange={(value) => handleFilterChange('size', value)}
+                          fieldTitle="size"
+                          fieldValue="size"
+                          className={'w-max bg-white'}
+                        />
 
-                      <CustomSelect
-                        placeholder={'Пол'}
-                        value={filters.gender}
-                        options={gender}
-                        onChange={(value) => handleFilterChange('gender', value)}
-                        fieldTitle="title"
-                        fieldValue="value"
-                        className={'w-max bg-white'}
-                      />
+                        <CustomSelect
+                          placeholder={'Пол'}
+                          value={filters.gender}
+                          options={genders}
+                          onChange={(value) => handleFilterChange('gender', value)}
+                          fieldTitle="title"
+                          fieldValue="value"
+                          className={'w-max bg-white'}
+                        />
 
-                      <CustomSelect
-                        placeholder={'Статус'}
-                        value={filters.status}
-                        options={status}
-                        onChange={(value) => handleFilterChange('status', value)}
-                        fieldTitle="title"
-                        fieldValue="value"
-                        className={'w-max bg-white'}
-                      />
+                        <CustomSelect
+                          placeholder={'Статус'}
+                          value={filters.status}
+                          options={productStatuses || []}
+                          onChange={(value) => handleFilterChange('status', value)}
+                          fieldTitle="title"
+                          fieldValue="value"
+                          className={'w-max bg-white'}
+                        />
+                      </div>
+
+                      <div className="flex flex-wrap gap-2">
+                        {Object.entries(filters).map(([key, value]) =>
+                          value ? (
+                            <FilterTag key={key} label={`${key}: ${value}`} onRemove={() => removeFilter(key)} />
+                          ) : null,
+                        )}
+                      </div>
                     </div>
                   </td>
                 </tr>
@@ -205,26 +248,14 @@ export const MyProductsMainSection: FC = () => {
 
               {/* eslint-disable-next-line */}
               {data?.results?.map((product: any) => (
-                <tr className="border-b border-t border-neutral-300 bg-white" key={product.slug}>
+                <tr className="border-b border-t border-neutral-300 bg-white " key={product.slug}>
                   {columns.map((column, columnIndex) => (
                     <td
-                      className="cursor-pointer px-3 py-5 text-left"
+                      className="cursor-pointer px-3 py-5 text-left text-xs font-medium tracking-wide"
                       key={columnIndex}
                       onClick={() => navigateToProductDetail(product.slug)}
                     >
-                      <div className="flex items-center gap-[10px]">
-                        {column.value === 'title' && product?.variants[0]?.images[0]?.image && (
-                          <Image
-                            src={product.variants[0].images[0].image}
-                            width={36}
-                            height={36}
-                            alt={product.title}
-                            className="h-[36px] w-[36px] rounded-[36px] object-cover"
-                          />
-                        )}
-
-                        <p className="">{product[column.value] || '---'}</p>
-                      </div>
+                      {getValue(product, column.value)}
                     </td>
                   ))}
                 </tr>
@@ -234,7 +265,7 @@ export const MyProductsMainSection: FC = () => {
           tableFooter={
             <>
               <p className="text-[12px] font-semibold uppercase text-[#171717]">
-                {data ? `${offset + 1}-${Math.min(offset + 10, data.count)} из ${data.count}` : ''}
+                {data ? `${offset + 1}-${Math.min(offset + limit, data.count)} из ${data.count}` : ''}
               </p>
               <div className="flex items-center gap-5">
                 <ChevronLeft cursor={'pointer'} onClick={handlePreviousPage} />

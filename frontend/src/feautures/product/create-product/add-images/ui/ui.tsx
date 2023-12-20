@@ -27,7 +27,20 @@ export const AddImages: FC<AddImagesProps> = ({
         <div className="flex max-w-[490px] gap-5 overflow-x-scroll whitespace-nowrap">
           {!!value?.length &&
             value.map((item: TypeImageFile, index: number) => {
-              const image = typeof item.image === 'string' ? item.image : URL.createObjectURL(item.image)
+              let imageSrc: string
+
+              if (
+                typeof item.image === 'object' &&
+                item.image !== null &&
+                'base64' in item.image &&
+                item.image.base64
+              ) {
+                imageSrc = item.image.base64
+              } else if (item.image instanceof File || item.image instanceof Blob) {
+                imageSrc = URL.createObjectURL(item.image)
+              } else {
+                imageSrc = '/images/mock/child.png'
+              }
 
               return (
                 <div className="group/buttons relative w-[150px]" key={index}>
@@ -52,10 +65,10 @@ export const AddImages: FC<AddImagesProps> = ({
                   </div>
 
                   <Image
-                    className={`rounded-5 relative h-[187px] w-[150px] cursor-pointer border-[2px] border-transparent object-cover ${
+                    className={`rounded-5 relative h-[187px] w-[150px] max-w-none cursor-pointer border-[2px] border-transparent object-cover ${
                       item.is_main ? '!border-primaryDash600' : ''
                     } group-hover/buttons:border-primaryDash600`}
-                    src={image}
+                    src={imageSrc}
                     width={150}
                     height={187}
                     alt={`image ${index}`}

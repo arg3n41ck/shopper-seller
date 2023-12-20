@@ -1,6 +1,7 @@
 import React, { ComponentPropsWithRef } from 'react'
 import cn from 'classnames'
 import { toast } from 'react-toastify'
+import { isValid, parse } from 'date-fns'
 
 interface DateInputProps extends ComponentPropsWithRef<'input'> {
   handleChange: (value: string) => void
@@ -8,32 +9,25 @@ interface DateInputProps extends ComponentPropsWithRef<'input'> {
 
 export const DateInput = ({ handleChange, className, ...other }: DateInputProps) => {
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    e.preventDefault()
     let inputValue = e.target.value
 
-    if (inputValue.length === 2 && !inputValue.includes('-')) {
-      inputValue += '-'
-    } else if (inputValue.length === 5 && inputValue.charAt(2) === '-' && !inputValue.includes('-', 3)) {
-      inputValue += '-'
+    inputValue = inputValue.replace(/[^0-9]/g, '')
+
+    if (inputValue.length <= 4) {
+      handleChange(inputValue)
+    } else if (inputValue.length <= 6) {
+      handleChange(`${inputValue.substring(0, 4)}-${inputValue.substring(4)}`)
+    } else {
+      handleChange(`${inputValue.substring(0, 4)}-${inputValue.substring(4, 6)}-${inputValue.substring(6, 8)}`)
     }
 
-    handleChange(inputValue)
+    if (inputValue.length === 8) {
+      const formattedDate = `${inputValue.substring(0, 4)}-${inputValue.substring(4, 6)}-${inputValue.substring(6, 8)}`
+      const date = parse(formattedDate, 'yyyy-MM-dd', new Date())
 
-    const dateRegex = /^(0[1-9]|1[0-2])\/(0[1-9]|[12][0-9]|3[01])\/\d{4}$/
-
-    if (dateRegex.test(inputValue)) {
-      const parts = inputValue.split('-')
-      const month = parseInt(parts[0], 10)
-      const day = parseInt(parts[1], 10)
-      const year = parseInt(parts[2], 10)
-
-      const date = new Date(year, month - 1, day)
-
-      if (!isNaN(date.getTime())) {
-        toast.warning(`Допустимая дата:, ${date.toDateString()}`)
+      if (!isValid(date)) {
+        toast.warning(`Неверный формат даты`)
       }
-    } else {
-      throw new Error()
     }
   }
 
@@ -45,7 +39,7 @@ export const DateInput = ({ handleChange, className, ...other }: DateInputProps)
       )}
       type="text"
       onChange={handleInputChange}
-      placeholder="MM-DD-YYYY"
+      placeholder="YYYY-MM-DD"
       {...other}
     />
   )

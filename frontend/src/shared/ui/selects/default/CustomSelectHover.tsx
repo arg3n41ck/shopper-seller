@@ -44,7 +44,7 @@ export const CustomSelectHover: React.FC<CustomSelectHoverProps> = ({
   })
 
   return (
-    <div ref={selectRef} onFocus={() => setFocus(true)} className={cn('relative w-full')}>
+    <div ref={selectRef} onFocus={() => setFocus(true)} className={cn('relative', className)}>
       {label && <label className={cn('text-[13.33px] font-[400] text-neutral-900', isActive)}>{label}</label>}
 
       <div

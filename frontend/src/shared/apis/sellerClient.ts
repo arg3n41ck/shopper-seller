@@ -1,11 +1,35 @@
-import { $apiAccountsApi, $apiProductsApi, $apiSellersApi } from '../api'
-import { ProductUpdate } from '../api/gen'
-import { TypeUser } from '../lib/types/authTypes'
+import { $apiAccountsApi, $apiOrdersApi, $apiProductsApi, $apiSellersApi } from '../api'
+import { ProductCreate, ProductUpdate, ProductVariantCreate } from '../api/gen'
 import { TypeProductFilters } from '../lib/types/sellerTypes'
 
 export class SellerClient {
   async fetchCategories() {
     const { data } = await $apiProductsApi.productsCategoriesList()
+    return data
+  }
+
+  async fetchOrders({
+    status,
+    limit,
+    search,
+    offset,
+  }: {
+    status: string
+    limit: number
+    search: string
+    offset: number
+  }) {
+    const { data } = await $apiOrdersApi.ordersSellerOrdersList(status, search, undefined, limit, offset)
+    return data
+  }
+
+  async fetchOrder(id: number) {
+    const { data } = await $apiOrdersApi.ordersSellerOrdersRead(id)
+    return data
+  }
+
+  async fetchProduct(slug: string) {
+    const { data } = await $apiProductsApi.productsSellerProductsRead(slug)
     return data
   }
 
@@ -22,28 +46,7 @@ export class SellerClient {
   async fetchMe() {
     const { data } = await $apiAccountsApi.accountsUsersMeRead()
 
-    const user: TypeUser = {
-      // eslint-disable-next-line
-      // @ts-ignore
-      id: data.id,
-      // eslint-disable-next-line
-      // @ts-ignore
-      email: data.email,
-      // eslint-disable-next-line
-      // @ts-ignore
-      phone_number: data.phone_number,
-      // eslint-disable-next-line
-      // @ts-ignore
-      type: data.type,
-      // eslint-disable-next-line
-      // @ts-ignore
-      first_name: data.first_name,
-      // eslint-disable-next-line
-      // @ts-ignore
-      last_name: data.last_name,
-    }
-
-    return user
+    return data
   }
 
   async fetchShop() {
@@ -53,6 +56,11 @@ export class SellerClient {
 
   async fetchVariant(slug: string) {
     const { data } = await $apiProductsApi.productsSellerProductVariantsRead(slug)
+    return data
+  }
+
+  async fetchReviews(slug: string) {
+    const { data } = await $apiProductsApi.productsCustomerReviewsList(slug)
     return data
   }
 
@@ -66,6 +74,16 @@ export class SellerClient {
     return data
   }
 
+  async createProduct(body: ProductCreate) {
+    const { data } = await $apiProductsApi.productsSellerProductsCreate(body)
+    return data
+  }
+
+  async createVariant(body: ProductVariantCreate) {
+    const { data } = await $apiProductsApi.productsSellerProductVariantsCreate(body)
+    return data
+  }
+
   async updateVariantMainImage(variant: number = 0, isMain: boolean) {
     const { data } = await $apiProductsApi.productsSellerVariantImagesPartialUpdate(variant, undefined, isMain)
     return data
@@ -73,12 +91,31 @@ export class SellerClient {
 
   async updateShop({
     slug,
-    shopData: { title, description, logo },
+    shopData: { title, description, logo, tiktok_link, instagram_link, whats_app_link, banner, advertising_slogan },
   }: {
     slug: string
-    shopData: { title: string; description: string; logo: File | null }
+    shopData: {
+      title: string
+      description: string
+      logo: File | null
+      tiktok_link: string
+      instagram_link: string
+      whats_app_link: string
+      banner: File | null
+      advertising_slogan: string
+    }
   }) {
-    const { data } = await $apiSellersApi.sellersSellerShopsPartialUpdate(slug, title, description, logo)
+    const { data } = await $apiSellersApi.sellersSellerShopsPartialUpdate(
+      slug,
+      title,
+      description,
+      logo,
+      tiktok_link,
+      instagram_link,
+      whats_app_link,
+      banner,
+      advertising_slogan,
+    )
     return data
   }
 

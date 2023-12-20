@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react'
+import React, { useMemo, useRef, useState } from 'react'
 import { ChevronDown } from 'react-feather'
 import useOutsideClick from '@/shared/lib/hooks/useOutsideClick'
 import cn from 'classnames'
@@ -18,7 +18,7 @@ type SelectProps = {
   className?: string
 }
 
-const CustomSelect = ({
+export const CustomSelect = ({
   options,
   value,
   onChange,
@@ -35,6 +35,9 @@ const CustomSelect = ({
   const selectRef = useRef(null)
   const [focused, setFocus] = useState(false)
   const isActive = focused || value
+  const optionValue = useMemo(() => {
+    return options.find((option) => option[fieldValue] === value)?.[fieldTitle] || value || placeholder
+  }, [value, options])
 
   // eslint-disable-next-line
   const handleSelect = (optionValue: any) => {
@@ -63,7 +66,7 @@ const CustomSelect = ({
         )}
         onClick={() => setIsOpen(!isOpen)}
       >
-        {options.find((option) => option[fieldValue] === value)?.[fieldTitle] || value || placeholder}
+        {optionValue && <p className="m-0">{optionValue}</p>}
         <div className={cn('transition-all duration-[0.1s] ease-in-out', { ['rotate-180']: isOpen })}>
           <ChevronDown />
         </div>
@@ -72,10 +75,10 @@ const CustomSelect = ({
       {isOpen && (
         <>
           {!!options.length && (
-            <ul className="absolute left-0 z-[1] m-0 max-h-[200px] w-full list-none overflow-y-auto border-[1px] border-neutral-300 bg-white p-0">
+            <ul className="scrollbar-hide absolute left-0 z-[1] m-0 max-h-[200px] w-auto list-none overflow-y-auto border-[1px] border-neutral-300 bg-white p-0">
               {options.map((option, i) => (
                 <li
-                  className="block h-auto cursor-pointer p-[8px] transition-all hover:bg-neutral-300"
+                  className="block h-auto cursor-pointer p-[8px] transition-all hover:bg-neutral-100"
                   key={option.id || i + 1}
                   onClick={() => handleSelect(option)}
                 >
@@ -90,5 +93,3 @@ const CustomSelect = ({
     </div>
   )
 }
-
-export default CustomSelect

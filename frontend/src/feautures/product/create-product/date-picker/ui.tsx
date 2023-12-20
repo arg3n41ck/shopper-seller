@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react'
-import { format, addMonths, startOfMonth, startOfWeek, addDays, isSameMonth } from 'date-fns'
+import { format, addMonths, startOfMonth, startOfWeek, addDays, isSameMonth, parse, isValid } from 'date-fns'
 import { GroupArrows } from '@/shared/assets/icons/GroupArrows'
 import cn from 'classnames'
 
 const DAY_FORMAT = 'd'
 const MONTH_YEAR_FORMAT = 'MMMM yyyy'
-const DATE_FORMAT = 'MM-dd-yyyy'
+const DATE_FORMAT = 'yyyy-MM-dd'
 
 const week = ['Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su']
 
@@ -19,8 +19,11 @@ export const DatePicker: React.FC<CalendarProps> = ({ initialDate, onDateSelect 
   const [selectedDate, setSelectedDate] = useState<string | null>(null)
 
   const handleMonthChange = (monthOffset: number) => {
-    const newDate = addMonths(new Date(activeMonth), monthOffset)
-    setActiveMonth(format(newDate, DATE_FORMAT))
+    const parsedDate = parse(activeMonth, DATE_FORMAT, new Date())
+    if (isValid(parsedDate)) {
+      const newDate = addMonths(parsedDate, monthOffset)
+      setActiveMonth(format(newDate, DATE_FORMAT))
+    }
   }
 
   const handlePrevMonth = (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -64,7 +67,11 @@ export const DatePicker: React.FC<CalendarProps> = ({ initialDate, onDateSelect 
   }
 
   useEffect(() => {
-    setActiveMonth(initialDate)
+    const parsedDate = parse(initialDate, DATE_FORMAT, new Date())
+    if (isValid(parsedDate)) {
+      setActiveMonth(initialDate)
+      setSelectedDate(initialDate)
+    }
   }, [initialDate])
 
   return (
@@ -92,6 +99,7 @@ export const DatePicker: React.FC<CalendarProps> = ({ initialDate, onDateSelect 
             {day}
           </p>
         ))}
+
         {daysInMonth.map(({ date, isInactive, selected }, index) => (
           <div
             className={cn(
