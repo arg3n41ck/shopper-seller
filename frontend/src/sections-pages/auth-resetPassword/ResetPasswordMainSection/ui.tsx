@@ -84,6 +84,7 @@ export const ResetPasswordMainSection = () => {
                 <p>{formatTime(timeLeft)}</p>
               </div>
             )}
+
             {smsSent && (
               <Button variant={BUTTON_STYLES.onlyText} className="ml-auto max-w-max bg-none" disabled={!!timeLeft}>
                 <p

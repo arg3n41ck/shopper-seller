@@ -25,7 +25,7 @@ const Carousel: FC<CarouselProps> = ({ slides, hovering }) => {
     <div className="relative max-h-[280px] max-w-[252px]">
       <div className={cn('flex items-center justify-center', styles.SwiperCr)}>
         <Swiper
-          spaceBetween={0}
+          spaceBetween={40}
           slidesPerView={1}
           navigation={{
             prevEl: prevRef.current,

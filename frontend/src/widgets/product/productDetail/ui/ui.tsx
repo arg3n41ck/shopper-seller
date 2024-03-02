@@ -55,21 +55,17 @@ export const ProductDetailPage: FC<ProductDetailPageProps> = ({ product }) => {
 
   const handleShowCreateVariantModal = () => setAddVariantModal((prev) => !prev)
 
-  // const { data: reviews } = useQuery(['reviews', product?.slug], () => sellerClient.fetchReviews(product?.slug), {
-  //   enabled: !!product?.slug,
-  // })
+  const { data: reviews } = useQuery(['reviews', product?.slug], () => sellerClient.fetchReviews(product?.slug), {
+    enabled: !!product?.slug,
+  })
 
   const handleActivePopup = (title: string) => setActivePopup(title)
 
   const handleClosePopup = () => setActivePopup('')
 
-  const handleSelectVariant = (slug: string) => {
-    setSelectedVariant(slug)
-  }
+  const handleSelectVariant = (slug: string) => setSelectedVariant(slug)
 
-  const handleShowVariantDetail = () => {
-    setShowVariantDetail((prev) => !prev)
-  }
+  const handleShowVariantDetail = () => setShowVariantDetail((prev) => !prev)
 
   const navigateToEditProduct = (slug: string) =>
     router.push({
@@ -326,10 +322,10 @@ export const ProductDetailPage: FC<ProductDetailPageProps> = ({ product }) => {
         <div className="flex flex-col gap-5">
           <div className="inline-flex items-center justify-start gap-2">
             <p className="text-lg font-medium text-neutral-900">Отзывы</p>
-            <p className="shrink grow basis-0 text-lg font-medium text-stone-500">3</p>
+            <p className="shrink grow basis-0 text-lg font-medium text-stone-500">{reviews?.length || 0}</p>
           </div>
 
-          <ProductDetailReview />
+          {!!reviews?.length && reviews.map((review) => <ProductDetailReview review={review} key={review.id} />)}
         </div>
       </div>
 

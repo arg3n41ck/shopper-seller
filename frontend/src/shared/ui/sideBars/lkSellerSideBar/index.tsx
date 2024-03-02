@@ -8,6 +8,7 @@ import cn from 'classnames'
 import LogOutBackdrop from './logOutModal'
 import { removeFieldsFromLocalStorage } from '@/shared/lib/hooks/useLocalStorage'
 import { handleApiError } from '@/shared/lib/helpers'
+import { useQueryClient } from '@tanstack/react-query'
 
 interface Props {
   open: boolean
@@ -33,6 +34,7 @@ export const LKSellerSideBar: FC<Props> = ({ open, menuHandler }) => {
   const matchMyProducts = router.pathname.match(/\/lk-seller\/products-list/i)
   const isOpen = open ? 'open' : 'closed'
   const [isLogOut, setIsLogOut] = useState<boolean>(false)
+  const queryClient = useQueryClient()
 
   const handleShowLogOutBackdrop = () => setIsLogOut((prev) => !prev)
 
@@ -71,6 +73,7 @@ export const LKSellerSideBar: FC<Props> = ({ open, menuHandler }) => {
   const handleLogOutClick = async () => {
     try {
       await removeFieldsFromLocalStorage(['access_token', 'refresh_token'])
+      await queryClient.clear()
       await router.push({ pathname: PATH_AUTH.logIn })
 
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment

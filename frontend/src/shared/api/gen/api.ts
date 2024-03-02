@@ -1673,31 +1673,31 @@ export interface ProductsCustomerProductsList200Response {
 /**
  * 
  * @export
- * @interface ProductsCustomerReviewsList200Response
+ * @interface ProductsReviewsList200Response
  */
-export interface ProductsCustomerReviewsList200Response {
+export interface ProductsReviewsList200Response {
     /**
      * 
      * @type {number}
-     * @memberof ProductsCustomerReviewsList200Response
+     * @memberof ProductsReviewsList200Response
      */
     'count': number;
     /**
      * 
      * @type {string}
-     * @memberof ProductsCustomerReviewsList200Response
+     * @memberof ProductsReviewsList200Response
      */
     'next'?: string | null;
     /**
      * 
      * @type {string}
-     * @memberof ProductsCustomerReviewsList200Response
+     * @memberof ProductsReviewsList200Response
      */
     'previous'?: string | null;
     /**
      * 
      * @type {Array<ProductReview>}
-     * @memberof ProductsCustomerReviewsList200Response
+     * @memberof ProductsReviewsList200Response
      */
     'results': Array<ProductReview>;
 }
@@ -7151,10 +7151,10 @@ export const ProductsApiAxiosParamCreator = function (configuration?: Configurat
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        productsCustomerReviewsCreate: async (data: ProductReviewCreate, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+        productsReviewsCreate: async (data: ProductReviewCreate, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'data' is not null or undefined
-            assertParamExists('productsCustomerReviewsCreate', 'data', data)
-            const localVarPath = `/products/customer/reviews/`;
+            assertParamExists('productsReviewsCreate', 'data', data)
+            const localVarPath = `/products/reviews/`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
             let baseOptions;
@@ -7192,8 +7192,8 @@ export const ProductsApiAxiosParamCreator = function (configuration?: Configurat
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        productsCustomerReviewsList: async (product?: string, limit?: number, offset?: number, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
-            const localVarPath = `/products/customer/reviews/`;
+        productsReviewsList: async (product?: string, limit?: number, offset?: number, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/products/reviews/`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
             let baseOptions;
@@ -8265,8 +8265,8 @@ export const ProductsApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async productsCustomerReviewsCreate(data: ProductReviewCreate, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ProductReviewCreate>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.productsCustomerReviewsCreate(data, options);
+        async productsReviewsCreate(data: ProductReviewCreate, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ProductReviewCreate>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.productsReviewsCreate(data, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
         /**
@@ -8277,8 +8277,8 @@ export const ProductsApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async productsCustomerReviewsList(product?: string, limit?: number, offset?: number, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ProductsCustomerReviewsList200Response>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.productsCustomerReviewsList(product, limit, offset, options);
+        async productsReviewsList(product?: string, limit?: number, offset?: number, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ProductsReviewsList200Response>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.productsReviewsList(product, limit, offset, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
         /**
@@ -8608,8 +8608,8 @@ export const ProductsApiFactory = function (configuration?: Configuration, baseP
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        productsCustomerReviewsCreate(data: ProductReviewCreate, options?: any): AxiosPromise<ProductReviewCreate> {
-            return localVarFp.productsCustomerReviewsCreate(data, options).then((request) => request(axios, basePath));
+        productsReviewsCreate(data: ProductReviewCreate, options?: any): AxiosPromise<ProductReviewCreate> {
+            return localVarFp.productsReviewsCreate(data, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -8619,8 +8619,8 @@ export const ProductsApiFactory = function (configuration?: Configuration, baseP
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        productsCustomerReviewsList(product?: string, limit?: number, offset?: number, options?: any): AxiosPromise<ProductsCustomerReviewsList200Response> {
-            return localVarFp.productsCustomerReviewsList(product, limit, offset, options).then((request) => request(axios, basePath));
+        productsReviewsList(product?: string, limit?: number, offset?: number, options?: any): AxiosPromise<ProductsReviewsList200Response> {
+            return localVarFp.productsReviewsList(product, limit, offset, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -8928,7 +8928,7 @@ export interface ProductsApiInterface {
      * @throws {RequiredError}
      * @memberof ProductsApiInterface
      */
-    productsCustomerReviewsCreate(data: ProductReviewCreate, options?: AxiosRequestConfig): AxiosPromise<ProductReviewCreate>;
+    productsReviewsCreate(data: ProductReviewCreate, options?: AxiosRequestConfig): AxiosPromise<ProductReviewCreate>;
 
     /**
      * 
@@ -8939,7 +8939,7 @@ export interface ProductsApiInterface {
      * @throws {RequiredError}
      * @memberof ProductsApiInterface
      */
-    productsCustomerReviewsList(product?: string, limit?: number, offset?: number, options?: AxiosRequestConfig): AxiosPromise<ProductsCustomerReviewsList200Response>;
+    productsReviewsList(product?: string, limit?: number, offset?: number, options?: AxiosRequestConfig): AxiosPromise<ProductsReviewsList200Response>;
 
     /**
      * 
@@ -9261,8 +9261,8 @@ export class ProductsApi extends BaseAPI implements ProductsApiInterface {
      * @throws {RequiredError}
      * @memberof ProductsApi
      */
-    public productsCustomerReviewsCreate(data: ProductReviewCreate, options?: AxiosRequestConfig) {
-        return ProductsApiFp(this.configuration).productsCustomerReviewsCreate(data, options).then((request) => request(this.axios, this.basePath));
+    public productsReviewsCreate(data: ProductReviewCreate, options?: AxiosRequestConfig) {
+        return ProductsApiFp(this.configuration).productsReviewsCreate(data, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -9274,8 +9274,8 @@ export class ProductsApi extends BaseAPI implements ProductsApiInterface {
      * @throws {RequiredError}
      * @memberof ProductsApi
      */
-    public productsCustomerReviewsList(product?: string, limit?: number, offset?: number, options?: AxiosRequestConfig) {
-        return ProductsApiFp(this.configuration).productsCustomerReviewsList(product, limit, offset, options).then((request) => request(this.axios, this.basePath));
+    public productsReviewsList(product?: string, limit?: number, offset?: number, options?: AxiosRequestConfig) {
+        return ProductsApiFp(this.configuration).productsReviewsList(product, limit, offset, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**

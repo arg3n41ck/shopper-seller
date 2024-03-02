@@ -59,9 +59,9 @@ export class SellerClient {
     return data
   }
 
-  async fetchReviews(slug: string) {
-    const { data } = await $apiProductsApi.productsCustomerReviewsList(slug)
-    return data
+  async fetchReviews(id: string) {
+    const { data } = await $apiProductsApi.productsReviewsList(id)
+    return data.results
   }
 
   async editProduct(slug: string, productData: ProductUpdate) {

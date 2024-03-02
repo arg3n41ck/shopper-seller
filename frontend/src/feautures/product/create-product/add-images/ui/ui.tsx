@@ -38,6 +38,8 @@ export const AddImages: FC<AddImagesProps> = ({
                 imageSrc = item.image.base64
               } else if (item.image instanceof File || item.image instanceof Blob) {
                 imageSrc = URL.createObjectURL(item.image)
+              } else if (typeof item.image === 'string') {
+                imageSrc = item.image
               } else {
                 imageSrc = '/images/mock/child.png'
               }
